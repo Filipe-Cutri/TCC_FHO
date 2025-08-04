@@ -1,6 +1,8 @@
-/* Welcome page specific styles */
+/* ============================================ */
+/* WELCOME PAGE - MODERN DESIGN */
+/* ============================================ */
 
-/* Add animated background elements */
+/* Sophisticated Background Animation */
 body {
   position: relative;
   overflow-x: hidden;
@@ -13,57 +15,99 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  opacity: 0.1;
+  background: 
+    radial-gradient(circle at 25% 25%, var(--color-primary-100) 0%, transparent 70%),
+    radial-gradient(circle at 75% 75%, var(--color-secondary-100) 0%, transparent 70%),
+    radial-gradient(circle at 50% 50%, var(--color-primary-50) 0%, transparent 50%);
+  opacity: 0.6;
   z-index: -1;
-  animation: backgroundShift 10s ease-in-out infinite alternate;
+  animation: floatingBackground 15s ease-in-out infinite alternate;
 }
 
-@keyframes backgroundShift {
-  0% { transform: translateX(-10px) translateY(-10px); }
-  100% { transform: translateX(10px) translateY(10px); }
+@keyframes floatingBackground {
+  0% { 
+    transform: translate(-10px, -10px) rotate(0deg);
+    opacity: 0.6;
+  }
+  100% { 
+    transform: translate(10px, 10px) rotate(1deg);
+    opacity: 0.8;
+  }
 }
 
+/* Welcome Container */
 .welcome-container {
-  padding: 3rem 0;
-  min-height: 80vh;
+  padding: var(--space-20) 0;
+  min-height: 85vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
 }
 
+/* Hero Logo */
 .welcome-logo {
-  height: 120px;
+  height: 100px;
   width: auto;
   max-width: 100%;
+  transition: var(--transition-slow);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
+.welcome-logo:hover {
+  transform: scale(1.05) rotate(1deg);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+}
+
+/* Hero Typography */
 .welcome-title {
-  font-size: 3rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-extrabold);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1rem;
-  text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-bottom: var(--space-6);
+  text-align: center;
+  position: relative;
+}
+
+.welcome-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
 }
 
 .welcome-subtitle {
-  font-size: 1.2rem;
-  color: #6c757d;
-  margin-bottom: 3rem;
+  font-size: var(--font-size-xl);
+  color: var(--color-neutral-600);
+  margin-bottom: var(--space-16);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
 }
 
+/* ============================================ */
+/* SOPHISTICATED WELCOME CARDS */
+/* ============================================ */
 .welcome-card {
   border: none;
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-  transition: all 0.4s ease;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition-slow);
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: var(--color-neutral-0);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--color-neutral-100);
 }
 
 .welcome-card::before {
@@ -73,37 +117,92 @@ body::before {
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe);
+  background: var(--gradient-primary);
   transform: scaleX(0);
-  transition: transform 0.4s ease;
+  transition: var(--transition-base);
+  transform-origin: left;
+}
+
+.welcome-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+  opacity: 0;
+  transition: var(--transition-base);
+  pointer-events: none;
 }
 
 .welcome-card:hover::before {
   transform: scaleX(1);
 }
 
+.welcome-card:hover::after {
+  opacity: 1;
+}
+
 .welcome-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: var(--shadow-2xl);
+  border-color: var(--color-primary-200);
 }
 
 .welcome-card .card-body {
-  padding: 2.5rem 2rem;
+  padding: var(--space-10) var(--space-8);
+  text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
+.welcome-card .card-title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-800);
+  margin-bottom: var(--space-4);
+}
+
+.welcome-card .card-text {
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Welcome Icons */
 .welcome-icon {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
+  position: relative;
 }
 
+.welcome-icon i {
+  font-size: 3.5rem !important;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: var(--transition-base);
+}
+
+.welcome-card:hover .welcome-icon i {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Enhanced Buttons in Cards */
 .welcome-card .btn {
-  border-radius: 25px;
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-8);
+  font-weight: var(--font-weight-bold);
+  text-transform: none;
+  letter-spacing: 0.025em;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
 }
 
 .welcome-card .btn::before {
@@ -113,8 +212,8 @@ body::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transition: left 0.5s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
 }
 
 .welcome-card .btn:hover::before {
@@ -123,85 +222,130 @@ body::before {
 
 .welcome-card .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-xl);
 }
 
-.feature-item {
-  padding: 1.5rem;
+/* ============================================ */
+/* FEATURES SECTION */
+/* ============================================ */
+.features-section {
+  margin-top: var(--space-20);
+  padding: var(--space-16) 0;
+  background: var(--color-neutral-50);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.features-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.features-section h3 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-800);
+  margin-bottom: var(--space-12);
   text-align: center;
 }
 
+.feature-item {
+  padding: var(--space-8);
+  text-align: center;
+  transition: var(--transition-base);
+  border-radius: var(--radius-lg);
+}
+
+.feature-item:hover {
+  background: var(--color-neutral-0);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.feature-item i {
+  font-size: 2.5rem !important;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-4);
+  transition: var(--transition-base);
+}
+
+.feature-item:hover i {
+  transform: scale(1.1);
+}
+
 .feature-item h5 {
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-family: var(--font-family-display);
+  color: var(--color-neutral-800);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-lg);
 }
 
 .feature-item p {
-  color: #6c757d;
-  font-size: 0.9rem;
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  margin: 0;
 }
 
-/* Enhanced footer styles */
-.footer ul {
-  padding-left: 0;
-}
-
-.footer ul li {
-  margin-bottom: 0.5rem;
-}
-
-.footer ul li a {
-  color: #adb5bd;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer ul li a:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
-
-/* Mobile responsiveness */
+/* ============================================ */
+/* RESPONSIVE DESIGN FOR WELCOME PAGE */
+/* ============================================ */
 @media (max-width: 768px) {
   .welcome-container {
-    padding: 2rem 0;
+    padding: var(--space-12) 0;
   }
   
   .welcome-logo {
-    height: 80px;
+    height: 70px;
   }
   
   .welcome-title {
-    font-size: 2.2rem;
+    font-size: var(--font-size-3xl);
   }
   
   .welcome-subtitle {
-    font-size: 1rem;
-    margin-bottom: 2rem;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-10);
   }
   
   .welcome-card .card-body {
-    padding: 2rem 1.5rem;
+    padding: var(--space-8) var(--space-6);
   }
   
   .welcome-card .btn {
-    font-size: 0.9rem;
-    padding: 0.65rem 1.5rem;
+    font-size: var(--font-size-sm);
+    padding: var(--space-3) var(--space-6);
   }
   
   .feature-item {
-    padding: 1rem;
+    padding: var(--space-6);
   }
   
   .feature-item i {
-    font-size: 1.5rem !important;
+    font-size: 2rem !important;
+  }
+  
+  .features-section {
+    margin-top: var(--space-12);
+    padding: var(--space-10) 0;
   }
 }
 
 @media (max-width: 576px) {
   .welcome-title {
-    font-size: 1.8rem;
+    font-size: var(--font-size-2xl);
   }
   
   .welcome-logo {
@@ -209,19 +353,48 @@ body::before {
   }
   
   .welcome-card .card-body {
-    padding: 1.5rem 1rem;
+    padding: var(--space-6) var(--space-4);
   }
   
   .feature-item {
-    padding: 0.5rem;
+    padding: var(--space-4);
+  }
+  
+  .welcome-card .card-title {
+    font-size: var(--font-size-xl);
   }
 }
 
-/* Animation for page load */
+/* ============================================ */
+/* ENHANCED FOOTER FOR WELCOME PAGE */
+/* ============================================ */
+.footer-enhanced {
+  margin-top: var(--space-20);
+}
+
+.footer-enhanced .container {
+  max-width: 1200px;
+}
+
+.footer-enhanced .row {
+  align-items: flex-start;
+}
+
+.footer-enhanced .col-md-6:first-child {
+  padding-right: var(--space-8);
+}
+
+.footer-enhanced .col-md-6:last-child {
+  padding-left: var(--space-8);
+}
+
+/* ============================================ */
+/* PAGE LOAD ANIMATIONS */
+/* ============================================ */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -229,20 +402,48 @@ body::before {
   }
 }
 
-.welcome-container > * {
-  animation: fadeInUp 0.6s ease-out;
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.welcome-container .text-center:first-child {
+  animation: fadeInScale 0.8s ease-out;
 }
 
 .welcome-card:nth-child(1) {
-  animation-delay: 0.1s;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
 }
 
 .welcome-card:nth-child(2) {
-  animation-delay: 0.2s;
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.features-section {
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.feature-item:nth-child(1) {
+  animation: fadeInUp 0.4s ease-out 0.8s both;
+}
+
+.feature-item:nth-child(2) {
+  animation: fadeInUp 0.4s ease-out 1s both;
+}
+
+.feature-item:nth-child(3) {
+  animation: fadeInUp 0.4s ease-out 1.2s both;
 }
 
 /* Loading state */
 .loading .welcome-card {
   opacity: 0.7;
   pointer-events: none;
+  cursor: not-allowed;
 }
