@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestão de Agendamentos - Slotify</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="dashboard-estab.html">Slotify</a>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <h2>Agendamentos do Dia</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Horário</th>
+          <th>Cliente</th>
+          <th>Serviço</th>
+          <th>Profissional</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>14:00</td>
+          <td>Maria da Silva</td>
+          <td>Corte Masculino</td>
+          <td>João</td>
+          <td><span class="badge bg-success">Confirmado</span></td>
+          <td>
+            <button class="btn btn-sm btn-warning">Remarcar</button>
+            <button class="btn btn-sm btn-danger">Cancelar</button>
+          </td>
+        </tr>
+        <!-- Mais agendamentos -->
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
