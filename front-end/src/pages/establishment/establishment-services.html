@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serviços - Slotify - Slotify</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/common.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="dashboard-estab.html">
+        <img src="../assets/logo-slotify.png" alt="Slotify Logo">
+        Slotify
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-nav ms-auto">
+          <a href="dashboard-estab.html" class="btn btn-outline-light me-2">Dashboard</a>
+          <a href="login-estab.html" class="btn btn-outline-light">Sair</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="main-content">
+    <div class="container mt-4">
+    <h2>Serviços Oferecidos</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Serviço</th>
+          <th>Duração</th>
+          <th>Valor</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Corte Masculino</td>
+          <td>30 min</td>
+          <td>R$ 40,00</td>
+          <td>
+            <button class="btn btn-sm btn-warning">Editar</button>
+            <button class="btn btn-sm btn-danger">Remover</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Barba</td>
+          <td>20 min</td>
+          <td>R$ 25,00</td>
+          <td>
+            <button class="btn btn-sm btn-warning">Editar</button>
+            <button class="btn btn-sm btn-danger">Remover</button>
+          </td>
+        </tr>
+        <!-- Outros serviços -->
+      </tbody>
+    </table>
+    <a href="#" class="btn btn-primary mt-3">Adicionar Serviço</a>
+  </div>
+</body>
+</html>
