@@ -17,9 +17,16 @@ body {
 
 /* Header/Navbar enhancements */
 .navbar-brand img {
-    height: 40px;
+    height: 50px;
     width: auto;
     margin-right: 10px;
+}
+
+/* Logo enhancements for login pages */
+.login-logo {
+    height: 100px;
+    width: auto;
+    max-width: 200px;
 }
 
 .navbar {
@@ -32,9 +39,9 @@ body {
     padding-bottom: 2rem;
 }
 
-/* Footer styles */
+/* Enhanced footer styles with links */
 .footer {
-    background-color: #343a40;
+    background: linear-gradient(135deg, #343a40 0%, #495057 100%);
     color: white;
     padding: 2rem 0 1rem 0;
     margin-top: auto;
@@ -44,17 +51,27 @@ body {
     color: #ffffff;
     margin-bottom: 1rem;
     font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .footer p, .footer a {
     color: #adb5bd;
     text-decoration: none;
     font-size: 0.9rem;
+    transition: color 0.3s ease;
 }
 
 .footer a:hover {
     color: #ffffff;
-    text-decoration: none;
+    text-decoration: underline;
+}
+
+.footer ul {
+    padding-left: 0;
+}
+
+.footer ul li {
+    margin-bottom: 0.5rem;
 }
 
 .footer-bottom {
@@ -151,19 +168,50 @@ body {
     pointer-events: none;
 }
 
-/* Custom primary color variations */
+/* Custom primary color variations and modern styling */
 .bg-primary-custom {
-    background-color: #0056b3 !important;
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
 }
 
 .btn-primary-custom {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 25px;
+    padding: 0.65rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
 }
 
 .btn-primary-custom:hover {
-    background-color: #004494;
-    border-color: #004494;
+    background: linear-gradient(135deg, #0056b3, #004494);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.btn-primary {
+    border-radius: 25px;
+    padding: 0.65rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.btn-success {
+    border-radius: 25px;
+    padding: 0.65rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40,167,69,0.3);
 }
 
 /* Form enhancements for mobile */
