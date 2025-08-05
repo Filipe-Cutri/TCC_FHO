@@ -46,27 +46,27 @@
 
 /* Logo Context Variants */
 .logo-navbar {
-    height: 40px;
+    height: 50px;
     width: auto;
     margin-right: var(--space-3);
 }
 
 .logo-login {
-    height: 72px;
+    height: 90px;
     width: auto;
-    max-width: 200px;
+    max-width: 250px;
     margin-bottom: var(--space-4);
 }
 
 .logo-hero {
-    height: 120px;
+    height: 150px;
     width: auto;
     max-width: 100%;
     margin-bottom: var(--space-6);
 }
 
 .logo-footer {
-    height: 36px;
+    height: 45px;
     width: auto;
     opacity: 0.9;
     filter: brightness(0) invert(1);
@@ -75,37 +75,37 @@
 /* Responsive Logo Behavior */
 @media (max-width: 768px) {
     .logo-navbar {
-        height: 36px;
+        height: 45px;
     }
     
     .logo-login {
-        height: 60px;
+        height: 75px;
     }
     
     .logo-hero {
-        height: 80px;
+        height: 100px;
     }
     
     .logo-footer {
-        height: 32px;
+        height: 40px;
     }
 }
 
 @media (max-width: 576px) {
     .logo-navbar {
-        height: 32px;
+        height: 40px;
     }
     
     .logo-login {
-        height: 50px;
+        height: 65px;
     }
     
     .logo-hero {
-        height: 70px;
+        height: 85px;
     }
     
     .logo-footer {
-        height: 28px;
+        height: 35px;
     }
 }
 
