@@ -4,82 +4,274 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Cliente - Slotify</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../assets/css/common.css">
-  <style>
-    /* Additional styles for fixed navbar */
-    body {
-      padding-top: 80px;
-    }
-    
-    .navbar {
-      transition: all 0.3s ease;
-    }
-    
-    .main-content {
-      min-height: calc(100vh - 80px);
-    }
-  </style>
+  <link rel="stylesheet" href="../../assets/styles/common.css">
+  <link rel="stylesheet" href="../../assets/styles/client-styles.css">
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body class="client-page">
+  <nav class="navbar navbar-expand-lg navbar-dark client-navbar fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="dashboard.html">
-        <img src="../assets/logo-slotify.png" alt="Slotify Logo">
+      <a class="navbar-brand" href="client-dashboard.html">
+        <img src="../../assets/logo-slotify.png" alt="Slotify Logo">
         Slotify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="navbar-nav ms-auto">
-          <a href="profile.html" class="btn btn-outline-light me-2">Perfil</a>
-          <a href="login.html" class="btn btn-outline-light">Sair</a>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="client-dashboard.html">
+              <i class="fas fa-home me-1"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-services.html">
+              <i class="fas fa-cut me-1"></i>Serviços
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-bookings.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-professionals.html">
+              <i class="fas fa-users me-1"></i>Profissionais
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="client-notifications.html" class="nav-link position-relative me-2">
+            <i class="fas fa-bell"></i>
+            <span class="client-notification-badge">3</span>
+          </a>
+          <a href="client-profile.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-user me-1"></i>Perfil
+          </a>
+          <a href="client-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
         </div>
       </div>
     </div>
   </nav>
-  <div class="main-content">
-    <div class="container mt-4">
-    <h2>Bem-vindo, Cliente!</h2>
-    <div class="row mt-4">
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Próximo Agendamento</h5>
-            <p>Data: <strong>10/08/2025</strong></p>
-            <p>Horário: <strong>14:00</strong></p>
-            <p>Profissional: <strong>João</strong></p>
-            <a href="bookings.html" class="btn btn-primary btn-sm">Ver todos</a>
+  
+  <div class="client-main-content">
+    <div class="client-container">
+      <!-- Welcome Section -->
+      <div class="client-welcome-section">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="client-welcome-title">Bem-vindo de volta, Maria! 👋</h1>
+            <p class="client-welcome-subtitle">Pronto para sua próxima experiência de beleza? Veja seus agendamentos e descubra novos serviços.</p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <a href="client-services.html" class="client-btn client-btn-success">
+              <i class="fas fa-plus me-2"></i>
+              Novo Agendamento
+            </a>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Novo Agendamento</h5>
-            <p>Agende seu próximo horário de forma fácil e rápida!</p>
-            <a href="booking.html" class="btn btn-success btn-sm">Agendar</a>
+
+      <!-- Page Header -->
+      <div class="client-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </span>
+          Dashboard
+        </h1>
+        <p class="client-page-subtitle">Acompanhe seus agendamentos e atividades</p>
+      </div>
+      <!-- Statistics Cards -->
+      <div class="client-dashboard-grid">
+        <div class="client-card">
+          <div class="card-body client-stats-card">
+            <div class="client-stats-number">5</div>
+            <div class="client-stats-label">Agendamentos este mês</div>
+          </div>
+        </div>
+        <div class="client-card">
+          <div class="card-body client-stats-card">
+            <div class="client-stats-number">3</div>
+            <div class="client-stats-label">Profissionais favoritos</div>
+          </div>
+        </div>
+        <div class="client-card">
+          <div class="card-body client-stats-card">
+            <div class="client-stats-number">R$ 450</div>
+            <div class="client-stats-label">Gastos este mês</div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Notificações</h5>
-            <ul>
-              <li>Lembrete: Você tem um agendamento amanhã às 14:00</li>
-            </ul>
-            <a href="notifications.html" class="btn btn-secondary btn-sm">Ver todas</a>
+
+      <!-- Main Dashboard Content -->
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Next Appointment -->
+          <div class="client-card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-calendar-check"></i>
+                </span>
+                Próximo Agendamento
+              </h5>
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <p class="card-text mb-2"><strong>Corte + Barba</strong> com João Silva</p>
+                  <p class="card-text mb-1">
+                    <i class="fas fa-calendar me-2 text-primary"></i>
+                    <strong>10 de Agosto, 2025</strong>
+                  </p>
+                  <p class="card-text mb-1">
+                    <i class="fas fa-clock me-2 text-primary"></i>
+                    <strong>14:00 - 15:00</strong>
+                  </p>
+                  <p class="card-text mb-3">
+                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                    Barbearia Premium - Centro
+                  </p>
+                  <span class="client-status-badge client-status-success">Confirmado</span>
+                </div>
+                <div class="col-md-4 text-md-end">
+                  <a href="client-bookings.html" class="client-btn client-btn-secondary mb-2 d-block">
+                    <i class="fas fa-eye me-2"></i>Ver Detalhes
+                  </a>
+                  <a href="#" class="client-btn mb-2 d-block">
+                    <i class="fas fa-edit me-2"></i>Reagendar
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-history"></i>
+                </span>
+                Atividade Recente
+              </h5>
+              <div class="client-list-item">
+                <div class="client-list-icon">
+                  <i class="fas fa-check-circle text-success"></i>
+                </div>
+                <div class="client-list-content">
+                  <div class="client-list-title">Agendamento confirmado</div>
+                  <div class="client-list-subtitle">Corte + Barba para 10/08 às 14:00</div>
+                </div>
+                <small class="text-muted">2h atrás</small>
+              </div>
+              <div class="client-list-item">
+                <div class="client-list-icon">
+                  <i class="fas fa-star text-warning"></i>
+                </div>
+                <div class="client-list-content">
+                  <div class="client-list-title">Avaliação enviada</div>
+                  <div class="client-list-subtitle">5 estrelas para João Silva</div>
+                </div>
+                <small class="text-muted">1 dia atrás</small>
+              </div>
+              <div class="client-list-item">
+                <div class="client-list-icon">
+                  <i class="fas fa-credit-card text-info"></i>
+                </div>
+                <div class="client-list-content">
+                  <div class="client-list-title">Pagamento processado</div>
+                  <div class="client-list-subtitle">R$ 85,00 - Corte + Barba</div>
+                </div>
+                <small class="text-muted">2 dias atrás</small>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="col-lg-4">
+          <!-- Quick Actions -->
+          <div class="client-card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-bolt"></i>
+                </span>
+                Ações Rápidas
+              </h5>
+              <div class="d-grid gap-3">
+                <a href="client-services.html" class="client-btn">
+                  <i class="fas fa-plus me-2"></i>
+                  Novo Agendamento
+                </a>
+                <a href="client-professionals.html" class="client-btn client-btn-secondary">
+                  <i class="fas fa-search me-2"></i>
+                  Buscar Profissionais
+                </a>
+                <a href="client-payments.html" class="client-btn client-btn-secondary">
+                  <i class="fas fa-credit-card me-2"></i>
+                  Histórico de Pagamentos
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-bell"></i>
+                </span>
+                Notificações
+                <span class="client-notification-badge">3</span>
+              </h5>
+              <div class="client-list-item">
+                <div class="client-list-icon">
+                  <i class="fas fa-info-circle text-info"></i>
+                </div>
+                <div class="client-list-content">
+                  <div class="client-list-title">Lembrete de agendamento</div>
+                  <div class="client-list-subtitle">Você tem um agendamento amanhã</div>
+                </div>
+              </div>
+              <div class="client-list-item">
+                <div class="client-list-icon">
+                  <i class="fas fa-gift text-success"></i>
+                </div>
+                <div class="client-list-content">
+                  <div class="client-list-title">Promoção especial</div>
+                  <div class="client-list-subtitle">20% de desconto em pacotes</div>
+                </div>
+              </div>
+              <div class="client-list-item">
+                <div class="client-list-icon">
+                  <i class="fas fa-user-plus text-primary"></i>
+                </div>
+                <div class="client-list-content">
+                  <div class="client-list-title">Novo profissional</div>
+                  <div class="client-list-subtitle">Carlos adicionou novos serviços</div>
+                </div>
+              </div>
+              <div class="text-center mt-3">
+                <a href="client-notifications.html" class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Todas
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   
-  <!-- Footer -->
-    <!-- Enhanced Footer -->
+  <!-- Enhanced Footer -->
   <footer class="footer footer-enhanced">
     <div class="container">
       <div class="row">
@@ -114,17 +306,17 @@
             <div class="col-6">
               <h6>Clientes</h6>
               <ul class="list-unstyled">
-                <li><a href="../../src/pages/client/client-login.html">Login</a></li>
-                <li><a href="../../src/pages/client/client-register.html">Cadastro</a></li>
-                <li><a href="../../src/pages/client/client-services.html">Serviços</a></li>
-                <li><a href="../../src/pages/client/client-bookings.html">Meus Agendamentos</a></li>
+                <li><a href="client-login.html">Login</a></li>
+                <li><a href="client-register.html">Cadastro</a></li>
+                <li><a href="client-services.html">Serviços</a></li>
+                <li><a href="client-bookings.html">Meus Agendamentos</a></li>
               </ul>
             </div>
             <div class="col-6">
               <h6>Estabelecimentos</h6>
               <ul class="list-unstyled">
-                <li><a href="../../src/pages/establishment/establishment-login.html">Login</a></li>
-                <li><a href="../../src/pages/establishment/establishment-register.html">Cadastro</a></li>
+                <li><a href="../establishment/establishment-login.html">Login</a></li>
+                <li><a href="../establishment/establishment-register.html">Cadastro</a></li>
                 <li><a href="#dashboard">Dashboard</a></li>
                 <li><a href="#suporte">Suporte</a></li>
               </ul>
@@ -138,66 +330,69 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Navbar scroll effects
-    window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      }
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+    // Enhanced client page interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navbar scroll effects
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.client-navbar');
+        if (window.scrollY > 50) {
+          navbar.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(29, 78, 216, 0.95) 100%)';
+          navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+          navbar.style.background = 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%)';
         }
       });
-    });
-  </script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Navbar scroll effects
-    window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      }
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
+
+      // Card hover animations
+      document.querySelectorAll('.client-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-4px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+
+      // Button click animations
+      document.querySelectorAll('.client-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const ripple = document.createElement('span');
+          ripple.style.position = 'absolute';
+          ripple.style.borderRadius = '50%';
+          ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+          ripple.style.transform = 'scale(0)';
+          ripple.style.animation = 'ripple 0.6s linear';
+          ripple.style.left = (e.offsetX - 10) + 'px';
+          ripple.style.top = (e.offsetY - 10) + 'px';
+          ripple.style.width = ripple.style.height = '20px';
+          
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
       });
     });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
