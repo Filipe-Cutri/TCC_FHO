@@ -28,10 +28,7 @@
 }
 
 .establishment-navbar .navbar-brand img {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-base);
-  filter: brightness(0) invert(1);
+  /* Logo sizing and styles are handled by logo-system.css */
 }
 
 .establishment-navbar .nav-link {
