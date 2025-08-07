@@ -49,6 +49,11 @@
               <i class="fas fa-chart-bar me-1"></i>Relatórios
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="establishment-payments.html">
+              <i class="fas fa-credit-card me-1"></i>Pagamentos
+            </a>
+          </li>
         </ul>
         <div class="navbar-nav">
           <a href="establishment-notifications.html" class="nav-link position-relative me-2">
@@ -65,30 +70,344 @@
       </div>
     </div>
   </nav>
-  <div class="main-content">
-    <div class="container mt-4">
-    <h2>Pagamentos Recebidos</h2>
-    <table class="table mt-3">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Cliente</th>
-          <th>Serviço</th>
-          <th>Valor</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>10/08/2025</td>
-          <td>Maria da Silva</td>
-          <td>Corte Masculino</td>
-          <td>R$ 40,00</td>
-          <td><span class="badge bg-success">Pago</span></td>
-        </tr>
-        <!-- Outros pagamentos -->
-      </tbody>
-    </table>
+  
+  <div class="establishment-main-content">
+    <div class="establishment-container">
+      <!-- Page Header -->
+      <div class="establishment-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-credit-card"></i>
+          </span>
+          Gestão de Pagamentos
+        </h1>
+        <p class="establishment-page-subtitle">Acompanhe todas as transações e pagamentos do seu estabelecimento</p>
+      </div>
+
+      <!-- Payment Statistics -->
+      <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">R$ 2.850</div>
+              <div class="establishment-stats-label">Faturamento do Mês</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">47</div>
+              <div class="establishment-stats-label">Pagamentos Processados</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">R$ 124</div>
+              <div class="establishment-stats-label">Ticket Médio</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">3</div>
+              <div class="establishment-stats-label">Pendentes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Filters -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="btn-group" role="group">
+            <button type="button" class="establishment-btn establishment-btn-secondary active">
+              <i class="fas fa-list me-1"></i>Todos
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-check-circle me-1"></i>Pagos
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-clock me-1"></i>Pendentes
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-times-circle me-1"></i>Cancelados
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <button class="establishment-btn establishment-btn-success">
+            <i class="fas fa-download me-2"></i>Exportar
+          </button>
+        </div>
+      </div>
+
+      <!-- Payments Table -->
+      <div class="establishment-card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <span class="card-icon">
+              <i class="fas fa-receipt"></i>
+            </span>
+            Histórico de Pagamentos
+          </h5>
+          <div class="table-responsive">
+            <table class="establishment-table table">
+              <thead>
+                <tr>
+                  <th>Data/Hora</th>
+                  <th>Cliente</th>
+                  <th>Serviço</th>
+                  <th>Profissional</th>
+                  <th>Valor</th>
+                  <th>Método</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">15/08/2025</div>
+                      <div class="establishment-list-subtitle">14:30</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://via.placeholder.com/32x32/0ea5e9/ffffff?text=MS" alt="Maria" class="rounded-circle me-2" style="width: 32px; height: 32px;">
+                      <div>
+                        <div class="establishment-list-title">Maria da Silva</div>
+                        <div class="establishment-list-subtitle">maria@email.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">Corte + Coloração</div>
+                      <div class="establishment-list-subtitle">2h 30min</div>
+                    </div>
+                  </td>
+                  <td>Ana Costa</td>
+                  <td><strong>R$ 85,00</strong></td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-success">Cartão</span>
+                  </td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-success">Pago</span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-receipt"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">15/08/2025</div>
+                      <div class="establishment-list-subtitle">16:00</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://via.placeholder.com/32x32/0ea5e9/ffffff?text=JS" alt="João" class="rounded-circle me-2" style="width: 32px; height: 32px;">
+                      <div>
+                        <div class="establishment-list-title">João Santos</div>
+                        <div class="establishment-list-subtitle">joao@email.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">Barba + Bigode</div>
+                      <div class="establishment-list-subtitle">30min</div>
+                    </div>
+                  </td>
+                  <td>Carlos Pereira</td>
+                  <td><strong>R$ 25,00</strong></td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-warning">PIX</span>
+                  </td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-warning">Pendente</span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="establishment-btn establishment-btn-warning" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-bell"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">14/08/2025</div>
+                      <div class="establishment-list-subtitle">09:30</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://via.placeholder.com/32x32/0ea5e9/ffffff?text=PL" alt="Patricia" class="rounded-circle me-2" style="width: 32px; height: 32px;">
+                      <div>
+                        <div class="establishment-list-title">Patricia Lima</div>
+                        <div class="establishment-list-subtitle">patricia@email.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">Manicure + Pedicure</div>
+                      <div class="establishment-list-subtitle">1h 30min</div>
+                    </div>
+                  </td>
+                  <td>Fernanda Souza</td>
+                  <td><strong>R$ 50,00</strong></td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-pending">Dinheiro</span>
+                  </td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-success">Pago</span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-receipt"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">14/08/2025</div>
+                      <div class="establishment-list-subtitle">11:00</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://via.placeholder.com/32x32/0ea5e9/ffffff?text=CE" alt="Carlos" class="rounded-circle me-2" style="width: 32px; height: 32px;">
+                      <div>
+                        <div class="establishment-list-title">Carlos Eduardo</div>
+                        <div class="establishment-list-subtitle">carlos@email.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div class="establishment-list-title">Corte Masculino</div>
+                      <div class="establishment-list-subtitle">45min</div>
+                    </div>
+                  </td>
+                  <td>João Pedro</td>
+                  <td><strong>R$ 40,00</strong></td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-success">Débito</span>
+                  </td>
+                  <td>
+                    <span class="establishment-status-badge establishment-status-success">Pago</span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">
+                        <i class="fas fa-receipt"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Methods Summary -->
+      <div class="row mt-4">
+        <div class="col-lg-4 mb-4">
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-chart-pie"></i>
+                </span>
+                Métodos de Pagamento
+              </h5>
+              
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-credit-card text-success"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Cartão de Crédito</div>
+                  <div class="establishment-list-subtitle">23 transações</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">49%</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-qrcode text-warning"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">PIX</div>
+                  <div class="establishment-list-subtitle">18 transações</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-warning">38%</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-money-bill text-info"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Dinheiro</div>
+                  <div class="establishment-list-subtitle">6 transações</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-pending">13%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-chart-line"></i>
+                </span>
+                Faturamento dos Últimos 7 Dias
+              </h5>
+              
+              <div class="chart-placeholder" style="height: 200px; background: var(--color-neutral-50); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; border: 2px dashed var(--color-neutral-300);">
+                <div class="text-center">
+                  <i class="fas fa-chart-line text-muted" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                  <p class="text-muted">Gráfico de Faturamento Diário</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -96,14 +415,38 @@
   <script>
     // Navbar scroll effects
     window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
+      const navbar = document.querySelector('.establishment-navbar');
       if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.backgroundColor = 'rgba(2, 132, 199, 0.95)';
         navbar.style.backdropFilter = 'blur(20px)';
       } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
+        navbar.style.backgroundColor = 'linear-gradient(135deg, var(--color-secondary-600) 0%, var(--color-secondary-700) 100%)';
         navbar.style.backdropFilter = 'blur(20px)';
       }
+    });
+
+    // Card hover effects
+    document.querySelectorAll('.establishment-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-4px)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Payment filter buttons
+    document.querySelectorAll('.btn-group .establishment-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons in the same group
+        const group = this.closest('.btn-group');
+        group.querySelectorAll('.establishment-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        // Add active class to clicked button
+        this.classList.add('active');
+      });
     });
     
     // Smooth scroll for anchor links

@@ -65,14 +65,200 @@
       </div>
     </div>
   </nav>
-  <div class="main-content">
-    <div class="container mt-4">
-    <h2>Notificações</h2>
-    <ul class="list-group mt-3">
-      <li class="list-group-item">Novo agendamento confirmado para Maria da Silva, 14:00.</li>
-      <li class="list-group-item">Cliente João cancelou o agendamento das 15:00.</li>
-      <!-- Outras notificações -->
-    </ul>
+  
+  <div class="establishment-main-content">
+    <div class="establishment-container">
+      <!-- Page Header -->
+      <div class="establishment-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-bell"></i>
+          </span>
+          Central de Notificações
+        </h1>
+        <p class="establishment-page-subtitle">Acompanhe todas as atividades e atualizações do seu estabelecimento</p>
+      </div>
+
+      <!-- Notification Stats -->
+      <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">5</div>
+              <div class="establishment-stats-label">Não Lidas</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">12</div>
+              <div class="establishment-stats-label">Hoje</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">47</div>
+              <div class="establishment-stats-label">Esta Semana</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">156</div>
+              <div class="establishment-stats-label">Total</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Filters -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="btn-group" role="group">
+            <button type="button" class="establishment-btn establishment-btn-secondary active">
+              <i class="fas fa-inbox me-1"></i>Todas
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-envelope me-1"></i>Não Lidas
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-star me-1"></i>Avaliações
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-exclamation-triangle me-1"></i>Importantes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications List -->
+      <div class="establishment-card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <span class="card-icon">
+              <i class="fas fa-list"></i>
+            </span>
+            Notificações Recentes
+          </h5>
+          
+          <!-- Notification Item 1 -->
+          <div class="establishment-list-item" style="background: var(--color-primary-50); border-left: 4px solid var(--color-accent-success);">
+            <div class="establishment-list-icon">
+              <i class="fas fa-calendar-check text-success"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">Novo agendamento confirmado</div>
+              <div class="establishment-list-subtitle">Maria da Silva agendou Corte + Coloração para 15/08 às 14:00 com Ana Costa</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">2 min atrás</small>
+              <div>
+                <span class="establishment-status-badge establishment-status-success">Nova</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 2 -->
+          <div class="establishment-list-item" style="border-left: 4px solid var(--color-accent-warning);">
+            <div class="establishment-list-icon">
+              <i class="fas fa-calendar-times text-warning"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">Agendamento cancelado</div>
+              <div class="establishment-list-subtitle">João Santos cancelou o agendamento de Barba + Bigode das 15:00</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">15 min atrás</small>
+              <div>
+                <span class="establishment-status-badge establishment-status-warning">Cancelamento</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 3 -->
+          <div class="establishment-list-item" style="border-left: 4px solid var(--color-accent-info);">
+            <div class="establishment-list-icon">
+              <i class="fas fa-star text-warning"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">Nova avaliação recebida</div>
+              <div class="establishment-list-subtitle">Patricia Lima avaliou João Pedro com 5 estrelas: "Excelente profissional!"</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">1h atrás</small>
+              <div>
+                <span class="establishment-status-badge establishment-status-success">5★</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 4 -->
+          <div class="establishment-list-item" style="border-left: 4px solid var(--color-secondary-500);">
+            <div class="establishment-list-icon">
+              <i class="fas fa-users text-info"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">Novo cliente cadastrado</div>
+              <div class="establishment-list-subtitle">Carlos Eduardo criou uma conta e está navegando pelos serviços</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">2h atrás</small>
+              <div>
+                <span class="establishment-status-badge establishment-status-pending">Novo Cliente</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 5 -->
+          <div class="establishment-list-item" style="border-left: 4px solid var(--color-accent-success);">
+            <div class="establishment-list-icon">
+              <i class="fas fa-money-bill-wave text-success"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">Pagamento confirmado</div>
+              <div class="establishment-list-subtitle">Pagamento de R$ 85,00 de Maria da Silva foi processado com sucesso</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">3h atrás</small>
+              <div>
+                <span class="establishment-status-badge establishment-status-success">R$ 85,00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 6 -->
+          <div class="establishment-list-item" style="border-left: 4px solid var(--color-neutral-300);">
+            <div class="establishment-list-icon">
+              <i class="fas fa-clock text-muted"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">Lembrete de agendamento</div>
+              <div class="establishment-list-subtitle">Lucas Santos tem agendamento em 30 minutos - Barba Completa</div>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">4h atrás</small>
+              <div>
+                <span class="establishment-status-badge establishment-status-pending">Lembrete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Load More -->
+      <div class="text-center mt-4">
+        <button class="establishment-btn establishment-btn-secondary">
+          <i class="fas fa-chevron-down me-2"></i>Carregar Mais Notificações
+        </button>
+      </div>
+    </div>
   </div>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -80,14 +266,37 @@
   <script>
     // Navbar scroll effects
     window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
+      const navbar = document.querySelector('.establishment-navbar');
       if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.backgroundColor = 'rgba(2, 132, 199, 0.95)';
         navbar.style.backdropFilter = 'blur(20px)';
       } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
+        navbar.style.backgroundColor = 'linear-gradient(135deg, var(--color-secondary-600) 0%, var(--color-secondary-700) 100%)';
         navbar.style.backdropFilter = 'blur(20px)';
       }
+    });
+
+    // Card hover effects
+    document.querySelectorAll('.establishment-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-4px)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Notification filter buttons
+    document.querySelectorAll('.btn-group .establishment-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.btn-group .establishment-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        // Add active class to clicked button
+        this.classList.add('active');
+      });
     });
     
     // Smooth scroll for anchor links
