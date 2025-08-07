@@ -13,19 +13,54 @@
   <link rel="stylesheet" href="../../assets/styles/establishment-styles.css">
 </head>
 <body class="establishment-page">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark establishment-navbar fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="dashboard-estab.html">
-        <img src="../assets/logo-slotify.png" alt="Slotify Logo">
+      <a class="navbar-brand" href="establishment-dashboard.html">
+        <img src="../../assets/logo-slotify.png" alt="Slotify Logo">
         Slotify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="navbar-nav ms-auto">
-          <a href="dashboard-estab.html" class="btn btn-outline-light me-2">Dashboard</a>
-          <a href="login-estab.html" class="btn btn-outline-light">Sair</a>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-dashboard.html">
+              <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-appointments.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="establishment-professionals.html">
+              <i class="fas fa-users me-1"></i>Profissionais
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-services.html">
+              <i class="fas fa-cut me-1"></i>Serviços
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-reports.html">
+              <i class="fas fa-chart-bar me-1"></i>Relatórios
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="establishment-notifications.html" class="nav-link position-relative me-2">
+            <i class="fas fa-bell"></i>
+            <span class="establishment-notification-badge">2</span>
+          </a>
+          <a href="establishment-admin.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-cog me-1"></i>Administração
+          </a>
+          <a href="establishment-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
         </div>
       </div>
     </div>
