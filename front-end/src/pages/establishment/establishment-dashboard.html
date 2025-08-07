@@ -4,72 +4,295 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Estabelecimento - Slotify</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../assets/css/common.css">
-  <style>
-    /* Additional styles for fixed navbar */
-    body {
-      padding-top: 80px;
-    }
-    
-    .navbar {
-      transition: all 0.3s ease;
-    }
-    
-    .main-content {
-      min-height: calc(100vh - 80px);
-    }
-  </style>
+  <link rel="stylesheet" href="../../assets/styles/common.css">
+  <link rel="stylesheet" href="../../assets/styles/establishment-styles.css">
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body class="establishment-page">
+  <nav class="navbar navbar-expand-lg navbar-dark establishment-navbar fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="dashboard-estab.html">
-        <img src="../assets/logo-slotify.png" alt="Slotify Logo">
+      <a class="navbar-brand" href="establishment-dashboard.html">
+        <img src="../../assets/logo-slotify.png" alt="Slotify Logo">
         Slotify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="navbar-nav ms-auto">
-          <a href="admin-estab.html" class="btn btn-outline-light me-2">Administração</a>
-          <a href="login-estab.html" class="btn btn-outline-light">Sair</a>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="establishment-dashboard.html">
+              <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-appointments.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-professionals.html">
+              <i class="fas fa-users me-1"></i>Profissionais
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-services.html">
+              <i class="fas fa-cut me-1"></i>Serviços
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="establishment-reports.html">
+              <i class="fas fa-chart-bar me-1"></i>Relatórios
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="establishment-notifications.html" class="nav-link position-relative me-2">
+            <i class="fas fa-bell"></i>
+            <span class="establishment-notification-badge">5</span>
+          </a>
+          <a href="establishment-admin.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-cog me-1"></i>Administração
+          </a>
+          <a href="establishment-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
         </div>
       </div>
     </div>
   </nav>
-  <div class="main-content">
-    <div class="container mt-4">
-    <h2>Bem-vindo, Estabelecimento!</h2>
-    <div class="row mt-4">
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Agendamentos Hoje</h5>
-            <p><strong>12 agendamentos</strong></p>
-            <a href="agendamentos-estab.html" class="btn btn-primary btn-sm">Ver detalhes</a>
+  
+  <div class="establishment-main-content">
+    <div class="establishment-container">
+      <!-- Welcome Section -->
+      <div class="establishment-welcome-section">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="establishment-welcome-title">Bem-vindo, Estabelecimento! 🏪</h1>
+            <p class="establishment-welcome-subtitle">Gerencie seus agendamentos, profissionais e serviços de forma inteligente e eficiente.</p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <a href="establishment-appointments.html" class="establishment-btn establishment-btn-success">
+              <i class="fas fa-plus me-2"></i>
+              Novo Agendamento
+            </a>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Profissionais Ativos</h5>
-            <p><strong>3 profissionais</strong></p>
-            <a href="profissionais-estab.html" class="btn btn-success btn-sm">Gerenciar</a>
+
+      <!-- Page Header -->
+      <div class="establishment-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </span>
+          Dashboard
+        </h1>
+        <p class="establishment-page-subtitle">Visão geral do seu estabelecimento</p>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="establishment-dashboard-grid">
+        <div class="establishment-card">
+          <div class="card-body establishment-stats-card">
+            <div class="establishment-stats-number">12</div>
+            <div class="establishment-stats-label">Agendamentos Hoje</div>
+          </div>
+        </div>
+        <div class="establishment-card">
+          <div class="card-body establishment-stats-card">
+            <div class="establishment-stats-number">3</div>
+            <div class="establishment-stats-label">Profissionais Ativos</div>
+          </div>
+        </div>
+        <div class="establishment-card">
+          <div class="card-body establishment-stats-card">
+            <div class="establishment-stats-number">R$ 2.850</div>
+            <div class="establishment-stats-label">Faturamento Mensal</div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Relatórios</h5>
-            <p>Veja estatísticas e desempenho.</p>
-            <a href="relatorios-estab.html" class="btn btn-secondary btn-sm">Acessar</a>
+
+      <!-- Main Dashboard Content -->
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Today's Appointments -->
+          <div class="establishment-card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-calendar-day"></i>
+                </span>
+                Agendamentos de Hoje
+              </h5>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="establishment-list-item">
+                    <div class="establishment-list-icon">
+                      <i class="fas fa-clock text-info"></i>
+                    </div>
+                    <div class="establishment-list-content">
+                      <div class="establishment-list-title">Maria Silva - Corte + Coloração</div>
+                      <div class="establishment-list-subtitle">Com Ana Costa • 09:00 - 11:00</div>
+                    </div>
+                    <span class="establishment-status-badge establishment-status-success">Confirmado</span>
+                  </div>
+                  <div class="establishment-list-item">
+                    <div class="establishment-list-icon">
+                      <i class="fas fa-clock text-warning"></i>
+                    </div>
+                    <div class="establishment-list-content">
+                      <div class="establishment-list-title">João Santos - Barba + Bigode</div>
+                      <div class="establishment-list-subtitle">Com Carlos Pereira • 14:30 - 15:30</div>
+                    </div>
+                    <span class="establishment-status-badge establishment-status-pending">Pendente</span>
+                  </div>
+                  <div class="establishment-list-item">
+                    <div class="establishment-list-icon">
+                      <i class="fas fa-clock text-success"></i>
+                    </div>
+                    <div class="establishment-list-content">
+                      <div class="establishment-list-title">Patricia Lima - Manicure + Pedicure</div>
+                      <div class="establishment-list-subtitle">Com Fernanda Souza • 16:00 - 17:30</div>
+                    </div>
+                    <span class="establishment-status-badge establishment-status-success">Confirmado</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center mt-4">
+                <a href="establishment-appointments.html" class="establishment-btn">
+                  <i class="fas fa-eye me-2"></i>Ver Todos os Agendamentos
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Performance -->
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-star"></i>
+                </span>
+                Desempenho dos Profissionais
+              </h5>
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-trophy text-warning"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Ana Costa</div>
+                  <div class="establishment-list-subtitle">15 agendamentos esta semana • Avaliação 4.9⭐</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">Top</span>
+              </div>
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-user text-primary"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Carlos Pereira</div>
+                  <div class="establishment-list-subtitle">12 agendamentos esta semana • Avaliação 4.7⭐</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">Ativo</span>
+              </div>
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-user text-secondary"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Fernanda Souza</div>
+                  <div class="establishment-list-subtitle">8 agendamentos esta semana • Avaliação 4.8⭐</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">Ativo</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="col-lg-4">
+          <!-- Quick Actions -->
+          <div class="establishment-card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-bolt"></i>
+                </span>
+                Ações Rápidas
+              </h5>
+              <div class="d-grid gap-3">
+                <a href="establishment-appointments.html" class="establishment-btn">
+                  <i class="fas fa-plus me-2"></i>
+                  Novo Agendamento
+                </a>
+                <a href="establishment-professionals.html" class="establishment-btn establishment-btn-secondary">
+                  <i class="fas fa-users me-2"></i>
+                  Gerenciar Profissionais
+                </a>
+                <a href="establishment-services.html" class="establishment-btn establishment-btn-secondary">
+                  <i class="fas fa-cut me-2"></i>
+                  Configurar Serviços
+                </a>
+                <a href="establishment-reports.html" class="establishment-btn establishment-btn-warning">
+                  <i class="fas fa-chart-line me-2"></i>
+                  Ver Relatórios
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-bell"></i>
+                </span>
+                Atividades Recentes
+                <span class="establishment-notification-badge">5</span>
+              </h5>
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-check-circle text-success"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Novo agendamento</div>
+                  <div class="establishment-list-subtitle">Maria Silva agendou para amanhã</div>
+                </div>
+                <small class="text-muted">5min</small>
+              </div>
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-star text-warning"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Nova avaliação</div>
+                  <div class="establishment-list-subtitle">5 estrelas de João Santos</div>
+                </div>
+                <small class="text-muted">1h</small>
+              </div>
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-credit-card text-success"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Pagamento recebido</div>
+                  <div class="establishment-list-subtitle">R$ 120,00 - Patricia Lima</div>
+                </div>
+                <small class="text-muted">2h</small>
+              </div>
+              <div class="text-center mt-3">
+                <a href="establishment-notifications.html" class="establishment-btn establishment-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Todas
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -134,36 +357,69 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Navbar scroll effects
-    window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      }
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+    // Enhanced establishment page interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navbar scroll effects
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.establishment-navbar');
+        if (window.scrollY > 50) {
+          navbar.style.background = 'linear-gradient(135deg, rgba(2, 132, 199, 0.95) 0%, rgba(7, 89, 133, 0.95) 100%)';
+          navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+          navbar.style.background = 'linear-gradient(135deg, var(--color-secondary-600) 0%, var(--color-secondary-700) 100%)';
         }
       });
+
+      // Card hover animations
+      document.querySelectorAll('.establishment-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-4px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+
+      // Button click animations
+      document.querySelectorAll('.establishment-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const ripple = document.createElement('span');
+          ripple.style.position = 'absolute';
+          ripple.style.borderRadius = '50%';
+          ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+          ripple.style.transform = 'scale(0)';
+          ripple.style.animation = 'ripple 0.6s linear';
+          ripple.style.left = (e.offsetX - 10) + 'px';
+          ripple.style.top = (e.offsetY - 10) + 'px';
+          ripple.style.width = ripple.style.height = '20px';
+          
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      });
     });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
