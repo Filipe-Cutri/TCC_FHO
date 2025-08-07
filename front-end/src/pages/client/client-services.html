@@ -4,76 +4,216 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Serviços - Slotify</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../assets/css/common.css">
-  <style>
-    /* Additional styles for fixed navbar */
-    body {
-      padding-top: 80px;
-    }
-    
-    .navbar {
-      transition: all 0.3s ease;
-    }
-    
-    .main-content {
-      min-height: calc(100vh - 80px);
-    }
-  </style>
+  <link rel="stylesheet" href="../../assets/styles/common.css">
+  <link rel="stylesheet" href="../../assets/styles/client-styles.css">
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body class="client-page">
+  <nav class="navbar navbar-expand-lg navbar-dark client-navbar fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="dashboard.html">
-        <img src="../assets/logo-slotify.png" alt="Slotify Logo">
+      <a class="navbar-brand" href="client-dashboard.html">
+        <img src="../../assets/logo-slotify.png" alt="Slotify Logo">
         Slotify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="navbar-nav ms-auto">
-          <a href="dashboard.html" class="btn btn-outline-light me-2">Dashboard</a>
-          <a href="login.html" class="btn btn-outline-light">Sair</a>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="client-dashboard.html">
+              <i class="fas fa-home me-1"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="client-services.html">
+              <i class="fas fa-cut me-1"></i>Serviços
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-bookings.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-professionals.html">
+              <i class="fas fa-users me-1"></i>Profissionais
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="client-notifications.html" class="nav-link position-relative me-2">
+            <i class="fas fa-bell"></i>
+            <span class="client-notification-badge">3</span>
+          </a>
+          <a href="client-profile.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-user me-1"></i>Perfil
+          </a>
+          <a href="client-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
         </div>
       </div>
     </div>
   </nav>
-  <div class="main-content">
-    <div class="container mt-4">
-    <h2>Serviços Disponíveis</h2>
-    <table class="table table-striped mt-3">
-      <thead>
-        <tr>
-          <th>Serviço</th>
-          <th>Duração</th>
-          <th>Valor</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Corte Masculino</td>
-          <td>30 min</td>
-          <td>R$ 40,00</td>
-        </tr>
-        <tr>
-          <td>Barba</td>
-          <td>20 min</td>
-          <td>R$ 25,00</td>
-        </tr>
-        <tr>
-          <td>Combo Corte + Barba</td>
-          <td>50 min</td>
-          <td>R$ 60,00</td>
-        </tr>
-        <!-- Adicione outros serviços -->
-      </tbody>
-    </table>
-    </div>
-  </div>
   
-  <!-- Footer -->
-    <!-- Enhanced Footer -->
+  <div class="client-main-content">
+    <div class="client-container">
+      <!-- Page Header -->
+      <div class="client-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-scissors"></i>
+          </span>
+          Serviços Disponíveis
+        </h1>
+        <p class="client-page-subtitle">Descubra e agende os melhores serviços de beleza</p>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="row">
+        <!-- Service Category: Cortes -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-cut"></i>
+                </span>
+                Corte Masculino
+              </h5>
+              <p class="card-text">Cortes modernos e clássicos com profissionais especializados</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 35</span>
+                <span class="client-stats-label">⏱ 45 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Barba -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-beard"></i>
+                </span>
+                Barba Completa
+              </h5>
+              <p class="card-text">Barba bem feita com acabamento profissional e produtos premium</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 25</span>
+                <span class="client-stats-label">⏱ 30 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Combo -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-star"></i>
+                </span>
+                Corte + Barba
+              </h5>
+              <p class="card-text">Combo completo para um visual impecável</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-success">R$ 50</span>
+                <span class="client-stats-label">⏱ 60 min</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <small class="text-muted"><s>R$ 60</s></small>
+                <span class="client-status-badge client-status-success">Economize R$ 10</span>
+              </div>
+              <button class="client-btn client-btn-success w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar Combo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Feminino -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-scissors"></i>
+                </span>
+                Corte Feminino
+              </h5>
+              <p class="card-text">Cortes modernos e estilosos para todos os tipos de cabelo</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 65</span>
+                <span class="client-stats-label">⏱ 90 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Escova -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-wind"></i>
+                </span>
+                Escova + Secagem
+              </h5>
+              <p class="card-text">Escova profissional para um cabelo sedoso e brilhante</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 45</span>
+                <span class="client-stats-label">⏱ 60 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Manicure -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-hand-sparkles"></i>
+                </span>
+                Manicure + Pedicure
+              </h5>
+              <p class="card-text">Cuidados completos para mãos e pés com produtos de qualidade</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 40</span>
+                <span class="client-stats-label">⏱ 75 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+  <!-- Enhanced Footer -->
   <footer class="footer footer-enhanced">
     <div class="container">
       <div class="row">
@@ -83,42 +223,23 @@
             <h5 class="mb-0">Slotify</h5>
           </div>
           <p>Transformando a forma como você agenda serviços de beleza. Conecte-se com os melhores profissionais da sua região de forma rápida e inteligente.</p>
-          
-          <!-- Social Media Section -->
-          <div class="footer-social text-center text-md-start mt-4">
-            <h6>Siga-nos</h6>
-            <div class="social-links justify-content-center justify-content-md-start">
-              <a href="#" aria-label="Facebook">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" aria-label="Instagram">
-                <i class="fab fa-instagram"></i>
-              </a>
-              <a href="#" aria-label="Twitter">
-                <i class="fab fa-twitter"></i>
-              </a>
-              <a href="#" aria-label="LinkedIn">
-                <i class="fab fa-linkedin-in"></i>
-              </a>
-            </div>
-          </div>
         </div>
         <div class="col-md-6">
           <div class="row">
             <div class="col-6">
               <h6>Clientes</h6>
               <ul class="list-unstyled">
-                <li><a href="../../src/pages/client/client-login.html">Login</a></li>
-                <li><a href="../../src/pages/client/client-register.html">Cadastro</a></li>
-                <li><a href="../../src/pages/client/client-services.html">Serviços</a></li>
-                <li><a href="../../src/pages/client/client-bookings.html">Meus Agendamentos</a></li>
+                <li><a href="client-login.html">Login</a></li>
+                <li><a href="client-register.html">Cadastro</a></li>
+                <li><a href="client-services.html">Serviços</a></li>
+                <li><a href="client-bookings.html">Meus Agendamentos</a></li>
               </ul>
             </div>
             <div class="col-6">
               <h6>Estabelecimentos</h6>
               <ul class="list-unstyled">
-                <li><a href="../../src/pages/establishment/establishment-login.html">Login</a></li>
-                <li><a href="../../src/pages/establishment/establishment-register.html">Cadastro</a></li>
+                <li><a href="../establishment/establishment-login.html">Login</a></li>
+                <li><a href="../establishment/establishment-register.html">Cadastro</a></li>
                 <li><a href="#dashboard">Dashboard</a></li>
                 <li><a href="#suporte">Suporte</a></li>
               </ul>
@@ -132,64 +253,45 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Navbar scroll effects
-    window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      }
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+    // Enhanced client page interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navbar scroll effects
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.client-navbar');
+        if (window.scrollY > 50) {
+          navbar.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(29, 78, 216, 0.95) 100%)';
+          navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+          navbar.style.background = 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%)';
         }
       });
-    });
-  </script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Navbar scroll effects
-    window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
-        navbar.style.backdropFilter = 'blur(20px)';
-      }
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
+
+      // Service booking interactions
+      document.querySelectorAll('.client-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const serviceName = this.closest('.client-card').querySelector('.card-title').textContent.trim();
+          
+          // Add loading state
+          const originalText = this.innerHTML;
+          this.innerHTML = '<span class="client-loading">Agendando...</span>';
+          this.disabled = true;
+          
+          // Simulate booking process
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-check me-2"></i>Agendado!';
+            this.classList.add('client-btn-success');
+            
+            setTimeout(() => {
+              this.innerHTML = originalText;
+              this.disabled = false;
+              this.classList.remove('client-btn-success');
+            }, 2000);
+          }, 1500);
+        });
       });
     });
   </script>
