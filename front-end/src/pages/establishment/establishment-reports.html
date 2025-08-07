@@ -65,35 +65,260 @@
       </div>
     </div>
   </nav>
-  <div class="main-content">
-    <div class="container mt-4">
-    <h2>Relatórios</h2>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Agendamentos por Período</h5>
-            <p class="card-text">Veja a quantidade de agendamentos em cada mês.</p>
-            <a href="#" class="btn btn-primary btn-sm">Ver gráfico</a>
+  
+  <div class="establishment-main-content">
+    <div class="establishment-container">
+      <!-- Page Header -->
+      <div class="establishment-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-chart-bar"></i>
+          </span>
+          Relatórios e Analytics
+        </h1>
+        <p class="establishment-page-subtitle">Acompanhe o desempenho e analise dados do seu estabelecimento</p>
+      </div>
+
+      <!-- Quick Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">R$ 12.450</div>
+              <div class="establishment-stats-label">Faturamento do Mês</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">247</div>
+              <div class="establishment-stats-label">Atendimentos</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">4.8★</div>
+              <div class="establishment-stats-label">Avaliação Média</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <div class="establishment-card">
+            <div class="card-body establishment-stats-card">
+              <div class="establishment-stats-number">89%</div>
+              <div class="establishment-stats-label">Taxa de Ocupação</div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Horários Mais Procurados</h5>
-            <p class="card-text">Descubra os horários de pico.</p>
-            <a href="#" class="btn btn-primary btn-sm">Ver detalhes</a>
+
+      <!-- Report Filters -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="btn-group" role="group">
+            <button type="button" class="establishment-btn establishment-btn-secondary active">
+              <i class="fas fa-calendar-day me-1"></i>Hoje
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-calendar-week me-1"></i>Esta Semana
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-calendar me-1"></i>Este Mês
+            </button>
+            <button type="button" class="establishment-btn establishment-btn-secondary">
+              <i class="fas fa-calendar-alt me-1"></i>Personalizado
+            </button>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Faturamento</h5>
-            <p class="card-text">Acompanhe o faturamento mensal.</p>
-            <a href="#" class="btn btn-primary btn-sm">Acessar</a>
+
+      <!-- Main Reports Grid -->
+      <div class="row">
+        <!-- Revenue Chart -->
+        <div class="col-lg-8 mb-4">
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-chart-line"></i>
+                </span>
+                Faturamento por Período
+              </h5>
+              <div class="chart-placeholder" style="height: 300px; background: var(--color-neutral-50); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; border: 2px dashed var(--color-neutral-300);">
+                <div class="text-center">
+                  <i class="fas fa-chart-line text-muted" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                  <p class="text-muted">Gráfico de Faturamento</p>
+                  <button class="establishment-btn establishment-btn-success">
+                    <i class="fas fa-eye me-2"></i>Visualizar Gráfico
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <!-- Top Services -->
+        <div class="col-lg-4 mb-4">
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-trophy"></i>
+                </span>
+                Serviços Mais Populares
+              </h5>
+              
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-cut text-warning"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Corte Masculino</div>
+                  <div class="establishment-list-subtitle">87 agendamentos</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">35%</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-star text-warning"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Corte + Barba</div>
+                  <div class="establishment-list-subtitle">64 agendamentos</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">26%</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-beard text-info"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Barba Completa</div>
+                  <div class="establishment-list-subtitle">42 agendamentos</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-warning">17%</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-icon">
+                  <i class="fas fa-scissors text-secondary"></i>
+                </div>
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Corte Feminino</div>
+                  <div class="establishment-list-subtitle">28 agendamentos</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-pending">11%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Peak Hours -->
+        <div class="col-lg-6 mb-4">
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-clock"></i>
+                </span>
+                Horários de Pico
+              </h5>
+              
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="p-3">
+                    <div class="establishment-stats-number" style="font-size: var(--font-size-xl);">09:00</div>
+                    <div class="establishment-stats-label">Manhã</div>
+                    <span class="establishment-status-badge establishment-status-success">Alto</span>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="p-3">
+                    <div class="establishment-stats-number" style="font-size: var(--font-size-xl);">14:00</div>
+                    <div class="establishment-stats-label">Tarde</div>
+                    <span class="establishment-status-badge establishment-status-warning">Médio</span>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="p-3">
+                    <div class="establishment-stats-number" style="font-size: var(--font-size-xl);">18:00</div>
+                    <div class="establishment-stats-label">Noite</div>
+                    <span class="establishment-status-badge establishment-status-success">Alto</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="text-center mt-3">
+                <button class="establishment-btn establishment-btn-secondary">
+                  <i class="fas fa-chart-bar me-2"></i>Ver Detalhes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Performance -->
+        <div class="col-lg-6 mb-4">
+          <div class="establishment-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-users"></i>
+                </span>
+                Performance dos Profissionais
+              </h5>
+              
+              <div class="establishment-list-item">
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">João Pedro Silva</div>
+                  <div class="establishment-list-subtitle">127 atendimentos • 4.9★</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">Top</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Lucas Santos</div>
+                  <div class="establishment-list-subtitle">94 atendimentos • 4.8★</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-success">Ótimo</span>
+              </div>
+
+              <div class="establishment-list-item">
+                <div class="establishment-list-content">
+                  <div class="establishment-list-title">Ana Clara</div>
+                  <div class="establishment-list-subtitle">26 atendimentos • 5.0★</div>
+                </div>
+                <span class="establishment-status-badge establishment-status-warning">Bom</span>
+              </div>
+              
+              <div class="text-center mt-3">
+                <button class="establishment-btn establishment-btn-secondary">
+                  <i class="fas fa-chart-pie me-2"></i>Relatório Completo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="text-center mt-4">
+        <div class="btn-group" role="group">
+          <button class="establishment-btn establishment-btn-success">
+            <i class="fas fa-download me-2"></i>Exportar PDF
+          </button>
+          <button class="establishment-btn establishment-btn-secondary">
+            <i class="fas fa-file-excel me-2"></i>Exportar Excel
+          </button>
+          <button class="establishment-btn establishment-btn-warning">
+            <i class="fas fa-print me-2"></i>Imprimir
+          </button>
         </div>
       </div>
     </div>
@@ -104,14 +329,38 @@
   <script>
     // Navbar scroll effects
     window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
+      const navbar = document.querySelector('.establishment-navbar');
       if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.backgroundColor = 'rgba(2, 132, 199, 0.95)';
         navbar.style.backdropFilter = 'blur(20px)';
       } else {
-        navbar.style.backgroundColor = 'var(--color-neutral-0)';
+        navbar.style.backgroundColor = 'linear-gradient(135deg, var(--color-secondary-600) 0%, var(--color-secondary-700) 100%)';
         navbar.style.backdropFilter = 'blur(20px)';
       }
+    });
+
+    // Card hover effects
+    document.querySelectorAll('.establishment-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-4px)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Report filter buttons
+    document.querySelectorAll('.btn-group .establishment-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons in the same group
+        const group = this.closest('.btn-group');
+        group.querySelectorAll('.establishment-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        // Add active class to clicked button
+        this.classList.add('active');
+      });
     });
     
     // Smooth scroll for anchor links
