@@ -59,7 +59,7 @@
 }
 
 .logo-hero {
-    height: 150px;
+    height: 200px;
     width: auto;
     max-width: 100%;
     margin-bottom: var(--space-6);
@@ -83,7 +83,7 @@
     }
     
     .logo-hero {
-        height: 100px;
+        height: 140px;
     }
     
     .logo-footer {
@@ -101,7 +101,7 @@
     }
     
     .logo-hero {
-        height: 85px;
+        height: 120px;
     }
     
     .logo-footer {
