@@ -47,7 +47,7 @@
       left: 0;
       right: 0;
       height: 5px;
-      background: var(--gradient-primary);
+      background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 50%, #8b5cf6 100%);
     }
     
     .login-card-body {
@@ -171,11 +171,11 @@
         </ul>
         
         <div class="navbar-nav">
-          <a class="nav-link btn btn-outline-primary me-2" href="../client/client-login.html">
+          <a class="nav-link btn me-2" href="../client/client-login.html" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500;">
             <i class="fas fa-user me-1"></i>
             Login Cliente
           </a>
-          <a class="nav-link btn btn-primary active" href="establishment-login.html">
+          <a class="nav-link btn" href="establishment-login.html" style="background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500;">
             <i class="fas fa-store me-1"></i>
             Login Estabelecimento
           </a>
@@ -184,32 +184,34 @@
     </div>
   </nav>
 
-  <div class="main-content">
+  <div class="main-content" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #faf5ff 100%); min-height: calc(100vh - 80px);">
     <div class="container">
       <div class="login-container">
         <div class="row justify-content-center w-100">
           <div class="col-md-6 col-lg-5 col-xl-4">
-            <div class="card login-card">
+            <div class="card login-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2);">
               <div class="card-body login-card-body">
                 <div class="text-center mb-5">
-                  <img src="../../assets/logo-slotify.png" alt="Slotify Logo" class="logo logo-login logo-bounce mb-4">
-                  <h1 class="login-title">Bem-vindo, Estabelecimento</h1>
+                  <div style="background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%); padding: 20px; border-radius: 20px; display: inline-block; margin-bottom: 20px;">
+                    <img src="../../assets/logo-slotify.png" alt="Slotify Logo" class="logo logo-xl logo-bounce mb-0" style="filter: brightness(0) invert(1);">
+                  </div>
+                  <h1 class="login-title" style="background: linear-gradient(135deg, #0369a1 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Bem-vindo, Estabelecimento</h1>
                   <p class="login-subtitle">Gerencie seus agendamentos e serviços de forma inteligente</p>
                 </div>
                 
                 <form id="loginForm">
-                  <div class="form-floating">
-                    <input type="email" class="form-control" id="email" placeholder="Seu e-mail" required>
-                    <label for="email">E-mail</label>
+                  <div class="form-floating" style="margin-bottom: 24px;">
+                    <input type="email" class="form-control" id="email" placeholder="Seu e-mail" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                    <label for="email" style="color: #6b7280; font-weight: 500;">🏢 E-mail do Estabelecimento</label>
                   </div>
                   
-                  <div class="form-floating">
-                    <input type="password" class="form-control" id="senha" placeholder="Sua senha" required>
-                    <label for="senha">Senha</label>
+                  <div class="form-floating" style="margin-bottom: 24px;">
+                    <input type="password" class="form-control" id="senha" placeholder="Sua senha" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                    <label for="senha" style="color: #6b7280; font-weight: 500;">🔐 Senha</label>
                   </div>
                   
                   <div class="login-actions">
-                    <button type="submit" class="establishment-btn btn-lg w-100">
+                    <button type="submit" class="btn btn-lg w-100" style="background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); border: none; color: white; font-weight: 600; padding: 14px; border-radius: 12px; box-shadow: 0 8px 25px -8px rgba(14, 165, 233, 0.5); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px -8px rgba(14, 165, 233, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px -8px rgba(14, 165, 233, 0.5)'">
                       <i class="fas fa-sign-in-alt"></i>
                       Entrar na Plataforma
                     </button>
@@ -229,10 +231,26 @@
             
             <!-- Additional Features Info -->
             <div class="text-center mt-5">
-              <p class="text-muted small">
-                <i class="fas fa-shield-alt me-2"></i>
-                Seus dados estão protegidos com criptografia de ponta
-              </p>
+              <div style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-radius: 16px; padding: 20px; border: 1px solid rgba(255, 255, 255, 0.2);">
+                <p class="text-muted small mb-2">
+                  <i class="fas fa-shield-alt me-2" style="color: #10b981;"></i>
+                  Seus dados estão protegidos com criptografia de ponta
+                </p>
+                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px;">
+                  <div style="text-align: center;">
+                    <i class="fas fa-calendar-alt" style="color: #0ea5e9; font-size: 24px;"></i>
+                    <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">Gestão de<br>Agendamentos</p>
+                  </div>
+                  <div style="text-align: center;">
+                    <i class="fas fa-chart-line" style="color: #8b5cf6; font-size: 24px;"></i>
+                    <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">Relatórios<br>Detalhados</p>
+                  </div>
+                  <div style="text-align: center;">
+                    <i class="fas fa-users" style="color: #06b6d4; font-size: 24px;"></i>
+                    <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">Gestão de<br>Clientes</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
