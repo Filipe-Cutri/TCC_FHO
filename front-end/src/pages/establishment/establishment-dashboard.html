@@ -17,7 +17,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark establishment-navbar fixed-top">
     <div class="container">
       <a class="navbar-brand" href="establishment-dashboard.html">
-        <img src="../../assets/logo-slotify.png" alt="Slotify Logo" class="logo logo-navbar">
+        <img src="../../assets/logo-slotify.png" alt="Slotify Logo" class="logo logo-xl">
         Slotify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -73,12 +73,16 @@
       <div class="establishment-welcome-section">
         <div class="row align-items-center">
           <div class="col-md-8">
-            <h1 class="establishment-welcome-title">Bem-vindo, Estabelecimento! 🏪</h1>
+            <h1 class="establishment-welcome-title">
+              <span style="background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Bem-vindo, Estabelecimento! 🏪
+              </span>
+            </h1>
             <p class="establishment-welcome-subtitle">Gerencie seus agendamentos, profissionais e serviços de forma inteligente e eficiente.</p>
           </div>
           <div class="col-md-4 text-md-end">
-            <a href="establishment-appointments.html" class="establishment-btn establishment-btn-success">
-              <i class="fas fa-plus me-2"></i>
+            <a href="establishment-appointments.html" class="establishment-btn establishment-btn-success" style="background: linear-gradient(135deg, #4ECDC4 0%, #00D4AA 100%); box-shadow: 0 8px 25px -8px rgba(78, 205, 196, 0.6);">
+              <i class="fas fa-plus me-2" style="color: #FFD700;"></i>
               Novo Agendamento
             </a>
           </div>
@@ -86,34 +90,36 @@
       </div>
 
       <!-- Page Header -->
-      <div class="establishment-page-header">
+      <div class="establishment-page-header" style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); border: 3px solid transparent; background-clip: padding-box; box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);">
         <h1>
-          <span class="page-icon">
+          <span class="page-icon" style="background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); color: white;">
             <i class="fas fa-tachometer-alt"></i>
           </span>
-          Dashboard
+          <span style="background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Dashboard
+          </span>
         </h1>
-        <p class="establishment-page-subtitle">Visão geral do seu estabelecimento</p>
+        <p class="establishment-page-subtitle" style="color: #6366F1;">Visão geral do seu estabelecimento</p>
       </div>
 
       <!-- Statistics Cards -->
       <div class="establishment-dashboard-grid">
-        <div class="establishment-card">
+        <div class="establishment-card" style="background: linear-gradient(135deg, #FFE5B4 0%, #FFCC70 100%); border: 2px solid #FFB347;">
           <div class="card-body establishment-stats-card">
-            <div class="establishment-stats-number">12</div>
-            <div class="establishment-stats-label">Agendamentos Hoje</div>
+            <div class="establishment-stats-number" style="color: #FF8C00; text-shadow: 0 2px 4px rgba(255, 140, 0, 0.3);">12</div>
+            <div class="establishment-stats-label" style="color: #D2691E; font-weight: 600;">Agendamentos Hoje</div>
           </div>
         </div>
-        <div class="establishment-card">
+        <div class="establishment-card" style="background: linear-gradient(135deg, #E5F4FF 0%, #B3E0FF 100%); border: 2px solid #66C2FF;">
           <div class="card-body establishment-stats-card">
-            <div class="establishment-stats-number">3</div>
-            <div class="establishment-stats-label">Profissionais Ativos</div>
+            <div class="establishment-stats-number" style="color: #007ACC; text-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);">3</div>
+            <div class="establishment-stats-label" style="color: #0056A3; font-weight: 600;">Profissionais Ativos</div>
           </div>
         </div>
-        <div class="establishment-card">
+        <div class="establishment-card" style="background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%); border: 2px solid #81C784;">
           <div class="card-body establishment-stats-card">
-            <div class="establishment-stats-number">R$ 2.850</div>
-            <div class="establishment-stats-label">Faturamento Mensal</div>
+            <div class="establishment-stats-number" style="color: #2E7D32; text-shadow: 0 2px 4px rgba(46, 125, 50, 0.3);">R$ 2.850</div>
+            <div class="establishment-stats-label" style="color: #1B5E20; font-weight: 600;">Faturamento Mensal</div>
           </div>
         </div>
       </div>
@@ -298,8 +304,7 @@
     </div>
   </div>
   
-  <!-- Footer -->
-    <!-- Enhanced Footer -->
+  <!-- Enhanced Footer -->
   <footer class="footer footer-enhanced">
     <div class="container">
       <div class="row">
@@ -334,18 +339,18 @@
             <div class="col-6">
               <h6>Clientes</h6>
               <ul class="list-unstyled">
-                <li><a href="../../src/pages/client/client-login.html">Login</a></li>
-                <li><a href="../../src/pages/client/client-register.html">Cadastro</a></li>
-                <li><a href="../../src/pages/client/client-services.html">Serviços</a></li>
-                <li><a href="../../src/pages/client/client-bookings.html">Meus Agendamentos</a></li>
+                <li><a href="../client/client-login.html">Login</a></li>
+                <li><a href="../client/client-register.html">Cadastro</a></li>
+                <li><a href="../client/client-services.html">Serviços</a></li>
+                <li><a href="../client/client-bookings.html">Meus Agendamentos</a></li>
               </ul>
             </div>
             <div class="col-6">
               <h6>Estabelecimentos</h6>
               <ul class="list-unstyled">
-                <li><a href="../../src/pages/establishment/establishment-login.html">Login</a></li>
-                <li><a href="../../src/pages/establishment/establishment-register.html">Cadastro</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="establishment-login.html">Login</a></li>
+                <li><a href="establishment-register.html">Cadastro</a></li>
+                <li><a href="establishment-dashboard.html">Dashboard</a></li>
                 <li><a href="#suporte">Suporte</a></li>
               </ul>
             </div>
