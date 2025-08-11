@@ -4,3 +4,20 @@ node_modules/
 dist/
 .env
 .vscode/
+
+# Backend specific
+back-end/build/
+back-end/.gradle/
+back-end/gradle/
+back-end/gradlew
+back-end/gradlew.bat
+back-end/out/
+*.jar
+*.war
+*.ear
+*.class
+.idea/
+*.iml
+*.iws
+*.ipr
+application-local.properties
