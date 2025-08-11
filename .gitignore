@@ -4,3 +4,23 @@ node_modules/
 dist/
 .env
 .vscode/
+
+# Java/Spring Boot
+target/
+*.jar
+*.war
+*.ear
+*.class
+.mvn/
+mvnw
+mvnw.cmd
+.settings/
+.project
+.classpath
+.idea/
+*.iml
+*.iws
+*.ipr
+*.log
+*.tmp
+*.temp
