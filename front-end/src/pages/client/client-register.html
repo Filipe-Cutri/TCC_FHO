@@ -228,9 +228,24 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    $('form').on('submit', function(e) {
-      e.preventDefault();
-      window.location.href = 'dashboard.html';
+    // Handle form submission and redirect to preferences setup
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Criando conta...';
+        submitBtn.disabled = true;
+        
+        // Simulate account creation
+        setTimeout(() => {
+          // Redirect to preferences setup
+          window.location.href = 'client-preferences-setup.html';
+        }, 2000);
+      });
     });
   </script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
