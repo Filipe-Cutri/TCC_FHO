@@ -136,9 +136,52 @@
                   </div>
                 </div>
 
-                <div class="client-form-group">
-                  <label class="client-form-label">Preferências de Serviços</label>
-                  <textarea class="form-control client-form-control" rows="3" placeholder="Ex: Prefiro cortes mais conservadores, tenho alergia a produtos com fragrância forte, gosto de atendimento pela manhã">Prefiro cortes clássicos e modernos, atendimento aos sábados pela manhã</textarea>
+                <!-- Enhanced Preferences Section -->
+                <div class="client-preferences-section">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="client-preferences-title">
+                      <span class="preferences-icon">
+                        <i class="fas fa-brain"></i>
+                      </span>
+                      Preferências Inteligentes
+                      <span class="preferences-badge">IA Integrada</span>
+                    </h6>
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#preferencesModal">
+                      <i class="fas fa-edit me-1"></i>Editar
+                    </button>
+                  </div>
+                  
+                  <div class="client-preferences-display">
+                    <div class="preference-item">
+                      <div class="preference-label">Tipos de Serviços Preferidos:</div>
+                      <div class="preference-value">Corte Masculino, Barba Completa, Tratamento Capilar</div>
+                    </div>
+                    
+                    <div class="preference-item">
+                      <div class="preference-label">Horário Preferido:</div>
+                      <div class="preference-value">Manhã (08:00 - 12:00)</div>
+                    </div>
+                    
+                    <div class="preference-item">
+                      <div class="preference-label">Dias da Semana:</div>
+                      <div class="preference-value">Sábado, Domingo</div>
+                    </div>
+                    
+                    <div class="preference-item">
+                      <div class="preference-label">Estilo Preferido:</div>
+                      <div class="preference-value">Clássico, Moderno</div>
+                    </div>
+                    
+                    <div class="preference-item">
+                      <div class="preference-label">Restrições/Alergias:</div>
+                      <div class="preference-value">Sem fragrâncias fortes</div>
+                    </div>
+                    
+                    <div class="preference-item">
+                      <div class="preference-label">Observações Especiais:</div>
+                      <div class="preference-value">Prefiro profissionais experientes, gosto de conversar durante o atendimento</div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="d-flex gap-3">
@@ -274,6 +317,204 @@
     </div>
   </div>
   
+  <!-- Preferences Modal -->
+  <div class="modal fade" id="preferencesModal" tabindex="-1" aria-labelledby="preferencesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content client-preferences-modal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="preferencesModalLabel">
+            <span class="modal-icon">
+              <i class="fas fa-brain"></i>
+            </span>
+            Configurar Preferências Inteligentes
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="preferences-intro">
+            <i class="fas fa-magic me-2"></i>
+            Suas preferências nos ajudam a oferecer recomendações personalizadas e melhorar sua experiência com nossos serviços.
+          </p>
+          
+          <form id="preferencesForm">
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-cut me-2"></i>Serviços de Interesse
+              </h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="corte-masculino" id="servicoCorteM" checked>
+                    <label class="form-check-label" for="servicoCorteM">Corte Masculino</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="corte-feminino" id="servicoCorteF">
+                    <label class="form-check-label" for="servicoCorteF">Corte Feminino</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="barba" id="servicoBarba" checked>
+                    <label class="form-check-label" for="servicoBarba">Barba Completa</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="sobrancelha" id="servicoSobrancelha">
+                    <label class="form-check-label" for="servicoSobrancelha">Design de Sobrancelha</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="tratamento" id="servicoTratamento" checked>
+                    <label class="form-check-label" for="servicoTratamento">Tratamento Capilar</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="coloracao" id="servicoColoracao">
+                    <label class="form-check-label" for="servicoColoracao">Coloração</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="escova" id="servicoEscova">
+                    <label class="form-check-label" for="servicoEscova">Escova/Chapinha</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="massagem" id="servicoMassagem">
+                    <label class="form-check-label" for="servicoMassagem">Massagem Relaxante</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-clock me-2"></i>Horários Preferidos
+              </h6>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="horario" value="manha" id="horarioManha" checked>
+                    <label class="form-check-label" for="horarioManha">
+                      <strong>Manhã</strong><br>
+                      <small>08:00 - 12:00</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="horario" value="tarde" id="horarioTarde">
+                    <label class="form-check-label" for="horarioTarde">
+                      <strong>Tarde</strong><br>
+                      <small>12:00 - 18:00</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="horario" value="noite" id="horarioNoite">
+                    <label class="form-check-label" for="horarioNoite">
+                      <strong>Noite</strong><br>
+                      <small>18:00 - 22:00</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-calendar-week me-2"></i>Dias da Semana Preferidos
+              </h6>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="segunda" id="diaSeg">
+                    <label class="form-check-label" for="diaSeg">Segunda-feira</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="terca" id="diaTer">
+                    <label class="form-check-label" for="diaTer">Terça-feira</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="quarta" id="diaQua">
+                    <label class="form-check-label" for="diaQua">Quarta-feira</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="quinta" id="diaQui">
+                    <label class="form-check-label" for="diaQui">Quinta-feira</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="sexta" id="diaSex">
+                    <label class="form-check-label" for="diaSex">Sexta-feira</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="sabado" id="diaSab" checked>
+                    <label class="form-check-label" for="diaSab">Sábado</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="domingo" id="diaDom" checked>
+                    <label class="form-check-label" for="diaDom">Domingo</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-palette me-2"></i>Estilo Preferido
+              </h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="classico" id="estiloClassico" checked>
+                    <label class="form-check-label" for="estiloClassico">Clássico/Tradicional</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="moderno" id="estiloModerno" checked>
+                    <label class="form-check-label" for="estiloModerno">Moderno/Contemporâneo</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="alternativo" id="estiloAlternativo">
+                    <label class="form-check-label" for="estiloAlternativo">Alternativo/Ousado</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="casual" id="estiloCasual">
+                    <label class="form-check-label" for="estiloCasual">Casual/Descontraído</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-exclamation-triangle me-2"></i>Restrições e Alergias
+              </h6>
+              <div class="form-group">
+                <textarea class="form-control" id="restricoes" rows="3" placeholder="Ex: Alérgico a produtos com fragrância forte, não usar produtos com amônia...">Sem fragrâncias fortes</textarea>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-comment-dots me-2"></i>Observações Especiais
+              </h6>
+              <div class="form-group">
+                <textarea class="form-control" id="observacoes" rows="3" placeholder="Ex: Prefiro conversar durante o atendimento, gosto de profissionais experientes...">Prefiro profissionais experientes, gosto de conversar durante o atendimento</textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="savePreferences()">
+            <i class="fas fa-save me-2"></i>Salvar Preferências
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- Enhanced Footer -->
   <footer class="footer footer-enhanced">
     <div class="container">
@@ -388,6 +629,274 @@
         });
       });
     });
+
+    // Save preferences function
+    function savePreferences() {
+      // Collect all form data
+      const servicos = [];
+      document.querySelectorAll('#preferencesForm input[type="checkbox"]:checked').forEach(cb => {
+        if (cb.closest('.preferences-section').querySelector('i.fa-cut')) {
+          servicos.push(cb.nextElementSibling.textContent);
+        }
+      });
+
+      const horario = document.querySelector('input[name="horario"]:checked');
+      const horarioText = horario ? horario.nextElementSibling.querySelector('strong').textContent : '';
+
+      const dias = [];
+      document.querySelectorAll('#preferencesForm .fa-calendar-week').forEach(section => {
+        section.closest('.preferences-section').querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+          dias.push(cb.nextElementSibling.textContent);
+        });
+      });
+
+      const estilos = [];
+      document.querySelectorAll('#preferencesForm .fa-palette').forEach(section => {
+        section.closest('.preferences-section').querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+          estilos.push(cb.nextElementSibling.textContent);
+        });
+      });
+
+      const restricoes = document.getElementById('restricoes').value;
+      const observacoes = document.getElementById('observacoes').value;
+
+      // Update display section
+      document.querySelector('.preference-item:nth-child(1) .preference-value').textContent = servicos.join(', ');
+      document.querySelector('.preference-item:nth-child(2) .preference-value').textContent = horario ? 
+        `${horarioText} (${horario.nextElementSibling.querySelector('small').textContent})` : '';
+      document.querySelector('.preference-item:nth-child(3) .preference-value').textContent = dias.join(', ');
+      document.querySelector('.preference-item:nth-child(4) .preference-value').textContent = estilos.join(', ');
+      document.querySelector('.preference-item:nth-child(5) .preference-value').textContent = restricoes || 'Nenhuma restrição informada';
+      document.querySelector('.preference-item:nth-child(6) .preference-value').textContent = observacoes || 'Nenhuma observação especial';
+
+      // Close modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('preferencesModal'));
+      modal.hide();
+
+      // Show success message
+      showSuccessMessage('Preferências salvas com sucesso!');
+    }
+
+    function showSuccessMessage(message) {
+      // Create and show success toast
+      const toast = document.createElement('div');
+      toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed';
+      toast.style.cssText = 'top: 100px; right: 20px; z-index: 9999;';
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="fas fa-check-circle me-2"></i>${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+      
+      document.body.appendChild(toast);
+      const bsToast = new bootstrap.Toast(toast);
+      bsToast.show();
+      
+      // Remove toast after it's hidden
+      toast.addEventListener('hidden.bs.toast', () => {
+        document.body.removeChild(toast);
+      });
+    }
   </script>
+  
+  <style>
+    /* Enhanced Preferences Styles */
+    .client-preferences-section {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border: 2px solid #3b82f6;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+    }
+
+    .client-preferences-section::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #3b82f6, #10b981, #f59e0b, #ef4444);
+      border-radius: 16px;
+      z-index: -1;
+      animation: preference-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes preference-glow {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    .client-preferences-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .preferences-icon {
+      background: linear-gradient(135deg, #3b82f6, #10b981);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .preferences-badge {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .client-preferences-display {
+      margin-top: 20px;
+    }
+
+    .preference-item {
+      display: flex;
+      margin-bottom: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .preference-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .preference-label {
+      font-weight: 600;
+      color: #374151;
+      min-width: 180px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .preference-value {
+      color: #1f2937;
+      flex: 1;
+      font-weight: 500;
+    }
+
+    /* Modal Styles */
+    .client-preferences-modal .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .client-preferences-modal .modal-header {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      border-radius: 20px 20px 0 0;
+      padding: 20px 30px;
+    }
+
+    .client-preferences-modal .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-icon {
+      background: rgba(255, 255, 255, 0.2);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preferences-intro {
+      background: #f0f9ff;
+      border: 1px solid #0ea5e9;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      color: #0c4a6e;
+      font-weight: 500;
+    }
+
+    .preferences-section {
+      margin-bottom: 32px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .preferences-section-title {
+      color: #1e40af;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .preferences-section .form-check {
+      margin-bottom: 12px;
+    }
+
+    .preferences-section .form-check-input:checked {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
+    }
+
+    .preferences-section .form-check-label {
+      font-weight: 500;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .preferences-section .form-control {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .preferences-section .form-control:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .client-preferences-section {
+        padding: 16px;
+        margin: 16px 0;
+      }
+      
+      .preference-item {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .preference-label {
+        min-width: auto;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </body>
 </html>
