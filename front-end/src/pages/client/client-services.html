@@ -74,6 +74,58 @@
         <p class="client-page-subtitle">Descubra e agende os melhores serviços de beleza</p>
       </div>
 
+      <!-- AI Scheduling Highlight Section -->
+      <div class="ai-scheduling-hero mb-5">
+        <div class="ai-hero-card">
+          <div class="ai-hero-content">
+            <div class="ai-hero-icon">
+              <i class="fas fa-robot"></i>
+              <div class="ai-pulse"></div>
+            </div>
+            <div class="ai-hero-text">
+              <h2 class="ai-hero-title">
+                <span class="ai-gradient-text">Agendamento Inteligente</span>
+                <span class="ai-badge">IA</span>
+              </h2>
+              <p class="ai-hero-subtitle">
+                Nossa IA analisa sua disponibilidade, histórico de preferências e horários dos profissionais 
+                para sugerir o melhor momento para seu agendamento.
+              </p>
+              <div class="ai-features">
+                <div class="ai-feature">
+                  <i class="fas fa-brain"></i>
+                  <span>Análise Inteligente</span>
+                </div>
+                <div class="ai-feature">
+                  <i class="fas fa-clock"></i>
+                  <span>Melhor Horário</span>
+                </div>
+                <div class="ai-feature">
+                  <i class="fas fa-star"></i>
+                  <span>Experiência Otimizada</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ai-hero-action">
+            <button class="ai-hero-btn" id="aiSchedulingBtn">
+              <span class="ai-btn-icon">
+                <i class="fas fa-magic"></i>
+              </span>
+              <span class="ai-btn-text">
+                <span class="ai-btn-main">Deixe a IA Escolher</span>
+                <span class="ai-btn-sub">O Melhor Horário Para Você</span>
+              </span>
+              <div class="ai-btn-glow"></div>
+            </button>
+            <p class="ai-hero-note">
+              <i class="fas fa-shield-alt"></i>
+              Tecnologia exclusiva do Slotify
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Services Grid -->
       <div class="row">
         <!-- Service Category: Cortes -->
@@ -288,6 +340,63 @@
           navbar.style.background = 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%)';
         }
       });
+
+      // AI Scheduling Button
+      const aiSchedulingBtn = document.getElementById('aiSchedulingBtn');
+      if (aiSchedulingBtn) {
+        aiSchedulingBtn.addEventListener('click', function() {
+          // Add loading state
+          const originalHTML = this.innerHTML;
+          this.disabled = true;
+          this.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+          
+          this.innerHTML = `
+            <span class="ai-btn-icon">
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+            <span class="ai-btn-text">
+              <span class="ai-btn-main">IA Analisando...</span>
+              <span class="ai-btn-sub">Encontrando o melhor horário</span>
+            </span>
+          `;
+          
+          // Simulate AI processing
+          setTimeout(() => {
+            // Show AI results
+            this.innerHTML = `
+              <span class="ai-btn-icon">
+                <i class="fas fa-check-circle"></i>
+              </span>
+              <span class="ai-btn-text">
+                <span class="ai-btn-main">Horário Sugerido!</span>
+                <span class="ai-btn-sub">Amanhã às 14:30</span>
+              </span>
+            `;
+            this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            
+            // Show detailed AI suggestion modal/alert
+            setTimeout(() => {
+              alert('🤖 IA Slotify Recomenda:\n\n' +
+                    '📅 Data: Amanhã (14/08/2024)\n' +
+                    '🕐 Horário: 14:30\n' +
+                    '👨‍💼 Profissional: João Silva\n' +
+                    '✂️ Serviço: Corte Masculino\n\n' +
+                    '✨ Motivos da recomendação:\n' +
+                    '• Menor tempo de espera\n' +
+                    '• Profissional com melhor avaliação disponível\n' +
+                    '• Horário baseado no seu histórico de preferências\n\n' +
+                    'Deseja confirmar este agendamento?');
+              
+              // Reset button
+              setTimeout(() => {
+                this.innerHTML = originalHTML;
+                this.disabled = false;
+                this.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%)';
+              }, 1000);
+            }, 2000);
+          }, 3000);
+        });
+      }
 
       // Service booking interactions
       document.querySelectorAll('.client-btn').forEach(btn => {
