@@ -373,7 +373,16 @@
         
         if (data.success) {
           // Save session
-          window.establishmentSession.setSession(data.user);
+          if (window.establishmentSession) {
+            window.establishmentSession.setSession(data.user);
+          } else {
+            // Fallback session save
+            localStorage.setItem('slotify_establishment_session', JSON.stringify({
+              user: data.user,
+              timestamp: new Date().getTime(),
+              expires: new Date().getTime() + (24 * 60 * 60 * 1000)
+            }));
+          }
           
           // Show success message
           alert(`Bem-vindo, ${data.user.name}! Login realizado como ${data.user.roleDescription}.`);
@@ -398,7 +407,15 @@
             roleDescription: 'Administrador',
             establishmentId: 1
           };
-          window.establishmentSession.setSession(mockUser);
+          
+          // Save session with fallback
+          const sessionData = {
+            user: mockUser,
+            timestamp: new Date().getTime(),
+            expires: new Date().getTime() + (24 * 60 * 60 * 1000)
+          };
+          localStorage.setItem('slotify_establishment_session', JSON.stringify(sessionData));
+          
           alert(`Bem-vindo, ${mockUser.name}! Login realizado como ${mockUser.roleDescription}.`);
           window.location.href = 'establishment-dashboard.html';
         } else if (email === 'funcionario@demo.com' && senha === 'func123' && tipoAcesso === 'staff') {
@@ -410,11 +427,19 @@
             roleDescription: 'Funcionário',
             establishmentId: 1
           };
-          window.establishmentSession.setSession(mockUser);
+          
+          // Save session with fallback
+          const sessionData = {
+            user: mockUser,
+            timestamp: new Date().getTime(),
+            expires: new Date().getTime() + (24 * 60 * 60 * 1000)
+          };
+          localStorage.setItem('slotify_establishment_session', JSON.stringify(sessionData));
+          
           alert(`Bem-vindo, ${mockUser.name}! Login realizado como ${mockUser.roleDescription}.`);
           window.location.href = 'establishment-dashboard.html';
         } else {
-          alert('Credenciais inválidas. Para demonstração use:\nAdmin: admin@demo.com / admin123\nFuncionário: funcionario@demo.com / func123');
+          alert('Credenciais inválidas. Para demonstração use:\\nAdmin: admin@demo.com / admin123\\nFuncionário: funcionario@demo.com / func123');
         }
       } finally {
         // Reset button
