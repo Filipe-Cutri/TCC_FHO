@@ -231,6 +231,10 @@
       text-decoration: underline;
     }
 
+    .service-item.hidden {
+      display: none !important;
+    }
+
     @media (max-width: 768px) {
       .setup-header {
         padding: 30px 20px;
@@ -284,32 +288,58 @@
               <form id="preferencesSetupForm">
                 <div class="preferences-section">
                   <h6 class="preferences-section-title">
-                    <i class="fas fa-cut me-3" style="color: #3b82f6;"></i>Quais serviços você tem interesse?
+                    <i class="fas fa-store me-3" style="color: #3b82f6;"></i>Que tipo de estabelecimento você prefere?
                   </h6>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="barbearia" id="setup-tipoBarbearia">
+                        <label class="form-check-label" for="setup-tipoBarbearia">
+                          <div class="preference-icon"><i class="fas fa-cut"></i></div>
+                          <span>💈 Barbearia</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="salao" id="setup-tipoSalao">
+                        <label class="form-check-label" for="setup-tipoSalao">
+                          <div class="preference-icon"><i class="fas fa-female"></i></div>
+                          <span>💇‍♀️ Salão de Beleza</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="preferences-section" id="servicesSection">
+                  <h6 class="preferences-section-title">
+                    <i class="fas fa-cut me-3" style="color: #3b82f6;"></i>Quais serviços você tem interesse?
+                  </h6>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-check service-item" data-type="barbearia masculino">
                         <input class="form-check-input" type="checkbox" value="corte-masculino" id="setup-servicoCorteM">
                         <label class="form-check-label" for="setup-servicoCorteM">
                           <div class="preference-icon"><i class="fas fa-male"></i></div>
                           <span>Corte Masculino</span>
                         </label>
                       </div>
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="salao feminino">
                         <input class="form-check-input" type="checkbox" value="corte-feminino" id="setup-servicoCorteF">
                         <label class="form-check-label" for="setup-servicoCorteF">
                           <div class="preference-icon"><i class="fas fa-female"></i></div>
                           <span>Corte Feminino</span>
                         </label>
                       </div>
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="barbearia masculino">
                         <input class="form-check-input" type="checkbox" value="barba" id="setup-servicoBarba">
                         <label class="form-check-label" for="setup-servicoBarba">
                           <div class="preference-icon"><i class="fas fa-beard"></i></div>
                           <span>Barba Completa</span>
                         </label>
                       </div>
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="barbearia salao unissex">
                         <input class="form-check-input" type="checkbox" value="sobrancelha" id="setup-servicoSobrancelha">
                         <label class="form-check-label" for="setup-servicoSobrancelha">
                           <div class="preference-icon"><i class="fas fa-eye"></i></div>
@@ -318,28 +348,28 @@
                       </div>
                     </div>
                     <div class="col-md-6">
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="barbearia salao unissex">
                         <input class="form-check-input" type="checkbox" value="tratamento" id="setup-servicoTratamento">
                         <label class="form-check-label" for="setup-servicoTratamento">
                           <div class="preference-icon"><i class="fas fa-spa"></i></div>
                           <span>Tratamento Capilar</span>
                         </label>
                       </div>
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="salao feminino">
                         <input class="form-check-input" type="checkbox" value="coloracao" id="setup-servicoColoracao">
                         <label class="form-check-label" for="setup-servicoColoracao">
                           <div class="preference-icon"><i class="fas fa-palette"></i></div>
                           <span>Coloração</span>
                         </label>
                       </div>
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="salao feminino">
                         <input class="form-check-input" type="checkbox" value="escova" id="setup-servicoEscova">
                         <label class="form-check-label" for="setup-servicoEscova">
                           <div class="preference-icon"><i class="fas fa-wind"></i></div>
                           <span>Escova/Chapinha</span>
                         </label>
                       </div>
-                      <div class="form-check">
+                      <div class="form-check service-item" data-type="salao feminino">
                         <input class="form-check-input" type="checkbox" value="massagem" id="setup-servicoMassagem">
                         <label class="form-check-label" for="setup-servicoMassagem">
                           <div class="preference-icon"><i class="fas fa-hands"></i></div>
@@ -540,13 +570,55 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Function to filter services based on establishment type
+      function filterServices() {
+        const barbeariaChecked = document.getElementById('setup-tipoBarbearia').checked;
+        const salaoChecked = document.getElementById('setup-tipoSalao').checked;
+        const serviceItems = document.querySelectorAll('.service-item');
+        
+        serviceItems.forEach(item => {
+          const itemTypes = item.getAttribute('data-type').split(' ');
+          let shouldShow = false;
+          
+          // If no establishment type is selected, show all services
+          if (!barbeariaChecked && !salaoChecked) {
+            shouldShow = true;
+          } else {
+            // Show service if it matches selected establishment types
+            if (barbeariaChecked && (itemTypes.includes('barbearia') || itemTypes.includes('masculino') || itemTypes.includes('unissex'))) {
+              shouldShow = true;
+            }
+            if (salaoChecked && (itemTypes.includes('salao') || itemTypes.includes('feminino') || itemTypes.includes('unissex'))) {
+              shouldShow = true;
+            }
+          }
+          
+          if (shouldShow) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+            // Uncheck hidden services
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            if (checkbox) checkbox.checked = false;
+          }
+        });
+        
+        updateProgress();
+      }
+
       // Update progress bar based on filled inputs
       function updateProgress() {
-        const totalSections = 6; // Total number of preference sections
+        const totalSections = 7; // Updated to include establishment type section
         let filledSections = 0;
 
-        // Check services
-        if (document.querySelectorAll('#preferencesSetupForm input[type="checkbox"]:checked').length > 0) {
+        // Check establishment type
+        if (document.getElementById('setup-tipoBarbearia').checked || document.getElementById('setup-tipoSalao').checked) {
+          filledSections++;
+        }
+
+        // Check services (only count visible services)
+        const visibleServices = document.querySelectorAll('#servicesSection .service-item:not(.hidden) input[type="checkbox"]:checked');
+        if (visibleServices.length > 0) {
           filledSections++;
         }
 
@@ -584,6 +656,10 @@
         document.getElementById('progressText').textContent = percentage + '%';
       }
 
+      // Add event listeners to establishment type checkboxes
+      document.getElementById('setup-tipoBarbearia').addEventListener('change', filterServices);
+      document.getElementById('setup-tipoSalao').addEventListener('change', filterServices);
+
       // Add event listeners to all form inputs
       document.querySelectorAll('#preferencesSetupForm input, #preferencesSetupForm textarea').forEach(input => {
         input.addEventListener('change', updateProgress);
@@ -609,7 +685,8 @@
         }, 2000);
       });
 
-      // Initial progress update
+      // Initial progress update and service filtering
+      filterServices();
       updateProgress();
     });
 
