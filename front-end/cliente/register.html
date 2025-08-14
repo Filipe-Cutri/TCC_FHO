@@ -90,6 +90,13 @@
       color: var(--color-neutral-500);
       font-weight: var(--font-weight-medium);
       padding: var(--space-6) var(--space-4) var(--space-3);
+      z-index: 1;
+    }
+    
+    .form-floating .form-control:focus ~ label,
+    .form-floating .form-control:not(:placeholder-shown) ~ label {
+      transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+      z-index: 2;
     }
     
     .register-actions {
