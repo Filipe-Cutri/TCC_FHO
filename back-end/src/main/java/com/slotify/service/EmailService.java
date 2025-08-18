@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService extends BaseService {
 
+    public EmailService() {
+        super(); // Call the default constructor
+    }
+
     public boolean sendEmail(String to, String subject, String body) {
         try {
             // TODO: Implement actual email sending using JavaMailSender
