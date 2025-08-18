@@ -376,15 +376,77 @@
             
             // Show detailed AI suggestion modal/alert
             setTimeout(() => {
+              // Simulate getting user preferences from localStorage or profile
+              const userInterval = localStorage.getItem('rescheduleInterval') || '1-mes';
+              const userAdvanceNotice = localStorage.getItem('advanceNotice') || '1-semana';
+              
+              // Calculate next suggested appointment based on interval
+              const today = new Date();
+              let nextAppointmentDate = new Date(today);
+              
+              switch(userInterval) {
+                case '2-semanas':
+                  nextAppointmentDate.setDate(today.getDate() + 14);
+                  break;
+                case '1-mes':
+                  nextAppointmentDate.setMonth(today.getMonth() + 1);
+                  break;
+                case '6-semanas':
+                  nextAppointmentDate.setDate(today.getDate() + 42);
+                  break;
+                case '3-meses':
+                  nextAppointmentDate.setMonth(today.getMonth() + 3);
+                  break;
+                default:
+                  nextAppointmentDate.setMonth(today.getMonth() + 1);
+              }
+              
+              // Format date for display
+              const formattedDate = nextAppointmentDate.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              });
+              
+              // Calculate when to schedule based on advance notice
+              let scheduleDate = new Date(nextAppointmentDate);
+              switch(userAdvanceNotice) {
+                case '3-dias':
+                  scheduleDate.setDate(nextAppointmentDate.getDate() - 3);
+                  break;
+                case '1-semana':
+                  scheduleDate.setDate(nextAppointmentDate.getDate() - 7);
+                  break;
+                case '2-semanas':
+                  scheduleDate.setDate(nextAppointmentDate.getDate() - 14);
+                  break;
+              }
+              
+              const intervalTexts = {
+                '2-semanas': 'a cada 2 semanas',
+                '1-mes': 'mensalmente',
+                '6-semanas': 'a cada 6 semanas',
+                '3-meses': 'a cada 3 meses',
+                'personalizado': 'conforme necessidade'
+              };
+              
+              const advanceTexts = {
+                '3-dias': '3 dias de antecedência',
+                '1-semana': '1 semana de antecedência',
+                '2-semanas': '2 semanas de antecedência'
+              };
+              
               alert('🤖 IA Slotify Recomenda:\n\n' +
-                    '📅 Data: Amanhã (14/08/2024)\n' +
+                    `📅 Próximo Agendamento: ${formattedDate}\n` +
                     '🕐 Horário: 14:30\n' +
                     '👨‍💼 Profissional: João Silva\n' +
                     '✂️ Serviço: Corte Masculino\n\n' +
-                    '✨ Motivos da recomendação:\n' +
-                    '• Menor tempo de espera\n' +
-                    '• Profissional com melhor avaliação disponível\n' +
-                    '• Horário baseado no seu histórico de preferências\n\n' +
+                    '✨ Baseado nas suas preferências:\n' +
+                    `• Intervalo preferido: ${intervalTexts[userInterval] || 'mensalmente'}\n` +
+                    `• Antecedência preferida: ${advanceTexts[userAdvanceNotice] || '1 semana'}\n` +
+                    '• Horário baseado no seu perfil\n' +
+                    '• Profissional com melhor avaliação\n\n' +
+                    '💡 A IA agendará automaticamente baseada no seu intervalo preferido.\n\n' +
                     'Deseja confirmar este agendamento?');
               
               // Reset button
