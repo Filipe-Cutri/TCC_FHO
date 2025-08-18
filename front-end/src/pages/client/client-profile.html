@@ -158,6 +158,16 @@
                     </div>
                     
                     <div class="preference-item">
+                      <div class="preference-label">Intervalo de Reagendamento:</div>
+                      <div class="preference-value">Mensalmente</div>
+                    </div>
+                    
+                    <div class="preference-item">
+                      <div class="preference-label">Antecedência Preferida:</div>
+                      <div class="preference-value">1 semana antes</div>
+                    </div>
+                    
+                    <div class="preference-item">
                       <div class="preference-label">Horário Preferido:</div>
                       <div class="preference-value">Manhã (08:00 - 12:00)</div>
                     </div>
@@ -342,6 +352,98 @@
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="massagem" id="servicoMassagem">
                     <label class="form-check-label" for="servicoMassagem">Massagem Relaxante</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-calendar-alt me-2"></i>Intervalo de Reagendamento
+              </h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="intervalo" value="2-semanas" id="intervalo2Sem">
+                    <label class="form-check-label" for="intervalo2Sem">
+                      <strong>A cada 2 semanas</strong><br>
+                      <small>Para manutenção frequente</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="intervalo" value="1-mes" id="intervalo1Mes" checked>
+                    <label class="form-check-label" for="intervalo1Mes">
+                      <strong>Mensalmente</strong><br>
+                      <small>Manutenção regular</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="intervalo" value="6-semanas" id="intervalo6Sem">
+                    <label class="form-check-label" for="intervalo6Sem">
+                      <strong>A cada 6 semanas</strong><br>
+                      <small>Intervalo moderado</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="intervalo" value="3-meses" id="intervalo3Mes">
+                    <label class="form-check-label" for="intervalo3Mes">
+                      <strong>A cada 3 meses</strong><br>
+                      <small>Para mudanças sazonais</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="intervalo" value="personalizado" id="intervaloPersonalizado">
+                    <label class="form-check-label" for="intervaloPersonalizado">
+                      <strong>Personalizado</strong><br>
+                      <small>Prefiro decidir na hora</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preferences-section">
+              <h6 class="preferences-section-title">
+                <i class="fas fa-bell me-2"></i>Antecedência para Agendamento
+              </h6>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="antecedencia" value="3-dias" id="antecedencia3Dias">
+                    <label class="form-check-label" for="antecedencia3Dias">
+                      <strong>3 dias antes</strong><br>
+                      <small>Planejamento rápido</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="antecedencia" value="1-semana" id="antecedencia1Sem" checked>
+                    <label class="form-check-label" for="antecedencia1Sem">
+                      <strong>1 semana antes</strong><br>
+                      <small>Planejamento ideal</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="antecedencia" value="2-semanas" id="antecedencia2Sem">
+                    <label class="form-check-label" for="antecedencia2Sem">
+                      <strong>2 semanas antes</strong><br>
+                      <small>Planejamento avançado</small>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -606,6 +708,14 @@
         }
       });
 
+      // Get scheduling interval preference
+      const intervalo = document.querySelector('input[name="intervalo"]:checked');
+      const intervaloText = intervalo ? intervalo.nextElementSibling.querySelector('strong').textContent : '';
+
+      // Get advance notice preference
+      const antecedencia = document.querySelector('input[name="antecedencia"]:checked');
+      const antecedenciaText = antecedencia ? antecedencia.nextElementSibling.querySelector('strong').textContent : '';
+
       const horario = document.querySelector('input[name="horario"]:checked');
       const horarioText = horario ? horario.nextElementSibling.querySelector('strong').textContent : '';
 
@@ -626,14 +736,24 @@
       const restricoes = document.getElementById('restricoes').value;
       const observacoes = document.getElementById('observacoes').value;
 
+      // Save scheduling preferences to localStorage for AI
+      if (intervalo) {
+        localStorage.setItem('rescheduleInterval', intervalo.value);
+      }
+      if (antecedencia) {
+        localStorage.setItem('advanceNotice', antecedencia.value);
+      }
+
       // Update display section
       document.querySelector('.preference-item:nth-child(1) .preference-value').textContent = servicos.join(', ');
-      document.querySelector('.preference-item:nth-child(2) .preference-value').textContent = horario ? 
+      document.querySelector('.preference-item:nth-child(2) .preference-value').textContent = intervaloText || 'Não definido';
+      document.querySelector('.preference-item:nth-child(3) .preference-value').textContent = antecedenciaText || 'Não definido';
+      document.querySelector('.preference-item:nth-child(4) .preference-value').textContent = horario ? 
         `${horarioText} (${horario.nextElementSibling.querySelector('small').textContent})` : '';
-      document.querySelector('.preference-item:nth-child(3) .preference-value').textContent = dias.join(', ');
-      document.querySelector('.preference-item:nth-child(4) .preference-value').textContent = estilos.join(', ');
-      document.querySelector('.preference-item:nth-child(5) .preference-value').textContent = restricoes || 'Nenhuma restrição informada';
-      document.querySelector('.preference-item:nth-child(6) .preference-value').textContent = observacoes || 'Nenhuma observação especial';
+      document.querySelector('.preference-item:nth-child(5) .preference-value').textContent = dias.join(', ');
+      document.querySelector('.preference-item:nth-child(6) .preference-value').textContent = estilos.join(', ');
+      document.querySelector('.preference-item:nth-child(7) .preference-value').textContent = restricoes || 'Nenhuma restrição informada';
+      document.querySelector('.preference-item:nth-child(8) .preference-value').textContent = observacoes || 'Nenhuma observação especial';
 
       // Close modal
       const modal = bootstrap.Modal.getInstance(document.getElementById('preferencesModal'));

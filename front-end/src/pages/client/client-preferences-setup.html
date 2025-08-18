@@ -382,6 +382,122 @@
 
                 <div class="preferences-section">
                   <h6 class="preferences-section-title">
+                    <i class="fas fa-calendar-alt me-3" style="color: #3b82f6;"></i>Com que frequência você gostaria de agendar novamente?
+                  </h6>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="intervalo" value="2-semanas" id="setup-intervalo2Sem">
+                        <label class="form-check-label" for="setup-intervalo2Sem">
+                          <div class="preference-icon"><i class="fas fa-calendar-week"></i></div>
+                          <div>
+                            <strong>A cada 2 semanas</strong><br>
+                            <small style="color: #6b7280;">Para manutenção frequente</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="intervalo" value="1-mes" id="setup-intervalo1Mes">
+                        <label class="form-check-label" for="setup-intervalo1Mes">
+                          <div class="preference-icon"><i class="fas fa-calendar"></i></div>
+                          <div>
+                            <strong>Mensalmente</strong><br>
+                            <small style="color: #6b7280;">Manutenção regular</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="intervalo" value="6-semanas" id="setup-intervalo6Sem">
+                        <label class="form-check-label" for="setup-intervalo6Sem">
+                          <div class="preference-icon"><i class="fas fa-calendar-plus"></i></div>
+                          <div>
+                            <strong>A cada 6 semanas</strong><br>
+                            <small style="color: #6b7280;">Intervalo moderado</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="intervalo" value="3-meses" id="setup-intervalo3Mes">
+                        <label class="form-check-label" for="setup-intervalo3Mes">
+                          <div class="preference-icon"><i class="fas fa-calendar-day"></i></div>
+                          <div>
+                            <strong>A cada 3 meses</strong><br>
+                            <small style="color: #6b7280;">Para mudanças sazonais</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-md-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="intervalo" value="personalizado" id="setup-intervaloPersonalizado">
+                        <label class="form-check-label" for="setup-intervaloPersonalizado">
+                          <div class="preference-icon"><i class="fas fa-cog"></i></div>
+                          <div>
+                            <strong>Personalizado</strong><br>
+                            <small style="color: #6b7280;">Prefiro decidir na hora</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="preferences-section">
+                  <h6 class="preferences-section-title">
+                    <i class="fas fa-bell me-3" style="color: #3b82f6;"></i>Antecedência para agendamento
+                  </h6>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="antecedencia" value="3-dias" id="setup-antecedencia3Dias">
+                        <label class="form-check-label" for="setup-antecedencia3Dias">
+                          <div class="preference-icon"><i class="fas fa-clock"></i></div>
+                          <div>
+                            <strong>3 dias antes</strong><br>
+                            <small style="color: #6b7280;">Planejamento rápido</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="antecedencia" value="1-semana" id="setup-antecedencia1Sem">
+                        <label class="form-check-label" for="setup-antecedencia1Sem">
+                          <div class="preference-icon"><i class="fas fa-calendar-check"></i></div>
+                          <div>
+                            <strong>1 semana antes</strong><br>
+                            <small style="color: #6b7280;">Planejamento ideal</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="antecedencia" value="2-semanas" id="setup-antecedencia2Sem">
+                        <label class="form-check-label" for="setup-antecedencia2Sem">
+                          <div class="preference-icon"><i class="fas fa-calendar-times"></i></div>
+                          <div>
+                            <strong>2 semanas antes</strong><br>
+                            <small style="color: #6b7280;">Planejamento avançado</small>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="preferences-section">
+                  <h6 class="preferences-section-title">
                     <i class="fas fa-clock me-3" style="color: #3b82f6;"></i>Qual seu horário preferido?
                   </h6>
                   <div class="row">
@@ -608,7 +724,7 @@
 
       // Update progress bar based on filled inputs
       function updateProgress() {
-        const totalSections = 7; // Updated to include establishment type section
+        const totalSections = 9; // Updated to include new scheduling interval sections
         let filledSections = 0;
 
         // Check establishment type
@@ -619,6 +735,16 @@
         // Check services (only count visible services)
         const visibleServices = document.querySelectorAll('#servicesSection .service-item:not(.hidden) input[type="checkbox"]:checked');
         if (visibleServices.length > 0) {
+          filledSections++;
+        }
+
+        // Check rescheduling interval
+        if (document.querySelector('input[name="intervalo"]:checked')) {
+          filledSections++;
+        }
+
+        // Check advance notice preference
+        if (document.querySelector('input[name="antecedencia"]:checked')) {
           filledSections++;
         }
 
@@ -674,6 +800,17 @@
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Salvando preferências...';
         submitBtn.disabled = true;
+        
+        // Save preferences to localStorage for AI scheduling
+        const intervalo = document.querySelector('input[name="intervalo"]:checked');
+        const antecedencia = document.querySelector('input[name="antecedencia"]:checked');
+        
+        if (intervalo) {
+          localStorage.setItem('rescheduleInterval', intervalo.value);
+        }
+        if (antecedencia) {
+          localStorage.setItem('advanceNotice', antecedencia.value);
+        }
         
         // Simulate saving preferences
         setTimeout(() => {
