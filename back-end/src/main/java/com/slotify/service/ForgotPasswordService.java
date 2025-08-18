@@ -11,6 +11,10 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class ForgotPasswordService extends BaseService {
 
+    public ForgotPasswordService() {
+        super(); // Call the default constructor
+    }
+
     // In-memory storage for password reset tokens (in production, use database)
     private Map<String, PasswordResetToken> passwordResetTokens = new HashMap<>();
     
