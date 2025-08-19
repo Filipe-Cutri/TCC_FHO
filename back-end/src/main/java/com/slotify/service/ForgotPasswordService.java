@@ -20,6 +20,9 @@ public class ForgotPasswordService extends BaseService {
     
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private EstablishmentUserService establishmentUserService;
 
     public boolean sendClientPasswordResetEmail(String email) {
         // TODO: Check if client email exists in database
@@ -38,8 +41,7 @@ public class ForgotPasswordService extends BaseService {
     }
 
     public boolean sendEstablishmentPasswordResetEmail(String email) {
-        // TODO: Check if establishment email exists in database
-        // For now, we'll simulate this check
+        // Check if establishment email exists in database
         if (isValidEstablishmentEmail(email)) {
             String token = generateResetToken();
             storeResetToken(token, email, "ESTABLISHMENT");
@@ -65,8 +67,7 @@ public class ForgotPasswordService extends BaseService {
             return false; // Token expired
         }
         
-        // TODO: Update password in database based on user type and email
-        // For now, we'll just simulate success
+        // Update password in database based on user type and email
         boolean passwordUpdated = updateUserPassword(resetToken.getEmail(), 
                                                    resetToken.getUserType(), 
                                                    newPassword);
@@ -95,15 +96,21 @@ public class ForgotPasswordService extends BaseService {
     }
 
     private boolean isValidEstablishmentEmail(String email) {
-        // TODO: Check if email exists in establishment table
-        // For now, simulate that all emails are valid
-        return email != null && email.contains("@");
+        // Check if email exists in establishment table
+        return establishmentUserService.emailExists(email);
     }
 
     private boolean updateUserPassword(String email, String userType, String newPassword) {
-        // TODO: Update password in database
-        // For now, simulate success
-        return true;
+        try {
+            if ("ESTABLISHMENT".equals(userType)) {
+                establishmentUserService.updatePassword(email, newPassword);
+                return true;
+            }
+            // TODO: Add client password update when ClientService is available
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private String buildPasswordResetEmailBody(String resetLink, String userType) {
