@@ -96,6 +96,73 @@ public class EstablishmentAuthController {
     }
     
     /**
+     * Registration endpoint for establishment users (admin account creation)
+     */
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, String> request) {
+        try {
+            String name = request.get("name");
+            String email = request.get("email");
+            String password = request.get("password");
+            String establishmentName = request.get("establishmentName");
+            String establishmentIdStr = request.get("establishmentId");
+            
+            if (name == null || email == null || password == null ||
+                name.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Nome, email e senha são obrigatórios"
+                    ));
+            }
+            
+            if (password.length() < 6) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Senha deve ter pelo menos 6 caracteres"
+                    ));
+            }
+            
+            // If establishmentId is provided, use it; otherwise generate a simple ID
+            Long establishmentId = establishmentIdStr != null && !establishmentIdStr.trim().isEmpty() 
+                ? Long.parseLong(establishmentIdStr) 
+                : System.currentTimeMillis() % 100000; // Simple ID generation for demo
+                
+            EstablishmentUser newUser = establishmentUserService.createUser(
+                name, email, password, UserRole.ADMIN, establishmentId
+            );
+            
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "message", "Conta criada com sucesso",
+                    "user", Map.of(
+                        "id", newUser.getId(),
+                        "name", newUser.getName(),
+                        "email", newUser.getEmail(),
+                        "role", newUser.getRole().getCode(),
+                        "roleDescription", newUser.getRole().getDescription(),
+                        "establishmentId", newUser.getEstablishmentId()
+                    )
+                ));
+                
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro interno do servidor"
+                ));
+        }
+    }
+    
+    /**
      * Create new staff user (only accessible by admin)
      */
     @PostMapping("/create-staff")

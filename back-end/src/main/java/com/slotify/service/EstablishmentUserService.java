@@ -4,6 +4,7 @@ import com.slotify.model.EstablishmentUser;
 import com.slotify.model.UserRole;
 import com.slotify.repository.EstablishmentUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class EstablishmentUserService extends BaseService<EstablishmentUser, Lon
     @Autowired
     private EstablishmentUserRepository establishmentUserRepository;
     
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     public EstablishmentUserService(EstablishmentUserRepository repository) {
         super(repository);
         this.establishmentUserRepository = repository;
@@ -29,7 +33,7 @@ public class EstablishmentUserService extends BaseService<EstablishmentUser, Lon
     public Optional<EstablishmentUser> authenticate(String email, String password) {
         Optional<EstablishmentUser> user = establishmentUserRepository.findByEmailAndActive(email, true);
         
-        if (user.isPresent() && password.equals(user.get().getPassword())) {
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
             return user;
         }
         
@@ -72,8 +76,21 @@ public class EstablishmentUserService extends BaseService<EstablishmentUser, Lon
             throw new IllegalArgumentException("Email já está em uso");
         }
         
-        EstablishmentUser user = new EstablishmentUser(name, email, password, role, establishmentId);
+        String encodedPassword = passwordEncoder.encode(password);
+        EstablishmentUser user = new EstablishmentUser(name, email, encodedPassword, role, establishmentId);
         return save(user);
+    }
+    
+    /**
+     * Update user password
+     */
+    public void updatePassword(String email, String newPassword) {
+        Optional<EstablishmentUser> userOpt = findByEmail(email);
+        if (userOpt.isPresent()) {
+            EstablishmentUser user = userOpt.get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            save(user);
+        }
     }
     
     /**
