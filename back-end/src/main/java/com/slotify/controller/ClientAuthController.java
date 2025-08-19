@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/client")
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = "*")
 public class ClientAuthController {
     
     @Autowired
