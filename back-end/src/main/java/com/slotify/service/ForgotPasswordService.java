@@ -24,6 +24,8 @@ public class ForgotPasswordService extends BaseService {
     private EmailService emailService;
     
     @Autowired
+    private EstablishmentUserService establishmentUserService;  
+    @Autowired
     private ClientService clientService;
 
     public boolean sendClientPasswordResetEmail(String email) {
@@ -42,8 +44,7 @@ public class ForgotPasswordService extends BaseService {
     }
 
     public boolean sendEstablishmentPasswordResetEmail(String email) {
-        // TODO: Check if establishment email exists in database
-        // For now, we'll simulate this check
+        // Check if establishment email exists in database
         if (isValidEstablishmentEmail(email)) {
             String token = generateResetToken();
             storeResetToken(token, email, "ESTABLISHMENT");
@@ -96,13 +97,19 @@ public class ForgotPasswordService extends BaseService {
     }
 
     private boolean isValidEstablishmentEmail(String email) {
-        // TODO: Check if email exists in establishment table
-        // For now, simulate that all emails are valid
-        return email != null && email.contains("@");
+        // Check if email exists in establishment table
+        return establishmentUserService.emailExists(email);
     }
 
     private boolean updateUserPassword(String email, String userType, String newPassword) {
         try {
+
+            if ("ESTABLISHMENT".equals(userType)) {
+                establishmentUserService.updatePassword(email, newPassword);
+                return true;
+            }
+            // TODO: Add client password update when ClientService is available
+
             if ("CLIENT".equals(userType)) {
                 clientService.updatePassword(email, newPassword);
                 return true;
@@ -110,6 +117,7 @@ public class ForgotPasswordService extends BaseService {
                 // TODO: Update establishment user password when EstablishmentUserService supports it
                 return true;
             }
+
             return false;
         } catch (Exception e) {
             return false;
