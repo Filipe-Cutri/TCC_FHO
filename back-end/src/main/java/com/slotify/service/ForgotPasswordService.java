@@ -1,10 +1,12 @@
 package com.slotify.service;
 
+import com.slotify.model.Client;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.UUID;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -20,10 +22,12 @@ public class ForgotPasswordService extends BaseService {
     
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private ClientService clientService;
 
     public boolean sendClientPasswordResetEmail(String email) {
-        // TODO: Check if client email exists in database
-        // For now, we'll simulate this check
+        // Check if client email exists in database
         if (isValidClientEmail(email)) {
             String token = generateResetToken();
             storeResetToken(token, email, "CLIENT");
@@ -65,11 +69,9 @@ public class ForgotPasswordService extends BaseService {
             return false; // Token expired
         }
         
-        // TODO: Update password in database based on user type and email
-        // For now, we'll just simulate success
+        // Update password in database based on user type and email
         boolean passwordUpdated = updateUserPassword(resetToken.getEmail(), 
-                                                   resetToken.getUserType(), 
-                                                   newPassword);
+                                                   resetToken.getUserType(), newPassword);
         
         if (passwordUpdated) {
             passwordResetTokens.remove(token); // Remove used token
@@ -89,9 +91,8 @@ public class ForgotPasswordService extends BaseService {
     }
 
     private boolean isValidClientEmail(String email) {
-        // TODO: Check if email exists in client table
-        // For now, simulate that all emails are valid
-        return email != null && email.contains("@");
+        // Check if email exists in client table
+        return clientService.emailExists(email);
     }
 
     private boolean isValidEstablishmentEmail(String email) {
@@ -101,9 +102,18 @@ public class ForgotPasswordService extends BaseService {
     }
 
     private boolean updateUserPassword(String email, String userType, String newPassword) {
-        // TODO: Update password in database
-        // For now, simulate success
-        return true;
+        try {
+            if ("CLIENT".equals(userType)) {
+                clientService.updatePassword(email, newPassword);
+                return true;
+            } else if ("ESTABLISHMENT".equals(userType)) {
+                // TODO: Update establishment user password when EstablishmentUserService supports it
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private String buildPasswordResetEmailBody(String resetLink, String userType) {
