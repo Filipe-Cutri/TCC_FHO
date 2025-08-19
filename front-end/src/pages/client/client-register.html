@@ -104,22 +104,22 @@
                 <h2 style="background: linear-gradient(135deg, #1e40af 0%, #0369a1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">Cadastro de Cliente</h2>
                 <p style="color: #6b7280; font-size: 16px;">Junte-se a milhares de clientes satisfeitos! ✨</p>
               </div>
-              <form>
+              <form id="registerForm">
                 <div class="mb-3" style="margin-bottom: 24px;">
                   <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">👤 Nome Completo</label>
-                  <input type="text" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                  <input type="text" class="form-control" id="nome" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
                 </div>
                 <div class="mb-3" style="margin-bottom: 24px;">
                   <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">📧 E-mail</label>
-                  <input type="email" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                  <input type="email" class="form-control" id="email" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
                 </div>
                 <div class="mb-3" style="margin-bottom: 24px;">
                   <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">📱 Telefone</label>
-                  <input type="text" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                  <input type="text" class="form-control" id="telefone" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
                 </div>
                 <div class="mb-3" style="margin-bottom: 32px;">
                   <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">🔒 Senha</label>
-                  <input type="password" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                  <input type="password" class="form-control" id="senha" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
                 </div>
                 <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; font-weight: 600; padding: 16px; border-radius: 12px; box-shadow: 0 8px 25px -8px rgba(16, 185, 129, 0.5); transition: all 0.3s ease; font-size: 16px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px -8px rgba(16, 185, 129, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px -8px rgba(16, 185, 129, 0.5)'">
                   <i class="fas fa-user-plus me-2"></i>
@@ -227,30 +227,67 @@
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/api-config.js"></script>
+  <script src="../../assets/js/client-session.js"></script>
   <script>
-    // Handle form submission and redirect to preferences setup
+    // Handle form submission with API integration
     document.addEventListener('DOMContentLoaded', function() {
-      const form = document.querySelector('form');
-      form.addEventListener('submit', function(e) {
+      const form = document.getElementById('registerForm');
+      form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Show loading state
+        const nome = document.getElementById('nome').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const senha = document.getElementById('senha').value.trim();
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
+        
+        // Validate required fields
+        if (!nome || !email || !senha) {
+          alert('Por favor, preencha todos os campos obrigatórios.');
+          return;
+        }
+        
+        // Show loading state
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Criando conta...';
         submitBtn.disabled = true;
         
-        // Simulate account creation
-        setTimeout(() => {
-          // Redirect to preferences setup
-          window.location.href = 'client-preferences-setup.html';
-        }, 2000);
+        try {
+          // Call client registration API
+          const data = await window.apiClient.post(API_CONFIG.endpoints.client.register, {
+            name: nome,
+            email: email,
+            phone: telefone,
+            password: senha
+          });
+          
+          if (data.success) {
+            // Save session
+            window.clientSession.setSession(data.client);
+            
+            // Show success message
+            alert(`Conta criada com sucesso! Bem-vindo, ${data.client.name}!`);
+            
+            // Redirect to preferences setup or dashboard
+            window.location.href = 'client-preferences-setup.html';
+          } else {
+            // Show error message
+            alert(data.message || 'Erro ao criar conta. Tente novamente.');
+          }
+          
+        } catch (error) {
+          console.error('Registration error:', error);
+          alert(error.message || 'Erro ao conectar com o servidor. Tente novamente.');
+        } finally {
+          // Reset button
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }
       });
     });
   </script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // Navbar scroll effects
     window.addEventListener('scroll', function() {
