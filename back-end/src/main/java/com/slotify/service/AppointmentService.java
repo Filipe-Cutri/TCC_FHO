@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service class for Appointment entity
@@ -57,7 +58,9 @@ public class AppointmentService extends BaseService<Appointment, Long> {
      * Get today's appointments
      */
     public List<Appointment> getTodayAppointments(Long establishmentId) {
-        return appointmentRepository.findTodayAppointments(establishmentId);
+        LocalDateTime startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        return appointmentRepository.findTodayAppointments(establishmentId, startOfDay, endOfDay);
     }
     
     /**
@@ -103,7 +106,7 @@ public class AppointmentService extends BaseService<Appointment, Long> {
         
         // Check for conflicts
         LocalDateTime endTime = appointmentDateTime.plusMinutes(serviceDurationMinutes != null ? serviceDurationMinutes : 60);
-        List<Appointment> conflicts = appointmentRepository.findConflictingAppointments(professionalId, appointmentDateTime, endTime);
+        List<Appointment> conflicts = findConflictingAppointments(professionalId, appointmentDateTime, endTime);
         if (!conflicts.isEmpty()) {
             throw new IllegalArgumentException("Já existe um agendamento para este profissional neste horário");
         }
@@ -151,7 +154,7 @@ public class AppointmentService extends BaseService<Appointment, Long> {
         
         // Check for conflicts
         LocalDateTime endTime = newDateTime.plusMinutes(appointment.getServiceDurationMinutes() != null ? appointment.getServiceDurationMinutes() : 60);
-        List<Appointment> conflicts = appointmentRepository.findConflictingAppointments(appointment.getProfessionalId(), newDateTime, endTime);
+        List<Appointment> conflicts = findConflictingAppointments(appointment.getProfessionalId(), newDateTime, endTime);
         
         // Remove current appointment from conflicts (it should not conflict with itself)
         conflicts.removeIf(conflict -> conflict.getId().equals(appointmentId));
@@ -212,35 +215,71 @@ public class AppointmentService extends BaseService<Appointment, Long> {
      * Count today's appointments
      */
     public long countTodayAppointments(Long establishmentId) {
-        return appointmentRepository.countTodayAppointments(establishmentId);
+        LocalDateTime startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        return appointmentRepository.countTodayAppointments(establishmentId, startOfDay, endOfDay);
     }
     
     /**
      * Count this month's appointments
      */
     public long countThisMonthAppointments(Long establishmentId) {
-        return appointmentRepository.countThisMonthAppointments(establishmentId);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfMonth = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1);
+        return appointmentRepository.countThisMonthAppointments(establishmentId, startOfMonth, endOfMonth);
     }
     
     /**
      * Calculate monthly revenue
      */
     public BigDecimal calculateMonthlyRevenue(Long establishmentId) {
-        return appointmentRepository.calculateMonthlyRevenue(establishmentId);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfMonth = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1);
+        return appointmentRepository.calculateMonthlyRevenue(establishmentId, startOfMonth, endOfMonth);
     }
     
     /**
      * Get professional performance statistics
      */
     public List<Object[]> getProfessionalPerformanceStats(Long establishmentId) {
-        return appointmentRepository.findProfessionalPerformanceStats(establishmentId);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfMonth = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1);
+        return appointmentRepository.findProfessionalPerformanceStats(establishmentId, startOfMonth, endOfMonth);
     }
     
     /**
      * Check if time slot is available
      */
     public boolean isTimeSlotAvailable(Long professionalId, LocalDateTime startTime, LocalDateTime endTime) {
-        List<Appointment> conflicts = appointmentRepository.findConflictingAppointments(professionalId, startTime, endTime);
+        List<Appointment> conflicts = findConflictingAppointments(professionalId, startTime, endTime);
         return conflicts.isEmpty();
+    }
+
+    /**
+     * Find conflicting appointments using improved logic
+     */
+    private List<Appointment> findConflictingAppointments(Long professionalId, LocalDateTime startTime, LocalDateTime endTime) {
+        // Get potential conflicts from a broader time range
+        LocalDateTime dayStart = startTime.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        List<Appointment> potentialConflicts = appointmentRepository.findPotentialConflictingAppointments(
+            professionalId, dayStart, endTime.plusHours(1));
+        
+        // Filter to actual conflicts using Java logic
+        return potentialConflicts.stream()
+            .filter(appointment -> {
+                LocalDateTime existingStart = appointment.getAppointmentDateTime();
+                LocalDateTime existingEnd = appointment.getEndDateTime();
+                if (existingEnd == null) {
+                    // Default to 60 minutes if duration is not set
+                    existingEnd = existingStart.plusMinutes(60);
+                }
+                
+                // Check for overlap: appointments conflict if one starts before the other ends
+                return existingStart.isBefore(endTime) && existingEnd.isAfter(startTime);
+            })
+            .collect(Collectors.toList());
     }
 }

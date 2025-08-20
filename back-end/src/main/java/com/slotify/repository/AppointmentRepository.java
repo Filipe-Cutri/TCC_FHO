@@ -51,8 +51,10 @@ public interface AppointmentRepository extends BaseRepository<Appointment, Long>
     /**
      * Find appointments for today
      */
-    @Query("SELECT a FROM Appointment a WHERE a.establishmentId = :establishmentId AND DATE(a.appointmentDateTime) = CURRENT_DATE ORDER BY a.appointmentDateTime ASC")
-    List<Appointment> findTodayAppointments(@Param("establishmentId") Long establishmentId);
+    @Query("SELECT a FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.appointmentDateTime >= :startOfDay AND a.appointmentDateTime < :endOfDay ORDER BY a.appointmentDateTime ASC")
+    List<Appointment> findTodayAppointments(@Param("establishmentId") Long establishmentId, 
+                                          @Param("startOfDay") LocalDateTime startOfDay,
+                                          @Param("endOfDay") LocalDateTime endOfDay);
     
     /**
      * Find upcoming appointments
@@ -61,15 +63,13 @@ public interface AppointmentRepository extends BaseRepository<Appointment, Long>
     List<Appointment> findUpcomingAppointments(@Param("establishmentId") Long establishmentId, @Param("currentDateTime") LocalDateTime currentDateTime);
     
     /**
-     * Find conflicting appointments for a professional
+     * Find potentially conflicting appointments for a professional (to be filtered in service layer)
      */
     @Query("SELECT a FROM Appointment a WHERE a.professionalId = :professionalId AND a.status NOT IN ('CANCELLED') AND " +
-           "((a.appointmentDateTime <= :startTime AND DATE_ADD(a.appointmentDateTime, INTERVAL a.serviceDurationMinutes MINUTE) > :startTime) OR " +
-           "(a.appointmentDateTime < :endTime AND DATE_ADD(a.appointmentDateTime, INTERVAL a.serviceDurationMinutes MINUTE) >= :endTime) OR " +
-           "(a.appointmentDateTime >= :startTime AND a.appointmentDateTime < :endTime))")
-    List<Appointment> findConflictingAppointments(@Param("professionalId") Long professionalId, 
-                                                 @Param("startTime") LocalDateTime startTime, 
-                                                 @Param("endTime") LocalDateTime endTime);
+           "a.appointmentDateTime < :endTime AND a.appointmentDateTime >= :dayStart")
+    List<Appointment> findPotentialConflictingAppointments(@Param("professionalId") Long professionalId, 
+                                                          @Param("dayStart") LocalDateTime dayStart,
+                                                          @Param("endTime") LocalDateTime endTime);
     
     /**
      * Count appointments by establishment
@@ -84,24 +84,32 @@ public interface AppointmentRepository extends BaseRepository<Appointment, Long>
     /**
      * Count appointments for today
      */
-    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.establishmentId = :establishmentId AND DATE(a.appointmentDateTime) = CURRENT_DATE")
-    long countTodayAppointments(@Param("establishmentId") Long establishmentId);
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.appointmentDateTime >= :startOfDay AND a.appointmentDateTime < :endOfDay")
+    long countTodayAppointments(@Param("establishmentId") Long establishmentId,
+                               @Param("startOfDay") LocalDateTime startOfDay,
+                               @Param("endOfDay") LocalDateTime endOfDay);
     
     /**
      * Count appointments this month
      */
-    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.establishmentId = :establishmentId AND YEAR(a.appointmentDateTime) = YEAR(CURRENT_DATE) AND MONTH(a.appointmentDateTime) = MONTH(CURRENT_DATE)")
-    long countThisMonthAppointments(@Param("establishmentId") Long establishmentId);
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.appointmentDateTime >= :startOfMonth AND a.appointmentDateTime < :endOfMonth")
+    long countThisMonthAppointments(@Param("establishmentId") Long establishmentId,
+                                   @Param("startOfMonth") LocalDateTime startOfMonth,
+                                   @Param("endOfMonth") LocalDateTime endOfMonth);
     
     /**
      * Calculate revenue for completed appointments this month
      */
-    @Query("SELECT COALESCE(SUM(a.servicePrice), 0) FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.status = 'COMPLETED' AND YEAR(a.appointmentDateTime) = YEAR(CURRENT_DATE) AND MONTH(a.appointmentDateTime) = MONTH(CURRENT_DATE)")
-    java.math.BigDecimal calculateMonthlyRevenue(@Param("establishmentId") Long establishmentId);
+    @Query("SELECT COALESCE(SUM(a.servicePrice), 0) FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.status = 'COMPLETED' AND a.appointmentDateTime >= :startOfMonth AND a.appointmentDateTime < :endOfMonth")
+    java.math.BigDecimal calculateMonthlyRevenue(@Param("establishmentId") Long establishmentId,
+                                               @Param("startOfMonth") LocalDateTime startOfMonth,
+                                               @Param("endOfMonth") LocalDateTime endOfMonth);
     
     /**
      * Find professional performance statistics
      */
-    @Query("SELECT a.professionalId, a.professionalName, COUNT(a), COALESCE(SUM(a.servicePrice), 0) FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.status = 'COMPLETED' AND YEAR(a.appointmentDateTime) = YEAR(CURRENT_DATE) AND MONTH(a.appointmentDateTime) = MONTH(CURRENT_DATE) GROUP BY a.professionalId, a.professionalName ORDER BY COUNT(a) DESC")
-    List<Object[]> findProfessionalPerformanceStats(@Param("establishmentId") Long establishmentId);
+    @Query("SELECT a.professionalId, a.professionalName, COUNT(a), COALESCE(SUM(a.servicePrice), 0) FROM Appointment a WHERE a.establishmentId = :establishmentId AND a.status = 'COMPLETED' AND a.appointmentDateTime >= :startOfMonth AND a.appointmentDateTime < :endOfMonth GROUP BY a.professionalId, a.professionalName ORDER BY COUNT(a) DESC")
+    List<Object[]> findProfessionalPerformanceStats(@Param("establishmentId") Long establishmentId,
+                                                    @Param("startOfMonth") LocalDateTime startOfMonth,
+                                                    @Param("endOfMonth") LocalDateTime endOfMonth);
 }
