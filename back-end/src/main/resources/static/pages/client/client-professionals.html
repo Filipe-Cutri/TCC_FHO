@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profissionais - Slotify</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/styles/common.css">
+  <link rel="stylesheet" href="../../assets/styles/logo-system.css">
+  <link rel="stylesheet" href="../../assets/styles/client-styles.css">
+</head>
+<body class="client-page">
+  <nav class="navbar navbar-expand-lg navbar-dark client-navbar fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="client-dashboard.html">
+        <img src="../../assets/logo-slotify.png" alt="Slotify Logo" class="logo logo-lg">
+        Slotify
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="client-dashboard.html">
+              <i class="fas fa-home me-1"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-services.html">
+              <i class="fas fa-cut me-1"></i>Serviços
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-bookings.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="client-professionals.html">
+              <i class="fas fa-users me-1"></i>Profissionais
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="client-notifications.html" class="nav-link position-relative me-2">
+            <i class="fas fa-bell"></i>
+            <span class="client-notification-badge">3</span>
+          </a>
+          <a href="client-profile.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-user me-1"></i>Perfil
+          </a>
+          <a href="client-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="client-main-content">
+    <div class="client-container">
+      <!-- Page Header -->
+      <div class="client-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-users"></i>
+          </span>
+          Nossos Profissionais
+        </h1>
+        <p class="client-page-subtitle">Conheça nossa equipe de especialistas em beleza e bem-estar</p>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="client-card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">
+            <span class="card-icon">
+              <i class="fas fa-filter"></i>
+            </span>
+            Filtrar Profissionais
+          </h5>
+          <div class="row">
+            <div class="col-md-3">
+              <select class="form-select client-form-control">
+                <option>Todas as especialidades</option>
+                <option>Cabelo</option>
+                <option>Barba</option>
+                <option>Estética</option>
+                <option>Manicure</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select client-form-control">
+                <option>Todas as localizações</option>
+                <option>Centro</option>
+                <option>Jardins</option>
+                <option>Vila Madalena</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select client-form-control">
+                <option>Melhor avaliação</option>
+                <option>Menor preço</option>
+                <option>Mais próximo</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <button class="client-btn w-100">
+                <i class="fas fa-search me-2"></i>Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professionals Grid -->
+      <div class="row">
+        <!-- Professional 1 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="client-card">
+            <div class="card-body text-center">
+              <div class="professional-avatar mb-3">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="João Silva" class="rounded-circle" width="80" height="80">
+              </div>
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-cut"></i>
+                </span>
+                João Silva
+              </h5>
+              <p class="card-text">Especialista em cortes modernos e tradicionais. Mais de 8 anos de experiência.</p>
+              <div class="professional-stats mb-3">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="client-stats-number text-warning">4.9</div>
+                    <div class="client-stats-label">Avaliação</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-info">156</div>
+                    <div class="client-stats-label">Atendimentos</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-success">R$ 45</div>
+                    <div class="client-stats-label">A partir de</div>
+                  </div>
+                </div>
+              </div>
+              <div class="professional-specialties mb-3">
+                <span class="client-status-badge client-status-success me-1">Corte</span>
+                <span class="client-status-badge me-1" style="background: var(--color-accent-info); color: white;">Barba</span>
+                <span class="client-status-badge" style="background: var(--color-accent-warning); color: white;">Styling</span>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="client-btn">
+                  <i class="fas fa-calendar-plus me-2"></i>Agendar
+                </button>
+                <button class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional 2 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="client-card">
+            <div class="card-body text-center">
+              <div class="professional-avatar mb-3">
+                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Lucas Santos" class="rounded-circle" width="80" height="80">
+              </div>
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-beard"></i>
+                </span>
+                Lucas Santos
+              </h5>
+              <p class="card-text">Barbeiro com 10 anos de experiência. Especialista em barbas clássicas e modernas.</p>
+              <div class="professional-stats mb-3">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="client-stats-number text-warning">4.8</div>
+                    <div class="client-stats-label">Avaliação</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-info">203</div>
+                    <div class="client-stats-label">Atendimentos</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-success">R$ 35</div>
+                    <div class="client-stats-label">A partir de</div>
+                  </div>
+                </div>
+              </div>
+              <div class="professional-specialties mb-3">
+                <span class="client-status-badge client-status-success me-1">Barba</span>
+                <span class="client-status-badge me-1" style="background: var(--color-accent-info); color: white;">Bigode</span>
+                <span class="client-status-badge" style="background: var(--color-accent-warning); color: white;">Limpeza</span>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="client-btn">
+                  <i class="fas fa-calendar-plus me-2"></i>Agendar
+                </button>
+                <button class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional 3 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="client-card">
+            <div class="card-body text-center">
+              <div class="professional-avatar mb-3">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Ana Costa" class="rounded-circle" width="80" height="80">
+              </div>
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-scissors"></i>
+                </span>
+                Ana Costa
+              </h5>
+              <p class="card-text">Cabeleireira especializada em cortes femininos e coloração. Formação em Paris.</p>
+              <div class="professional-stats mb-3">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="client-stats-number text-warning">5.0</div>
+                    <div class="client-stats-label">Avaliação</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-info">89</div>
+                    <div class="client-stats-label">Atendimentos</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-success">R$ 85</div>
+                    <div class="client-stats-label">A partir de</div>
+                  </div>
+                </div>
+              </div>
+              <div class="professional-specialties mb-3">
+                <span class="client-status-badge client-status-success me-1">Corte</span>
+                <span class="client-status-badge me-1" style="background: var(--color-accent-info); color: white;">Coloração</span>
+                <span class="client-status-badge" style="background: var(--color-accent-warning); color: white;">Escova</span>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="client-btn">
+                  <i class="fas fa-calendar-plus me-2"></i>Agendar
+                </button>
+                <button class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional 4 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="client-card">
+            <div class="card-body text-center">
+              <div class="professional-avatar mb-3">
+                <img src="https://randomuser.me/api/portraits/women/95.jpg" alt="Maria Santos" class="rounded-circle" width="80" height="80">
+              </div>
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-spa"></i>
+                </span>
+                Maria Santos
+              </h5>
+              <p class="card-text">Esteticista especializada em tratamentos faciais e limpeza de pele.</p>
+              <div class="professional-stats mb-3">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="client-stats-number text-warning">4.9</div>
+                    <div class="client-stats-label">Avaliação</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-info">127</div>
+                    <div class="client-stats-label">Atendimentos</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-success">R$ 120</div>
+                    <div class="client-stats-label">A partir de</div>
+                  </div>
+                </div>
+              </div>
+              <div class="professional-specialties mb-3">
+                <span class="client-status-badge client-status-success me-1">Limpeza</span>
+                <span class="client-status-badge me-1" style="background: var(--color-accent-info); color: white;">Hidratação</span>
+                <span class="client-status-badge" style="background: var(--color-accent-warning); color: white;">Peeling</span>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="client-btn">
+                  <i class="fas fa-calendar-plus me-2"></i>Agendar
+                </button>
+                <button class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional 5 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="client-card">
+            <div class="card-body text-center">
+              <div class="professional-avatar mb-3">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Carla Lima" class="rounded-circle" width="80" height="80">
+              </div>
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-hand-sparkles"></i>
+                </span>
+                Carla Lima
+              </h5>
+              <p class="card-text">Manicure e pedicure especializada em nail art e cuidados com unhas.</p>
+              <div class="professional-stats mb-3">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="client-stats-number text-warning">4.7</div>
+                    <div class="client-stats-label">Avaliação</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-info">234</div>
+                    <div class="client-stats-label">Atendimentos</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-success">R$ 40</div>
+                    <div class="client-stats-label">A partir de</div>
+                  </div>
+                </div>
+              </div>
+              <div class="professional-specialties mb-3">
+                <span class="client-status-badge client-status-success me-1">Manicure</span>
+                <span class="client-status-badge me-1" style="background: var(--color-accent-info); color: white;">Pedicure</span>
+                <span class="client-status-badge" style="background: var(--color-accent-warning); color: white;">Nail Art</span>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="client-btn">
+                  <i class="fas fa-calendar-plus me-2"></i>Agendar
+                </button>
+                <button class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional 6 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="client-card">
+            <div class="card-body text-center">
+              <div class="professional-avatar mb-3">
+                <img src="https://randomuser.me/api/portraits/men/15.jpg" alt="Carlos Silva" class="rounded-circle" width="80" height="80">
+              </div>
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-magic"></i>
+                </span>
+                Carlos Silva
+              </h5>
+              <p class="card-text">Especialista em cortes infantis e transformações capilares criativas.</p>
+              <div class="professional-stats mb-3">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="client-stats-number text-warning">4.8</div>
+                    <div class="client-stats-label">Avaliação</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-info">178</div>
+                    <div class="client-stats-label">Atendimentos</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="client-stats-number text-success">R$ 55</div>
+                    <div class="client-stats-label">A partir de</div>
+                  </div>
+                </div>
+              </div>
+              <div class="professional-specialties mb-3">
+                <span class="client-status-badge client-status-success me-1">Infantil</span>
+                <span class="client-status-badge me-1" style="background: var(--color-accent-info); color: white;">Criativo</span>
+                <span class="client-status-badge" style="background: var(--color-accent-warning); color: white;">Transformação</span>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="client-btn">
+                  <i class="fas fa-calendar-plus me-2"></i>Agendar
+                </button>
+                <button class="client-btn client-btn-secondary">
+                  <i class="fas fa-eye me-2"></i>Ver Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Enhanced Footer -->
+  <footer class="footer footer-enhanced">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-3">
+            <img src="../../assets/logo-slotify.png" alt="Slotify Logo" class="logo logo-footer me-3">
+            <h5 class="mb-0">Slotify</h5>
+          </div>
+          <p>Transformando a forma como você agenda serviços de beleza. Conecte-se com os melhores profissionais da sua região de forma rápida e inteligente.</p>
+          
+          <!-- Social Media Section -->
+          <div class="footer-social text-center text-md-start mt-4">
+            <h6>Siga-nos</h6>
+            <div class="social-links justify-content-center justify-content-md-start">
+              <a href="#" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" aria-label="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-6">
+              <h6>Clientes</h6>
+              <ul class="list-unstyled">
+                <li><a href="client-login.html">Login</a></li>
+                <li><a href="client-register.html">Cadastro</a></li>
+                <li><a href="client-services.html">Serviços</a></li>
+                <li><a href="client-bookings.html">Meus Agendamentos</a></li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <h6>Estabelecimentos</h6>
+              <ul class="list-unstyled">
+                <li><a href="../establishment/establishment-login.html">Login</a></li>
+                <li><a href="../establishment/establishment-register.html">Cadastro</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#suporte">Suporte</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Slotify. Todos os direitos reservados. | Desenvolvido com ❤️ para conectar pessoas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Enhanced client page interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navbar scroll effects
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.client-navbar');
+        if (window.scrollY > 50) {
+          navbar.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(29, 78, 216, 0.95) 100%)';
+          navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+          navbar.style.background = 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%)';
+        }
+      });
+
+      // Professional card hover animations
+      document.querySelectorAll('.client-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-8px) scale(1.02)';
+          this.style.boxShadow = '0 20px 40px -8px rgba(0, 0, 0, 0.2)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0) scale(1)';
+          this.style.boxShadow = 'var(--shadow-lg)';
+        });
+      });
+
+      // Professional avatar hover effects
+      document.querySelectorAll('.professional-avatar img').forEach(img => {
+        img.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.1)';
+          this.style.boxShadow = '0 8px 25px -8px rgba(59, 130, 246, 0.4)';
+        });
+        
+        img.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = 'none';
+        });
+      });
+
+      // Booking interactions
+      document.querySelectorAll('.client-btn').forEach(btn => {
+        if (btn.textContent.includes('Agendar')) {
+          btn.addEventListener('click', function() {
+            const professionalName = this.closest('.client-card').querySelector('.card-title').textContent.trim();
+            
+            // Add loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="client-loading">Agendando...</span>';
+            this.disabled = true;
+            
+            // Simulate booking process
+            setTimeout(() => {
+              this.innerHTML = '<i class="fas fa-check me-2"></i>Agendado!';
+              this.classList.add('client-btn-success');
+              
+              setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+                this.classList.remove('client-btn-success');
+              }, 2000);
+            }, 1500);
+          });
+        }
+      });
+
+      // Filter functionality
+      document.querySelector('.client-btn[onclick]') || 
+      document.querySelector('.client-btn').addEventListener('click', function() {
+        if (this.textContent.includes('Buscar')) {
+          // Add loading state
+          this.innerHTML = '<span class="client-loading">Buscando...</span>';
+          
+          // Simulate filter operation
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-search me-2"></i>Buscar';
+          }, 1000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
