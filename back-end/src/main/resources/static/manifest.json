@@ -1,6 +1,6 @@
 {
-  "name": "Slotify - Sistema de Agendamento Inteligente",
-  "short_name": "Slotify",
+  "name": "Slotfy - Sistema de Agendamento Inteligente",
+  "short_name": "Slotfy",
   "description": "Sistema inteligente de agendamento para barbeiros, cabeleireiros e salões de beleza",
   "start_url": "/",
   "display": "standalone",

@@ -1,5 +1,5 @@
 /**
- * Slotify API Configuration
+ * Slotfy API Configuration
  * Centralized configuration for API endpoints and utilities
  */
 

@@ -28,10 +28,10 @@ Agora ao acessar `http://localhost:8080/`, é retornada uma resposta JSON válid
 
 ```json
 {
-  "application": "Slotify Backend",
+  "application": "Slotfy Backend",
   "version": "1.0.0", 
   "status": "running",
-  "message": "Bem-vindo ao Slotify! Use os endpoints da API para interagir com o sistema.",
+  "message": "Bem-vindo ao Slotfy! Use os endpoints da API para interagir com o sistema.",
   "endpoints": {
     "health": "/api/health",
     "establishment_login": "/api/establishment/login",
@@ -42,7 +42,7 @@ Agora ao acessar `http://localhost:8080/`, é retornada uma resposta JSON válid
 ```
 
 ## Arquivos Modificados
-- `back-end/src/main/java/com/slotify/controller/RootController.java` (novo)
+- `back-end/src/main/java/com/slotfy/controller/RootController.java` (novo)
 - `back-end/gradle/wrapper/gradle-wrapper.properties` (versão do Gradle)
 - `back-end/build.gradle` (adicionado H2 como dependência runtime para testes)
 - `back-end/src/main/resources/application-test.properties` (novo profile de teste)

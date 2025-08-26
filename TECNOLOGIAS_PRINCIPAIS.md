@@ -1,6 +1,6 @@
-# Principais Tecnologias Empregadas - Sistema Slotify
+# Principais Tecnologias Empregadas - Sistema Slotfy
 
-Este documento apresenta uma visão abrangente de todas as principais tecnologias utilizadas no desenvolvimento do sistema Slotify, um sistema inteligente de agendamento para barbearias e salões de beleza.
+Este documento apresenta uma visão abrangente de todas as principais tecnologias utilizadas no desenvolvimento do sistema Slotfy, um sistema inteligente de agendamento para barbearias e salões de beleza.
 
 ## 🔧 Backend - Tecnologias do Servidor
 
@@ -195,6 +195,6 @@ Este documento apresenta uma visão abrangente de todas as principais tecnologia
 
 ---
 
-**Nota**: Esta documentação reflete o estado atual do projeto e pode ser atualizada conforme novas tecnologias sejam incorporadas ao sistema Slotify.
+**Nota**: Esta documentação reflete o estado atual do projeto e pode ser atualizada conforme novas tecnologias sejam incorporadas ao sistema Slotfy.
 
 *Última atualização: Janeiro 2024*
