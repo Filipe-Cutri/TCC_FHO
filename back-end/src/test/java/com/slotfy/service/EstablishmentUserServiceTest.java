@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +20,9 @@ public class EstablishmentUserServiceTest {
 
     @Mock
     private EstablishmentUserRepository repository;
+    
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     private EstablishmentUserService service;
 
@@ -26,6 +30,8 @@ public class EstablishmentUserServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         service = new EstablishmentUserService(repository);
+        // Manually inject the mock passwordEncoder since we can't use @Autowired in unit tests
+        service.passwordEncoder = passwordEncoder;
     }
 
     @Test
@@ -64,12 +70,14 @@ public class EstablishmentUserServiceTest {
         // Test the createUser method that caused compilation issues
         String email = "test@test.com";
         when(repository.existsByEmail(email)).thenReturn(false);
+        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(repository.save(any(EstablishmentUser.class))).thenAnswer(invocation -> invocation.getArgument(0));
         
         EstablishmentUser created = service.createUser("Test User", email, "password", UserRole.ADMIN, 1L);
         
         assertNotNull(created);
         verify(repository).existsByEmail(email);
+        verify(passwordEncoder).encode("password");
         verify(repository).save(any(EstablishmentUser.class));
     }
 

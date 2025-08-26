@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
@@ -17,10 +19,12 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EstablishmentAuthController.class)
+@Import({com.slotfy.config.SecurityConfig.class})
 public class EstablishmentAuthControllerTest {
 
     @Autowired
@@ -33,6 +37,7 @@ public class EstablishmentAuthControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser
     public void testRegisterSuccess() throws Exception {
         // Arrange
         EstablishmentUser mockUser = new EstablishmentUser("Test User", "test@example.com", "hashedPassword", UserRole.ADMIN, 1L);
@@ -49,6 +54,7 @@ public class EstablishmentAuthControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/api/establishment/register")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -59,6 +65,7 @@ public class EstablishmentAuthControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testLoginSuccess() throws Exception {
         // Arrange
         EstablishmentUser mockUser = new EstablishmentUser("Test User", "test@example.com", "hashedPassword", UserRole.ADMIN, 1L);
@@ -73,6 +80,7 @@ public class EstablishmentAuthControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/api/establishment/login")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -84,6 +92,7 @@ public class EstablishmentAuthControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testRegisterInvalidInput() throws Exception {
         Map<String, String> request = new HashMap<>();
         request.put("name", "");
@@ -91,6 +100,7 @@ public class EstablishmentAuthControllerTest {
         request.put("password", "123"); // Too short
 
         mockMvc.perform(post("/api/establishment/register")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

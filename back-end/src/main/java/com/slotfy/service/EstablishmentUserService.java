@@ -20,7 +20,7 @@ public class EstablishmentUserService extends BaseService<EstablishmentUser, Lon
     private EstablishmentUserRepository establishmentUserRepository;
     
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
     
     public EstablishmentUserService(EstablishmentUserRepository repository) {
         super(repository);
