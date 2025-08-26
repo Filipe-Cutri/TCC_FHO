@@ -7,7 +7,7 @@ This project now follows Spring Boot best practices with the complete recommende
 ### 📂 Core Application Structure
 
 ```
-src/main/java/com/slotify/
+src/main/java/com/slotfy/
 ├── controller/     → API Endpoints (REST controllers)
 ├── service/        → Business Logic (service layer)
 ├── repository/     → Database Access (JPA/Hibernate)

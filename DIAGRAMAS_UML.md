@@ -1,6 +1,6 @@
-# Diagramas UML - Sistema Slotify
+# Diagramas UML - Sistema Slotfy
 
-Este documento apresenta os diagramas UML do sistema Slotify em formato textual para posterior conversão para UML visual.
+Este documento apresenta os diagramas UML do sistema Slotfy em formato textual para posterior conversão para UML visual.
 
 ## 1. Diagrama de Casos de Uso - Sistema de Agendamento
 
@@ -156,7 +156,7 @@ Este documento apresenta os diagramas UML do sistema Slotify em formato textual 
 
 ---
 
-## 2. Diagrama de Classes - Sistema Slotify
+## 2. Diagrama de Classes - Sistema Slotfy
 
 ### Classes Principais
 
@@ -785,7 +785,7 @@ Confirmado  Em Andamento  Concluído   Cancelado   Não Compareceu
 
 ## 4. Resumo e Observações Técnicas
 
-### Características do Sistema Slotify
+### Características do Sistema Slotfy
 
 #### Arquitetura
 - **Padrão**: MVC com Spring Boot
@@ -863,5 +863,5 @@ Ao converter estes diagramas para UML visual, considere:
 
 ---
 
-*Diagramas baseados na análise do código-fonte do sistema Slotify*  
+*Diagramas baseados na análise do código-fonte do sistema Slotfy*  
 *Versão: Janeiro 2024*

@@ -1,6 +1,6 @@
 # Frontend-Backend Integration Guide
 
-This document explains how the Slotify frontend is integrated with the backend APIs.
+This document explains how the Slotfy frontend is integrated with the backend APIs.
 
 ## Overview
 
@@ -38,12 +38,12 @@ All endpoints are centrally configured in `/front-end/src/assets/js/api-config.j
 ### Client Sessions
 - **File**: `/front-end/src/assets/js/client-session.js`
 - **Storage**: localStorage with 24-hour expiration
-- **Key**: `slotify_client_session`
+- **Key**: `slotfy_client_session`
 
 ### Establishment Sessions
 - **File**: `/front-end/src/assets/js/establishment-session.js`
 - **Storage**: localStorage with 24-hour expiration
-- **Key**: `slotify_establishment_session`
+- **Key**: `slotfy_establishment_session`
 
 ## Form Integration
 
