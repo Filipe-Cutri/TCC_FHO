@@ -1,10 +1,10 @@
 /**
- * Slotify Client Session Manager
+ * Slotfy Client Session Manager
  * Manages user sessions and access control for client users
  */
 class ClientSessionManager {
     constructor() {
-        this.sessionKey = 'slotify_client_session';
+        this.sessionKey = 'slotfy_client_session';
         this.apiBaseUrl = '/api/client';
     }
 

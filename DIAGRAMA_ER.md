@@ -1,4 +1,4 @@
-# Diagrama Entidade-Relacionamento (ER) - Sistema Slotify
+# Diagrama Entidade-Relacionamento (ER) - Sistema Slotfy
 
 ```
                            ┌─────────────────────────┐

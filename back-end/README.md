@@ -1,6 +1,6 @@
-# Slotify Backend
+# Slotfy Backend
 
-Spring Boot backend for the Slotify scheduling system for barbershops and salons.
+Spring Boot backend for the Slotfy scheduling system for barbershops and salons.
 
 ## Technology Stack
 
@@ -16,8 +16,8 @@ Spring Boot backend for the Slotify scheduling system for barbershops and salons
 ```
 src/
 ├── main/
-│   ├── java/com/slotify/
-│   │   ├── SlotifyApplication.java          # Main Spring Boot application
+│   ├── java/com/slotfy/
+│   │   ├── SlotfyApplication.java          # Main Spring Boot application
 │   │   ├── config/                          # Configuration classes
 │   │   │   ├── DatabaseConfig.java         # Database configuration
 │   │   │   ├── SecurityConfig.java         # Security configuration
@@ -51,7 +51,7 @@ src/
 │   │   │   ├── ApiResponse.java            # Generic API response wrapper
 │   │   │   └── ...                         # Other DTOs
 │   │   └── exception/                       # Exception handling
-│   │       ├── SlotifyException.java       # Base exception
+│   │       ├── SlotfyException.java       # Base exception
 │   │       ├── ResourceNotFoundException.java
 │   │       └── GlobalExceptionHandler.java # Global exception handler
 │   └── resources/
@@ -63,8 +63,8 @@ src/
 │       ├── static/                         # Static files (if embedding frontend)
 │       └── templates/                      # Thymeleaf templates (if using SSR)
 └── test/                                   # Unit and integration tests
-    ├── java/com/slotify/
-    │   └── SlotifyApplicationTests.java    # Basic integration test
+    ├── java/com/slotfy/
+    │   └── SlotfyApplicationTests.java    # Basic integration test
     └── resources/
         └── application-test.properties     # Test configuration (H2 database)
 ```
@@ -125,8 +125,8 @@ This project follows Spring Boot best practices with the following structure:
 1. Install PostgreSQL
 2. Create databases:
    ```sql
-   CREATE DATABASE slotify_dev;
-   CREATE DATABASE slotify_prod;
+   CREATE DATABASE slotfy_dev;
+   CREATE DATABASE slotfy_prod;
    ```
 
 ### Running the Application
@@ -162,14 +162,14 @@ The application uses Spring profiles for different environments:
 
 The application is configured to use PostgreSQL with the following default settings:
 
-- **Development:** `jdbc:postgresql://localhost:5432/slotify_dev`
+- **Development:** `jdbc:postgresql://localhost:5432/slotfy_dev`
 - **Production:** Uses environment variables for connection details
 
 ### Building for Production
 
 ```bash
 ./gradlew build
-java -jar build/libs/slotify-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+java -jar build/libs/slotfy-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
 ## Development Notes

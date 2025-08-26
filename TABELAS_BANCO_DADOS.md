@@ -1,6 +1,6 @@
-# Tabelas do Sistema Slotify - Modelo Lógico e Físico
+# Tabelas do Sistema Slotfy - Modelo Lógico e Físico
 
-Este documento apresenta todas as tabelas presentes no sistema Slotify para auxiliar na criação do modelo lógico e físico do banco de dados.
+Este documento apresenta todas as tabelas presentes no sistema Slotfy para auxiliar na criação do modelo lógico e físico do banco de dados.
 
 ## Visão Geral
 
@@ -292,5 +292,5 @@ CREATE TABLE clients (
 
 ---
 
-*Documento gerado com base na análise do código-fonte do sistema Slotify*  
+*Documento gerado com base na análise do código-fonte do sistema Slotfy*  
 *Data: Janeiro 2024*

@@ -1,10 +1,10 @@
 /**
- * Slotify Establishment Session Manager
+ * Slotfy Establishment Session Manager
  * Manages user sessions and access control for establishment users
  */
 class EstablishmentSessionManager {
     constructor() {
-        this.sessionKey = 'slotify_establishment_session';
+        this.sessionKey = 'slotfy_establishment_session';
         this.apiBaseUrl = '/api/establishment';
     }
 
