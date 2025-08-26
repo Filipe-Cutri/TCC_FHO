@@ -86,44 +86,142 @@
   </script>
 </head>
 <body>
+  <!-- Professional Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary fixed-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-navbar me-3">
+        <span class="fw-bold fs-4">Slotfy</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#recursos">Recursos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contato">Contato</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn btn-outline-light ms-2 px-3" href="#login">Entrar</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Enhanced Hero Section -->
+  <section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="row min-vh-100 align-items-center">
+        <div class="col-lg-6 hero-content">
+          <div class="hero-badge mb-4">
+            <i class="fas fa-star text-warning me-2"></i>
+            <span>Sistema de Agendamento #1 do Brasil</span>
+          </div>
+          <h1 class="hero-title mb-4">
+            Transforme seu
+            <span class="text-gradient">Salão</span>
+            com Tecnologia
+          </h1>
+          <p class="hero-subtitle mb-5">
+            Gerencie agendamentos, clientes e serviços de forma inteligente. 
+            Aumente sua produtividade e ofereça uma experiência excepcional aos seus clientes.
+          </p>
+          <div class="hero-cta d-flex flex-column flex-sm-row gap-3">
+            <button class="btn btn-primary btn-lg px-5 py-3" onclick="goToEstablishmentLogin()">
+              <i class="fas fa-rocket me-2"></i>
+              Começar Agora - Grátis
+            </button>
+            <button class="btn btn-outline-primary btn-lg px-5 py-3" onclick="goToClientLogin()">
+              <i class="fas fa-user me-2"></i>
+              Sou Cliente
+            </button>
+          </div>
+          <div class="hero-stats mt-5">
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Estabelecimentos</div>
+              </div>
+              <div class="col-4">
+                <div class="stat-number">10k+</div>
+                <div class="stat-label">Agendamentos</div>
+              </div>
+              <div class="col-4">
+                <div class="stat-number">4.9★</div>
+                <div class="stat-label">Avaliação</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 hero-visual">
+          <div class="hero-logo-container">
+            <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="hero-logo">
+            <div class="logo-glow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="main-content">
     <div class="container">
-      <div class="welcome-container">
+      <!-- Access Cards Section -->
+      <section id="login" class="access-section py-5">
         <div class="text-center mb-5">
-          <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-hero logo-fade-in mb-4">
-          <h1 class="welcome-title">Bem-vindo ao Slotfy</h1>
-          <p class="welcome-subtitle">Seu sistema de agendamento inteligente para barbearias e salões de beleza</p>
+          <h2 class="section-title">Como Posso Te Ajudar?</h2>
+          <p class="section-subtitle">Escolha sua categoria para acessar a plataforma</p>
         </div>
         
         <div class="row justify-content-center">
-          <div class="col-md-10 col-lg-8">
+          <div class="col-lg-10">
             <div class="row g-4">
-              <div class="col-md-6 mb-4">
-                <div class="card welcome-card h-100" onclick="goToClientLogin()">
-                  <div class="card-body">
-                    <div class="welcome-icon">
+              <div class="col-md-6">
+                <div class="access-card client-card" onclick="goToClientLogin()">
+                  <div class="card-header">
+                    <div class="card-icon client-icon">
                       <i class="fas fa-user-circle"></i>
                     </div>
+                    <div class="card-badge">Mais Popular</div>
+                  </div>
+                  <div class="card-body">
                     <h4 class="card-title">Sou Cliente</h4>
-                    <p class="card-text">Faça login para agendar seus serviços favoritos com os melhores profissionais</p>
-                    <button class="btn btn-client btn-lg btn-icon">
-                      <i class="fas fa-sign-in-alt"></i>
+                    <p class="card-text">Agende serviços com os melhores profissionais da sua região de forma rápida e segura</p>
+                    <ul class="card-features">
+                      <li><i class="fas fa-check"></i> Agendamento em tempo real</li>
+                      <li><i class="fas fa-check"></i> Notificações personalizadas</li>
+                      <li><i class="fas fa-check"></i> Histórico de serviços</li>
+                    </ul>
+                    <button class="btn btn-client btn-lg w-100">
+                      <i class="fas fa-sign-in-alt me-2"></i>
                       Entrar como Cliente
                     </button>
                   </div>
                 </div>
               </div>
               
-              <div class="col-md-6 mb-4">
-                <div class="card welcome-card h-100" onclick="goToEstablishmentLogin()">
-                  <div class="card-body">
-                    <div class="welcome-icon">
+              <div class="col-md-6">
+                <div class="access-card establishment-card" onclick="goToEstablishmentLogin()">
+                  <div class="card-header">
+                    <div class="card-icon establishment-icon">
                       <i class="fas fa-store-alt"></i>
                     </div>
+                    <div class="card-badge premium">Premium</div>
+                  </div>
+                  <div class="card-body">
                     <h4 class="card-title">Sou Estabelecimento</h4>
-                    <p class="card-text">Gerencie seus agendamentos, serviços e clientes de forma inteligente</p>
-                    <button class="btn btn-establishment btn-lg btn-icon">
-                      <i class="fas fa-cogs"></i>
+                    <p class="card-text">Gerencie seu negócio de forma inteligente e aumente sua produtividade</p>
+                    <ul class="card-features">
+                      <li><i class="fas fa-check"></i> Dashboard completo</li>
+                      <li><i class="fas fa-check"></i> Gestão de clientes</li>
+                      <li><i class="fas fa-check"></i> Relatórios detalhados</li>
+                    </ul>
+                    <button class="btn btn-establishment btn-lg w-100">
+                      <i class="fas fa-cogs me-2"></i>
                       Entrar como Estabelecimento
                     </button>
                   </div>
@@ -132,48 +230,254 @@
             </div>
           </div>
         </div>
+      </section>
         
-        <div class="features-section">
-          <h3 class="mb-4">Por que escolher o Slotfy?</h3>
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <div class="feature-item">
-                <i class="fas fa-calendar-check"></i>
-                <h5>Agendamento Inteligente</h5>
-                <p>Sistema intuitivo e rápido para marcar seus horários favoritos</p>
+      <!-- Enhanced Features Section -->
+      <section id="recursos" class="features-section py-5">
+        <div class="container">
+          <div class="text-center mb-5">
+            <h3 class="section-title">Por que escolher o Slotfy?</h3>
+            <p class="section-subtitle">Recursos profissionais para transformar seu negócio</p>
+          </div>
+          <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <h5 class="feature-title">Agendamento Inteligente</h5>
+                <p class="feature-description">Sistema intuitivo com sincronização em tempo real e prevenção de conflitos</p>
               </div>
             </div>
-            <div class="col-md-4 mb-3">
-              <div class="feature-item">
-                <i class="fas fa-mobile-alt"></i>
-                <h5>Mobile First</h5>
-                <p>Experiência otimizada para qualquer dispositivo, em qualquer lugar</p>
+            <div class="col-lg-4 col-md-6">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h5 class="feature-title">100% Mobile</h5>
+                <p class="feature-description">Funciona perfeitamente em qualquer dispositivo, online ou offline</p>
               </div>
             </div>
-            <div class="col-md-4 mb-3">
-              <div class="feature-item">
-                <i class="fas fa-bell"></i>
-                <h5>Notificações em Tempo Real</h5>
-                <p>Receba atualizações instantâneas sobre seus agendamentos</p>
+            <div class="col-lg-4 col-md-6">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-bell"></i>
+                </div>
+                <h5 class="feature-title">Notificações Smart</h5>
+                <p class="feature-description">Lembretes automáticos por WhatsApp, SMS e email</p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <h5 class="feature-title">Analytics Profissional</h5>
+                <p class="feature-description">Relatórios detalhados para otimizar seu negócio</p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <h5 class="feature-title">Segurança Total</h5>
+                <p class="feature-description">Seus dados protegidos com criptografia de banco</p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-headset"></i>
+                </div>
+                <h5 class="feature-title">Suporte 24/7</h5>
+                <p class="feature-description">Equipe especializada sempre pronta para ajudar</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section class="testimonials-section py-5">
+        <div class="container">
+          <div class="text-center mb-5">
+            <h3 class="section-title">O que nossos clientes dizem</h3>
+            <p class="section-subtitle">Histórias reais de sucesso</p>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="testimonial-card">
+                <div class="testimonial-content">
+                  <p>"O Slotfy revolucionou meu salão! Agora consigo gerenciar tudo de forma profissional e meus clientes adoram a facilidade."</p>
+                </div>
+                <div class="testimonial-author">
+                  <div class="author-avatar">
+                    <i class="fas fa-user-circle"></i>
+                  </div>
+                  <div class="author-info">
+                    <h6>Marina Silva</h6>
+                    <small>Salão Elegance - SP</small>
+                  </div>
+                </div>
+                <div class="testimonial-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="testimonial-card">
+                <div class="testimonial-content">
+                  <p>"Como cliente, adoro poder agendar meus cortes sem complicação. Super prático e nunca mais perdi um horário!"</p>
+                </div>
+                <div class="testimonial-author">
+                  <div class="author-avatar">
+                    <i class="fas fa-user-circle"></i>
+                  </div>
+                  <div class="author-info">
+                    <h6>Carlos Santos</h6>
+                    <small>Cliente desde 2023</small>
+                  </div>
+                </div>
+                <div class="testimonial-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="testimonial-card">
+                <div class="testimonial-content">
+                  <p>"Aumentei minha receita em 30% no primeiro mês! O sistema é simples e os clientes ficaram impressionados."</p>
+                </div>
+                <div class="testimonial-author">
+                  <div class="author-avatar">
+                    <i class="fas fa-user-circle"></i>
+                  </div>
+                  <div class="author-info">
+                    <h6>João Barber</h6>
+                    <small>Barbearia Modern - RJ</small>
+                  </div>
+                </div>
+                <div class="testimonial-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
   
   <!-- Enhanced Footer -->
-  <footer class="footer footer-enhanced">
+  <footer id="contato" class="footer footer-enhanced">
     <div class="container">
       <div class="row">
-        <div class="col-12 text-center">
-          <h5>Slotfy</h5>
-          <p>Transformando a forma como você agenda serviços de beleza. Conecte-se com os melhores profissionais da sua região de forma rápida e inteligente.</p>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="footer-brand">
+            <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-footer me-3">
+            <h5 class="mb-3">Slotfy</h5>
+          </div>
+          <p class="footer-description">
+            Transformando a forma como você agenda serviços de beleza. 
+            Conecte-se com os melhores profissionais da sua região de forma rápida e inteligente.
+          </p>
+          <div class="footer-social mt-4">
+            <h6 class="mb-3">Siga-nos</h6>
+            <div class="social-links">
+              <a href="#" aria-label="Facebook" class="social-link">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" aria-label="Instagram" class="social-link">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" aria-label="Twitter" class="social-link">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" aria-label="LinkedIn" class="social-link">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-2 col-md-6 mb-4">
+          <h6 class="footer-title">Plataforma</h6>
+          <ul class="footer-links">
+            <li><a href="#">Para Clientes</a></li>
+            <li><a href="#">Para Estabelecimentos</a></li>
+            <li><a href="#">Recursos</a></li>
+            <li><a href="#">Preços</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-2 col-md-6 mb-4">
+          <h6 class="footer-title">Suporte</h6>
+          <ul class="footer-links">
+            <li><a href="#">Central de Ajuda</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contato</a></li>
+            <li><a href="#">Status do Sistema</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+          <h6 class="footer-title">Contato</h6>
+          <div class="contact-info">
+            <div class="contact-item">
+              <i class="fas fa-envelope me-2"></i>
+              <span>contato@slotfy.com.br</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone me-2"></i>
+              <span>(11) 9999-9999</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              <span>São Paulo, SP - Brasil</span>
+            </div>
+          </div>
+          <div class="newsletter mt-3">
+            <h6 class="mb-2">Newsletter</h6>
+            <div class="input-group">
+              <input type="email" class="form-control" placeholder="Seu email">
+              <button class="btn btn-primary" type="button">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+      
+      <hr class="footer-divider">
+      
       <div class="footer-bottom">
-        <p>&copy; 2024 Slotfy. Todos os direitos reservados. | Desenvolvido com ❤️ para conectar pessoas.</p>
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2024 Slotfy. Todos os direitos reservados.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="footer-legal">
+              <a href="#">Política de Privacidade</a>
+              <span class="mx-2">|</span>
+              <a href="#">Termos de Uso</a>
+              <span class="mx-2">|</span>
+              <a href="#">Cookies</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
@@ -183,83 +487,117 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function goToClientLogin() {
-      window.location.href = 'pages/client/client-login.html';
+      window.location.href = '../cliente/login-enhanced.html';
     }
     
     function goToEstablishmentLogin() {
-      window.location.href = 'pages/establishment/establishment-login.html';
+      window.location.href = 'pages/establishment/establishment-login-enhanced.html';
     }
     
-    // Enhanced hover effects for cards with modern animations
-    document.querySelectorAll('.welcome-card').forEach((card, index) => {
-      card.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-12px) scale(1.02)';
-        this.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+    // Enhanced navigation behavior
+    document.addEventListener('DOMContentLoaded', function() {
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            const navHeight = document.querySelector('.navbar').offsetHeight;
+            const targetPosition = target.offsetTop - navHeight - 20;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+          }
+        });
       });
       
-      card.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) scale(1)';
-        this.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
-      });
-      
-      // Add stagger delay for animations
-      card.style.animationDelay = `${0.2 + (index * 0.2)}s`;
-    });
-    
-    // Enhanced feature items hover effects
-    document.querySelectorAll('.feature-item').forEach((item, index) => {
-      item.addEventListener('mouseenter', function() {
-        const icon = this.querySelector('i');
-        if (icon) {
-          icon.style.transform = 'scale(1.1) rotate(5deg)';
+      // Navbar background change on scroll
+      const navbar = document.querySelector('.navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 100) {
+          navbar.style.background = 'rgba(59, 130, 246, 0.95)';
+          navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+          navbar.style.background = 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%)';
+          navbar.style.backdropFilter = 'none';
         }
       });
       
-      item.addEventListener('mouseleave', function() {
-        const icon = this.querySelector('i');
-        if (icon) {
-          icon.style.transform = 'scale(1) rotate(0deg)';
-        }
+      // Enhanced card hover effects
+      document.querySelectorAll('.access-card').forEach((card, index) => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-10px) scale(1.02)';
+          this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0) scale(1)';
+          this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+        });
       });
-    });
-    
-    // Smooth scroll behavior for any anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
+      
+      // Feature cards animation
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+      
+      // Observe feature cards and testimonials
+      document.querySelectorAll('.feature-card, .testimonial-card').forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(el);
       });
-    });
-    
-    // Add loading state management
-    function setLoadingState(isLoading) {
-      document.body.classList.toggle('loading', isLoading);
-    }
-    
-    // Performance optimization: Lazy load animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
-        }
+      
+      // Counter animation for stats
+      function animateCounter(element, target) {
+        let current = 0;
+        const increment = target / 100;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          element.textContent = Math.floor(current) + (element.textContent.includes('+') ? '+' : '') + (element.textContent.includes('★') ? '★' : '');
+        }, 20);
+      }
+      
+      // Trigger counter animation when stats section is visible
+      const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            document.querySelectorAll('.stat-number').forEach((stat, index) => {
+              const text = stat.textContent;
+              let target = parseInt(text.replace(/[^\d]/g, ''));
+              if (text.includes('k+')) target *= 1000;
+              if (text.includes('.')) target = 4.9;
+              
+              setTimeout(() => {
+                animateCounter(stat, target);
+              }, index * 200);
+            });
+            statsObserver.disconnect();
+          }
+        });
       });
-    }, observerOptions);
-    
-    // Observe animated elements
-    document.querySelectorAll('[class*="animation"], .welcome-card, .feature-item').forEach(el => {
-      el.style.animationPlayState = 'paused';
-      observer.observe(el);
+      
+      const statsSection = document.querySelector('.hero-stats');
+      if (statsSection) {
+        statsObserver.observe(statsSection);
+      }
     });
   </script>
 </body>
