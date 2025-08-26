@@ -1,8 +1,8 @@
-# Resumo das Tabelas - Sistema Slotify
+# Resumo das Tabelas - Sistema Slotfy
 
 ## Lista Completa das Tabelas
 
-O sistema Slotify possui **6 tabelas principais** no banco de dados PostgreSQL:
+O sistema Slotfy possui **6 tabelas principais** no banco de dados PostgreSQL:
 
 ### 1. **`clients`**
 - **Propósito:** Armazenar dados dos clientes do sistema
@@ -82,4 +82,4 @@ APPOINTMENTS (tabela de conexão)
 
 ---
 
-*Esta documentação serve como base para criação do modelo lógico e físico do banco de dados do sistema Slotify.*
+*Esta documentação serve como base para criação do modelo lógico e físico do banco de dados do sistema Slotfy.*

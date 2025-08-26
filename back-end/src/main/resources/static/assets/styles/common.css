@@ -1,43 +1,43 @@
-/* Slotify - Modern UI/UX Design System */
+/* Slotfy - Modern UI/UX Design System */
 /* Inspired by Stripe and Airbnb design principles */
 
 /* ============================================ */
 /* CSS CUSTOM PROPERTIES - DESIGN TOKENS */
 /* ============================================ */
 :root {
-  /* Slotify Brand Colors */
-  --slotify-color-white: #fff;
-  --slotify-color-gray-25: #fafafa;
-  --slotify-color-gray-50: #f5f5f5;
-  --slotify-color-gray-100: #f0f0f0;
-  --slotify-color-gray-200: #e6e6e6;
-  --slotify-color-gray-300: #d5d5d5;
-  --slotify-color-gray-400: #afafaf;
-  --slotify-color-gray-500: #898989;
-  --slotify-color-gray-600: #737373;
-  --slotify-color-gray-700: #525252;
-  --slotify-color-gray-800: #363636;
-  --slotify-color-gray-900: #141414;
-  --slotify-color-black: #151618;
+  /* Slotfy Brand Colors */
+  --slotfy-color-white: #fff;
+  --slotfy-color-gray-25: #fafafa;
+  --slotfy-color-gray-50: #f5f5f5;
+  --slotfy-color-gray-100: #f0f0f0;
+  --slotfy-color-gray-200: #e6e6e6;
+  --slotfy-color-gray-300: #d5d5d5;
+  --slotfy-color-gray-400: #afafaf;
+  --slotfy-color-gray-500: #898989;
+  --slotfy-color-gray-600: #737373;
+  --slotfy-color-gray-700: #525252;
+  --slotfy-color-gray-800: #363636;
+  --slotfy-color-gray-900: #141414;
+  --slotfy-color-black: #151618;
   
-  /* Slotify Primary Brand Colors */
-  --slotify-color-primary: var(--slotify-color-black);
-  --slotify-color-primary-hover: var(--slotify-color-gray-800);
-  --slotify-color-primary-lt: #f5f5f5;
+  /* Slotfy Primary Brand Colors */
+  --slotfy-color-primary: var(--slotfy-color-black);
+  --slotfy-color-primary-hover: var(--slotfy-color-gray-800);
+  --slotfy-color-primary-lt: #f5f5f5;
   
-  /* Slotify Accent Colors */
-  --slotify-color-blue: #3b82f6;
-  --slotify-color-blue-hover: #2563eb;
-  --slotify-color-blue-lt: #eff6ff;
-  --slotify-color-green: #10b981;
-  --slotify-color-green-hover: #059669;
-  --slotify-color-green-lt: #ecfdf5;
-  --slotify-color-orange: #f59e0b;
-  --slotify-color-orange-hover: #d97706;
-  --slotify-color-orange-lt: #fffbeb;
-  --slotify-color-red: #ef4444;
-  --slotify-color-red-hover: #dc2626;
-  --slotify-color-red-lt: #fef2f2;
+  /* Slotfy Accent Colors */
+  --slotfy-color-blue: #3b82f6;
+  --slotfy-color-blue-hover: #2563eb;
+  --slotfy-color-blue-lt: #eff6ff;
+  --slotfy-color-green: #10b981;
+  --slotfy-color-green-hover: #059669;
+  --slotfy-color-green-lt: #ecfdf5;
+  --slotfy-color-orange: #f59e0b;
+  --slotfy-color-orange-hover: #d97706;
+  --slotfy-color-orange-lt: #fffbeb;
+  --slotfy-color-red: #ef4444;
+  --slotfy-color-red-hover: #dc2626;
+  --slotfy-color-red-lt: #fef2f2;
   
   /* Primary Color Palette - Sophisticated Blues */
   --color-primary-50: #eff6ff;

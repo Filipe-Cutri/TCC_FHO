@@ -1,6 +1,6 @@
-# Requisitos Implementados - Sistema Slotify
+# Requisitos Implementados - Sistema Slotfy
 
-Este documento apresenta uma análise completa dos requisitos funcionais, não funcionais e regras de negócio implementados no sistema Slotify - Sistema de Agendamento Inteligente para Barbearias e Salões.
+Este documento apresenta uma análise completa dos requisitos funcionais, não funcionais e regras de negócio implementados no sistema Slotfy - Sistema de Agendamento Inteligente para Barbearias e Salões.
 
 ## 📋 REQUISITOS FUNCIONAIS IMPLEMENTADOS
 
@@ -311,5 +311,5 @@ Este documento apresenta uma análise completa dos requisitos funcionais, não f
 
 ---
 
-*Documento gerado através da análise do código-fonte do sistema Slotify*  
+*Documento gerado através da análise do código-fonte do sistema Slotfy*  
 *Última atualização: Janeiro 2024*

@@ -2,7 +2,7 @@
 -- SCRIPT DE CRIAÇÃO DAS TABELAS - SISTEMA SLOTIFY
 -- =====================================================
 -- Base de dados: PostgreSQL
--- Sistema: Slotify - Sistema de Agendamento
+-- Sistema: Slotfy - Sistema de Agendamento
 -- Versão: 1.0
 -- =====================================================
 
