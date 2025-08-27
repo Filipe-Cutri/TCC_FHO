@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <!-- SEO Meta Tags -->
-  <title>Login de Cliente - Slotfy</title>
-  <meta name="description" content="Faça login em sua conta Slotfy para agendar serviços com os melhores profissionais de beleza da sua região.">
+  <title>Login do Estabelecimento - Slotfy</title>
+  <meta name="description" content="Acesse o painel do seu estabelecimento no Slotfy para gerenciar agendamentos, serviços e clientes de forma inteligente.">
   <meta name="robots" content="noindex, nofollow">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Login de Cliente - Slotfy">
-  <meta property="og:description" content="Entre em sua conta para agendar seus serviços favoritos">
+  <meta property="og:title" content="Login do Estabelecimento - Slotfy">
+  <meta property="og:description" content="Sistema completo de gestão para barbeiros, cabeleireiros e salões">
   <meta property="og:site_name" content="Slotfy">
   
   <!-- PWA Meta Tags -->
@@ -21,7 +21,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Slotfy">
-  <meta name="theme-color" content="#3b82f6">
+  <meta name="theme-color" content="#0ea5e9">
   
   <!-- Favicon and App Icons -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -40,10 +40,10 @@
   <link rel="stylesheet" href="../src/assets/styles/welcome.css">
   <link rel="stylesheet" href="../src/assets/styles/logo-system.css">
   <style>
-    /* Auth Page Specific Styles */
+    /* Auth Page Specific Styles for Establishment */
     body {
       padding-top: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
       min-height: 100vh;
       position: relative;
       overflow-x: hidden;
@@ -94,12 +94,12 @@
     }
     
     .auth-logo-container {
-      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
       padding: 1.5rem;
       border-radius: 20px;
       display: inline-block;
       margin-bottom: 1.5rem;
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
     }
     
     .auth-logo {
@@ -108,7 +108,7 @@
     }
     
     .auth-title {
-      background: linear-gradient(135deg, #1e40af 0%, #0369a1 100%);
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -137,8 +137,8 @@
     }
     
     .form-floating .form-control:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
       background: #ffffff;
     }
     
@@ -148,8 +148,8 @@
       padding: 1.25rem 1rem;
     }
     
-    .btn-auth-primary {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    .btn-auth-establishment {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
       color: white;
       border: none;
       padding: 1rem 2rem;
@@ -158,13 +158,13 @@
       font-size: 1rem;
       width: 100%;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
     }
     
-    .btn-auth-primary:hover {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    .btn-auth-establishment:hover {
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
       color: white;
     }
     
@@ -174,7 +174,7 @@
     }
     
     .auth-links a {
-      color: #3b82f6;
+      color: #0ea5e9;
       text-decoration: none;
       font-weight: 500;
       transition: all 0.3s ease;
@@ -185,8 +185,8 @@
     }
     
     .auth-links a:hover {
-      color: #2563eb;
-      background: rgba(59, 130, 246, 0.1);
+      color: #0369a1;
+      background: rgba(14, 165, 233, 0.1);
     }
     
     .back-link {
@@ -227,7 +227,7 @@
     }
     
     .feature-item i {
-      color: #06b6d4;
+      color: #10b981;
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
     }
@@ -268,35 +268,35 @@
               <div class="auth-logo-container">
                 <img src="../src/assets/logo-slotfy.png" alt="Slotfy Logo" class="auth-logo">
               </div>
-              <h1 class="auth-title">Bem-vindo de volta</h1>
-              <p class="auth-subtitle">Faça login para agendar seus serviços favoritos</p>
+              <h1 class="auth-title">Área do Estabelecimento</h1>
+              <p class="auth-subtitle">Gerencie seus agendamentos e serviços de forma inteligente</p>
             </div>
             
             <!-- Login Form -->
             <form id="loginForm">
               <div class="form-floating">
                 <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com" required>
-                <label for="email">📧 E-mail</label>
+                <label for="email">🏪 E-mail do Estabelecimento</label>
               </div>
               
               <div class="form-floating">
                 <input type="password" class="form-control" id="senha" placeholder="Sua senha" required>
-                <label for="senha">🔒 Senha</label>
+                <label for="senha">🔐 Senha</label>
               </div>
               
-              <button type="submit" class="btn btn-auth-primary">
-                <i class="fas fa-sign-in-alt me-2"></i>
-                Entrar na Plataforma
+              <button type="submit" class="btn btn-auth-establishment">
+                <i class="fas fa-store me-2"></i>
+                Acessar Dashboard
               </button>
             </form>
             
             <!-- Auth Links -->
             <div class="auth-links">
-              <a href="forgot-password.html">
+              <a href="forgot-password-estab.html">
                 Esqueceu a senha? Clique aqui
               </a>
-              <a href="register.html">
-                Não tem cadastro? Crie sua conta aqui
+              <a href="register-estab.html">
+                Não tem cadastro? Cadastre seu estabelecimento
               </a>
               <a href="../src/index.html" class="back-link">
                 ← Voltar ao início
@@ -307,21 +307,21 @@
           <!-- Additional Features Info -->
           <div class="auth-features">
             <p class="auth-features-title">
-              <i class="fas fa-shield-alt me-2" style="color: #10b981;"></i>
-              Seus dados estão protegidos com criptografia de ponta
+              <i class="fas fa-chart-line me-2" style="color: #10b981;"></i>
+              Gerencie seu negócio com ferramentas profissionais
             </p>
             <div class="features-grid">
               <div class="feature-item">
-                <i class="fas fa-calendar-check"></i>
-                <span>Agendamento<br>Rápido</span>
-              </div>
-              <div class="feature-item">
-                <i class="fas fa-bell"></i>
-                <span>Notificações<br>Inteligentes</span>
+                <i class="fas fa-chart-line"></i>
+                <span>Relatórios<br>Detalhados</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-users"></i>
-                <span>Profissionais<br>Qualificados</span>
+                <span>Gestão de<br>Clientes</span>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-calendar"></i>
+                <span>Agenda<br>Inteligente</span>
               </div>
             </div>
           </div>
@@ -352,19 +352,19 @@
       }
       
       // Add loading state
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Entrando...';
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Acessando...';
       submitBtn.disabled = true;
       
       // Simulate login process (replace with actual API call)
       setTimeout(() => {
         // For demo purposes, simulate success
-        alert('Login realizado com sucesso! Redirecionando...');
+        alert('Login realizado com sucesso! Redirecionando para o dashboard...');
         
         // In a real application, you would:
         // 1. Make API call to authenticate
         // 2. Store user session/token
-        // 3. Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // 3. Redirect to establishment dashboard
+        window.location.href = 'dashboard-estab.html';
       }, 2000);
     });
     

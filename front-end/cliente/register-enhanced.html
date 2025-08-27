@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <!-- SEO Meta Tags -->
-  <title>Login de Cliente - Slotfy</title>
-  <meta name="description" content="Faça login em sua conta Slotfy para agendar serviços com os melhores profissionais de beleza da sua região.">
+  <title>Cadastro de Cliente - Slotfy</title>
+  <meta name="description" content="Cadastre-se no Slotfy para agendar serviços com os melhores profissionais de beleza da sua região.">
   <meta name="robots" content="noindex, nofollow">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Login de Cliente - Slotfy">
-  <meta property="og:description" content="Entre em sua conta para agendar seus serviços favoritos">
+  <meta property="og:title" content="Cadastro de Cliente - Slotfy">
+  <meta property="og:description" content="Crie sua conta para agendar seus serviços favoritos">
   <meta property="og:site_name" content="Slotfy">
   
   <!-- PWA Meta Tags -->
@@ -74,6 +74,7 @@
       align-items: center;
       position: relative;
       z-index: 2;
+      padding: 2rem 0;
     }
     
     .auth-card {
@@ -84,7 +85,7 @@
       padding: 3rem 2.5rem;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       width: 100%;
-      max-width: 450px;
+      max-width: 500px;
       margin: 2rem auto;
     }
     
@@ -238,6 +239,12 @@
       display: block;
     }
     
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
     /* Mobile optimizations */
     @media (max-width: 768px) {
       .auth-card {
@@ -254,6 +261,11 @@
         grid-template-columns: 1fr;
         gap: 0.75rem;
       }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
     }
   </style>
 </head>
@@ -261,42 +273,68 @@
   <div class="auth-container">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
+        <div class="col-md-8 col-lg-6">
           <div class="auth-card">
             <!-- Auth Header -->
             <div class="auth-header">
               <div class="auth-logo-container">
                 <img src="../src/assets/logo-slotfy.png" alt="Slotfy Logo" class="auth-logo">
               </div>
-              <h1 class="auth-title">Bem-vindo de volta</h1>
-              <p class="auth-subtitle">Faça login para agendar seus serviços favoritos</p>
+              <h1 class="auth-title">Criar Nova Conta</h1>
+              <p class="auth-subtitle">Cadastre-se para agendar seus serviços favoritos</p>
             </div>
             
-            <!-- Login Form -->
-            <form id="loginForm">
+            <!-- Registration Form -->
+            <form id="registerForm">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="nome" placeholder="Nome completo" required>
+                <label for="nome">👤 Nome completo</label>
+              </div>
+              
               <div class="form-floating">
                 <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com" required>
                 <label for="email">📧 E-mail</label>
               </div>
               
+              <div class="form-row">
+                <div class="form-floating">
+                  <input type="tel" class="form-control" id="telefone" placeholder="(11) 99999-9999" required>
+                  <label for="telefone">📱 Telefone</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="date" class="form-control" id="nascimento">
+                  <label for="nascimento">🎂 Nascimento</label>
+                </div>
+              </div>
+              
               <div class="form-floating">
-                <input type="password" class="form-control" id="senha" placeholder="Sua senha" required>
+                <input type="password" class="form-control" id="senha" placeholder="Senha" required>
                 <label for="senha">🔒 Senha</label>
               </div>
               
+              <div class="form-floating">
+                <input type="password" class="form-control" id="confirmarSenha" placeholder="Confirmar senha" required>
+                <label for="confirmarSenha">🔐 Confirmar senha</label>
+              </div>
+              
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="termos" required>
+                <label class="form-check-label" for="termos">
+                  Aceito os <a href="#" class="text-primary">Termos de Uso</a> e <a href="#" class="text-primary">Política de Privacidade</a>
+                </label>
+              </div>
+              
               <button type="submit" class="btn btn-auth-primary">
-                <i class="fas fa-sign-in-alt me-2"></i>
-                Entrar na Plataforma
+                <i class="fas fa-user-plus me-2"></i>
+                Criar Minha Conta
               </button>
             </form>
             
             <!-- Auth Links -->
             <div class="auth-links">
-              <a href="forgot-password.html">
-                Esqueceu a senha? Clique aqui
-              </a>
-              <a href="register.html">
-                Não tem cadastro? Crie sua conta aqui
+              <a href="login.html">
+                Já tem uma conta? Faça login aqui
               </a>
               <a href="../src/index.html" class="back-link">
                 ← Voltar ao início
@@ -307,21 +345,21 @@
           <!-- Additional Features Info -->
           <div class="auth-features">
             <p class="auth-features-title">
-              <i class="fas fa-shield-alt me-2" style="color: #10b981;"></i>
-              Seus dados estão protegidos com criptografia de ponta
+              <i class="fas fa-star me-2" style="color: #10b981;"></i>
+              Junte-se a milhares de clientes satisfeitos
             </p>
             <div class="features-grid">
               <div class="feature-item">
                 <i class="fas fa-calendar-check"></i>
-                <span>Agendamento<br>Rápido</span>
+                <span>Agendamentos<br>Simples</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-bell"></i>
-                <span>Notificações<br>Inteligentes</span>
+                <span>Lembretes<br>Automáticos</span>
               </div>
               <div class="feature-item">
-                <i class="fas fa-users"></i>
-                <span>Profissionais<br>Qualificados</span>
+                <i class="fas fa-heart"></i>
+                <span>Favoritos<br>Salvos</span>
               </div>
             </div>
           </div>
@@ -337,35 +375,62 @@
   
   <script>
     // Enhanced form handling
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
+      const nome = document.getElementById('nome').value.trim();
       const email = document.getElementById('email').value.trim();
+      const telefone = document.getElementById('telefone').value.trim();
       const senha = document.getElementById('senha').value.trim();
+      const confirmarSenha = document.getElementById('confirmarSenha').value.trim();
+      const termos = document.getElementById('termos').checked;
       const submitBtn = this.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       
       // Validate fields
-      if (!email || !senha) {
+      if (!nome || !email || !telefone || !senha || !confirmarSenha) {
         alert('Por favor, preencha todos os campos obrigatórios.');
         return;
       }
       
+      if (senha !== confirmarSenha) {
+        alert('As senhas não coincidem. Por favor, verifique.');
+        return;
+      }
+      
+      if (senha.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      
+      if (!termos) {
+        alert('Você deve aceitar os Termos de Uso e Política de Privacidade.');
+        return;
+      }
+      
       // Add loading state
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Entrando...';
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Criando conta...';
       submitBtn.disabled = true;
       
-      // Simulate login process (replace with actual API call)
+      // Simulate registration process (replace with actual API call)
       setTimeout(() => {
         // For demo purposes, simulate success
-        alert('Login realizado com sucesso! Redirecionando...');
+        alert('Conta criada com sucesso! Redirecionando para login...');
         
         // In a real application, you would:
-        // 1. Make API call to authenticate
-        // 2. Store user session/token
-        // 3. Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // 1. Make API call to create account
+        // 2. Handle validation errors
+        // 3. Redirect to login or dashboard
+        window.location.href = 'login.html';
       }, 2000);
+    });
+    
+    // Phone number formatting
+    document.getElementById('telefone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+      value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+      e.target.value = value;
     });
     
     // Add smooth animations
