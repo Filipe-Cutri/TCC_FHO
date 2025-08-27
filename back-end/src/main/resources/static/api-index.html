@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Slotfy API - Backend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo {
+            color: #2563eb;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .api-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .api-info h3 {
+            margin-top: 0;
+        }
+        .endpoint {
+            font-family: monospace;
+            background: #e5e7eb;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px 0;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">Slotfy</div>
+        <p class="subtitle">Sistema de Agendamento Inteligente - API Backend</p>
+        
+        <p>Este é o backend API do sistema Slotfy. Para acessar a aplicação frontend, use um dos links abaixo:</p>
+        
+        <a href="/index.html" class="btn">Frontend Principal</a>
+        <a href="/api/info" class="btn">Informações da API</a>
+        
+        <div class="api-info">
+            <h3>📡 Endpoints da API</h3>
+            <code class="endpoint">GET /api/health - Status do sistema</code>
+            <code class="endpoint">POST /api/client/login - Login de cliente</code>
+            <code class="endpoint">POST /api/client/register - Registro de cliente</code>
+            <code class="endpoint">POST /api/establishment/login - Login de estabelecimento</code>
+            <code class="endpoint">POST /api/establishment/register - Registro de estabelecimento</code>
+            <code class="endpoint">POST /api/client/forgot-password - Recuperar senha do cliente</code>
+            <code class="endpoint">POST /api/establishment/forgot-password - Recuperar senha do estabelecimento</code>
+        </div>
+        
+        <div class="api-info">
+            <h3>🏗️ Arquitetura</h3>
+            <p><strong>Backend:</strong> Spring Boot (Java 17)</p>
+            <p><strong>Frontend:</strong> HTML, CSS, JavaScript</p>
+            <p><strong>Banco de Dados:</strong> PostgreSQL</p>
+        </div>
+    </div>
+    
+    <script>
+        // Redirect to frontend after 5 seconds if accessed directly
+        setTimeout(() => {
+            if (confirm('Deseja ser redirecionado para o frontend?')) {
+                window.location.href = '/index.html';
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
