@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <!-- Basic Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <!-- SEO Meta Tags -->
+  <title>Cadastro de Estabelecimento - Slotfy</title>
+  <meta name="description" content="Cadastre seu estabelecimento no Slotfy para gerenciar agendamentos, serviços e clientes de forma inteligente.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Cadastro de Estabelecimento - Slotfy">
+  <meta property="og:description" content="Registre seu negócio e transforme sua gestão">
+  <meta property="og:site_name" content="Slotfy">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Slotfy">
+  <meta name="theme-color" content="#0ea5e9">
+  
+  <!-- Favicon and App Icons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" href="../assets/favicon-slotfy.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Stylesheets -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../src/assets/styles/common.css">
+  <link rel="stylesheet" href="../src/assets/styles/welcome.css">
+  <link rel="stylesheet" href="../src/assets/styles/logo-system.css">
+  <style>
+    /* Auth Page Specific Styles for Establishment */
+    body {
+      padding-top: 0;
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>'),
+        linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+      animation: heroFloat 20s ease-in-out infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes heroFloat {
+      0%, 100% { transform: translateX(-10px) translateY(-5px); }
+      50% { transform: translateX(10px) translateY(5px); }
+    }
+    
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      padding: 2rem 0;
+    }
+    
+    .auth-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    
+    .auth-logo-container {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+      padding: 1.5rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+    }
+    
+    .auth-logo {
+      filter: brightness(0) invert(1);
+      max-height: 40px;
+    }
+    
+    .auth-title {
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2rem;
+      font-weight: var(--font-weight-bold);
+      margin-bottom: 0.5rem;
+    }
+    
+    .auth-subtitle {
+      color: var(--color-neutral-600);
+      font-size: 1.125rem;
+      margin-bottom: 0;
+    }
+    
+    .form-floating {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-floating .form-control {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+    
+    .form-floating .form-control:focus {
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      background: #ffffff;
+    }
+    
+    .form-floating label {
+      color: #6b7280;
+      font-weight: 500;
+      padding: 1.25rem 1rem;
+    }
+    
+    .btn-auth-establishment {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+    
+    .btn-auth-establishment:hover {
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
+      color: white;
+    }
+    
+    .auth-links {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    
+    .auth-links a {
+      color: #0ea5e9;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: block;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+    
+    .auth-links a:hover {
+      color: #0369a1;
+      background: rgba(14, 165, 233, 0.1);
+    }
+    
+    .back-link {
+      color: #6b7280 !important;
+      font-size: 0.875rem;
+    }
+    
+    .back-link:hover {
+      color: #374151 !important;
+      background: rgba(107, 114, 128, 0.1) !important;
+    }
+    
+    .auth-features {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+    
+    .auth-features-title {
+      color: #374151;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    
+    .feature-item {
+      text-align: center;
+    }
+    
+    .feature-item i {
+      color: #10b981;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .feature-item span {
+      font-size: 0.75rem;
+      color: #6b7280;
+      display: block;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .section-title {
+      color: #374151;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 2rem 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .auth-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+        border-radius: 20px;
+      }
+      
+      .auth-title {
+        font-size: 1.75rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+          <div class="auth-card">
+            <!-- Auth Header -->
+            <div class="auth-header">
+              <div class="auth-logo-container">
+                <img src="../src/assets/logo-slotfy.png" alt="Slotfy Logo" class="auth-logo">
+              </div>
+              <h1 class="auth-title">Cadastrar Estabelecimento</h1>
+              <p class="auth-subtitle">Transforme a gestão do seu negócio com nossa plataforma</p>
+            </div>
+            
+            <!-- Registration Form -->
+            <form id="registerForm">
+              <!-- Informações Básicas -->
+              <h3 class="section-title">🏪 Informações do Estabelecimento</h3>
+              
+              <div class="form-floating">
+                <input type="text" class="form-control" id="nomeEstabelecimento" placeholder="Nome do estabelecimento" required>
+                <label for="nomeEstabelecimento">🏪 Nome do estabelecimento</label>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-floating">
+                  <select class="form-control" id="tipoEstabelecimento" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="barbearia">Barbearia</option>
+                    <option value="salao_beleza">Salão de Beleza</option>
+                    <option value="estetica">Clínica de Estética</option>
+                    <option value="spa">Spa</option>
+                    <option value="nail_designer">Nail Designer</option>
+                    <option value="outro">Outro</option>
+                  </select>
+                  <label for="tipoEstabelecimento">🏢 Tipo de estabelecimento</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="cnpj" placeholder="00.000.000/0001-00">
+                  <label for="cnpj">📋 CNPJ (opcional)</label>
+                </div>
+              </div>
+              
+              <div class="form-floating">
+                <textarea class="form-control" id="descricao" placeholder="Descrição do estabelecimento" style="height: 100px;"></textarea>
+                <label for="descricao">📝 Descrição (opcional)</label>
+              </div>
+              
+              <!-- Contato -->
+              <h3 class="section-title">📞 Informações de Contato</h3>
+              
+              <div class="form-row">
+                <div class="form-floating">
+                  <input type="email" class="form-control" id="email" placeholder="contato@estabelecimento.com" required>
+                  <label for="email">📧 E-mail</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="tel" class="form-control" id="telefone" placeholder="(11) 99999-9999" required>
+                  <label for="telefone">📱 Telefone</label>
+                </div>
+              </div>
+              
+              <!-- Endereço -->
+              <h3 class="section-title">📍 Endereço</h3>
+              
+              <div class="form-row">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="cep" placeholder="00000-000">
+                  <label for="cep">📮 CEP</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="cidade" placeholder="Cidade">
+                  <label for="cidade">🏙️ Cidade</label>
+                </div>
+              </div>
+              
+              <div class="form-floating">
+                <input type="text" class="form-control" id="endereco" placeholder="Rua, número e complemento">
+                <label for="endereco">🏠 Endereço completo</label>
+              </div>
+              
+              <!-- Responsável -->
+              <h3 class="section-title">👤 Responsável pela Conta</h3>
+              
+              <div class="form-row">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="nomeResponsavel" placeholder="Nome do responsável" required>
+                  <label for="nomeResponsavel">👤 Nome do responsável</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="cpfResponsavel" placeholder="000.000.000-00">
+                  <label for="cpfResponsavel">🆔 CPF</label>
+                </div>
+              </div>
+              
+              <!-- Senha -->
+              <h3 class="section-title">🔐 Acesso à Plataforma</h3>
+              
+              <div class="form-row">
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="senha" placeholder="Senha" required>
+                  <label for="senha">🔒 Senha</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="confirmarSenha" placeholder="Confirmar senha" required>
+                  <label for="confirmarSenha">🔐 Confirmar senha</label>
+                </div>
+              </div>
+              
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="termos" required>
+                <label class="form-check-label" for="termos">
+                  Aceito os <a href="#" class="text-primary">Termos de Uso</a>, <a href="#" class="text-primary">Política de Privacidade</a> e autorizo o processamento dos dados.
+                </label>
+              </div>
+              
+              <button type="submit" class="btn btn-auth-establishment">
+                <i class="fas fa-store me-2"></i>
+                Cadastrar Estabelecimento
+              </button>
+            </form>
+            
+            <!-- Auth Links -->
+            <div class="auth-links">
+              <a href="login-estab.html">
+                Já tem uma conta? Faça login aqui
+              </a>
+              <a href="../src/index.html" class="back-link">
+                ← Voltar ao início
+              </a>
+            </div>
+          </div>
+          
+          <!-- Additional Features Info -->
+          <div class="auth-features">
+            <p class="auth-features-title">
+              <i class="fas fa-rocket me-2" style="color: #10b981;"></i>
+              Transforme seu negócio com ferramentas profissionais
+            </p>
+            <div class="features-grid">
+              <div class="feature-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Dashboard<br>Completo</span>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-users-cog"></i>
+                <span>Gestão de<br>Equipe</span>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-mobile-alt"></i>
+                <span>App<br>Mobile</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Enhanced form handling
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const requiredFields = ['nomeEstabelecimento', 'tipoEstabelecimento', 'email', 'telefone', 'nomeResponsavel', 'senha', 'confirmarSenha'];
+      const senha = document.getElementById('senha').value.trim();
+      const confirmarSenha = document.getElementById('confirmarSenha').value.trim();
+      const termos = document.getElementById('termos').checked;
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      // Validate required fields
+      for (let fieldId of requiredFields) {
+        if (!document.getElementById(fieldId).value.trim()) {
+          alert('Por favor, preencha todos os campos obrigatórios.');
+          document.getElementById(fieldId).focus();
+          return;
+        }
+      }
+      
+      if (senha !== confirmarSenha) {
+        alert('As senhas não coincidem. Por favor, verifique.');
+        return;
+      }
+      
+      if (senha.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      
+      if (!termos) {
+        alert('Você deve aceitar os Termos de Uso e Política de Privacidade.');
+        return;
+      }
+      
+      // Add loading state
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Cadastrando...';
+      submitBtn.disabled = true;
+      
+      // Simulate registration process (replace with actual API call)
+      setTimeout(() => {
+        // For demo purposes, simulate success
+        alert('Estabelecimento cadastrado com sucesso! Redirecionando para login...');
+        
+        // In a real application, you would:
+        // 1. Make API call to create establishment
+        // 2. Handle validation errors
+        // 3. Send confirmation email
+        // 4. Redirect to login or verification page
+        window.location.href = 'login-estab.html';
+      }, 3000);
+    });
+    
+    // Phone number formatting
+    document.getElementById('telefone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+      value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+      e.target.value = value;
+    });
+    
+    // CNPJ formatting
+    document.getElementById('cnpj').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+      value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      value = value.replace(/(\d{4})(\d)/, '$1-$2');
+      e.target.value = value;
+    });
+    
+    // CPF formatting
+    document.getElementById('cpfResponsavel').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');
+      value = value.replace(/(\d{3})(\d{1,2})/, '$1-$2');
+      e.target.value = value;
+    });
+    
+    // CEP formatting and lookup
+    document.getElementById('cep').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+      e.target.value = value;
+      
+      // If CEP is complete, try to fetch address
+      if (value.length === 9) {
+        fetchAddressByCEP(value.replace('-', ''));
+      }
+    });
+    
+    function fetchAddressByCEP(cep) {
+      if (cep.length === 8) {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+          .then(response => response.json())
+          .then(data => {
+            if (!data.erro) {
+              document.getElementById('cidade').value = data.localidade + ' - ' + data.uf;
+              document.getElementById('endereco').value = data.logradouro;
+            }
+          })
+          .catch(error => console.log('Erro ao buscar CEP:', error));
+      }
+    }
+    
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate card entrance
+      const authCard = document.querySelector('.auth-card');
+      authCard.style.opacity = '0';
+      authCard.style.transform = 'translateY(30px)';
+      authCard.style.transition = 'all 0.6s ease';
+      
+      setTimeout(() => {
+        authCard.style.opacity = '1';
+        authCard.style.transform = 'translateY(0)';
+      }, 100);
+      
+      // Animate features
+      const features = document.querySelector('.auth-features');
+      features.style.opacity = '0';
+      features.style.transform = 'translateY(20px)';
+      features.style.transition = 'all 0.6s ease 0.3s';
+      
+      setTimeout(() => {
+        features.style.opacity = '1';
+        features.style.transform = 'translateY(0)';
+      }, 500);
+    });
+  </script>
+</body>
+</html>
