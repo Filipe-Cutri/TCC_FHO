@@ -19,7 +19,14 @@ public class RootController {
     
     @GetMapping("/")
     public String index() {
-        return "index.html";
+        // Serve the main frontend application
+        return "forward:/index.html";
+    }
+    
+    @GetMapping("/api")
+    public String apiIndex() {
+        // Serve the API information page
+        return "api-index.html";
     }
     
     @GetMapping("/api/info")

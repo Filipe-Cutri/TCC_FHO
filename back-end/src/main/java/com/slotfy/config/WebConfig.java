@@ -22,9 +22,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Configure static resource handling
+        // Configure static resource handling to serve frontend from frontend directory
         registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/")
+                .addResourceLocations("file:front-end/src/", "classpath:/static/")
                 .setCachePeriod(3600)
                 .resourceChain(true);
     }
