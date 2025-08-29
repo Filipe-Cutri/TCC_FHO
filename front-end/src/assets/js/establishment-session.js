@@ -238,11 +238,17 @@ window.establishmentSession = new EstablishmentSessionManager();
 
 // Auto-initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Check page access
-    window.establishmentSession.checkPageAccess();
+    const currentPage = window.location.pathname.split('/').pop();
+    const loginPages = ['establishment-login-enhanced.html', 'login-estab-enhanced.html'];
     
-    // Update navigation
-    window.establishmentSession.updateNavigation();
+    // Skip page access check on login pages to prevent infinite redirect
+    if (!loginPages.includes(currentPage)) {
+        // Check page access
+        window.establishmentSession.checkPageAccess();
+        
+        // Update navigation
+        window.establishmentSession.updateNavigation();
+    }
     
     // Add logout handlers
     document.querySelectorAll('a[href="establishment-login-enhanced.html"]').forEach(link => {
