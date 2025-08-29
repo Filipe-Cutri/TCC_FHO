@@ -93,7 +93,7 @@ class ClientSessionManager {
      */
     requireAuth() {
         if (!this.isLoggedIn()) {
-            window.location.href = 'client-login.html';
+            window.location.href = 'legacy/login-enhanced.html';
             return false;
         }
         return true;
@@ -130,7 +130,7 @@ class ClientSessionManager {
      */
     logout() {
         this.clearSession();
-        window.location.href = 'client-login.html';
+        window.location.href = 'legacy/login-enhanced.html';
     }
 
     /**
@@ -147,7 +147,7 @@ class ClientSessionManager {
         });
 
         // Show/hide login/logout buttons
-        const loginButtons = document.querySelectorAll('a[href="client-login.html"]:not(.logout-btn)');
+        const loginButtons = document.querySelectorAll('a[href="legacy/login-enhanced.html"]:not(.logout-btn)');
         const logoutButtons = document.querySelectorAll('.logout-btn');
 
         loginButtons.forEach(btn => {
@@ -167,7 +167,7 @@ class ClientSessionManager {
     redirectIfLoggedIn() {
         if (this.isLoggedIn()) {
             const currentPage = window.location.pathname.split('/').pop();
-            if (currentPage === 'client-login.html' || currentPage === 'client-register.html') {
+            if (currentPage === 'legacy/login-enhanced.html' || currentPage === 'client-register.html') {
                 window.location.href = 'client-dashboard.html';
             }
         }
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.clientSession.redirectIfLoggedIn();
     
     // Add logout handlers for client logout buttons
-    document.querySelectorAll('.logout-btn, a[href="client-login.html"]').forEach(link => {
+    document.querySelectorAll('.logout-btn, a[href="legacy/login-enhanced.html"]').forEach(link => {
         if (link.textContent.includes('Sair') || link.innerHTML.includes('sign-out') || link.classList.contains('logout-btn')) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
