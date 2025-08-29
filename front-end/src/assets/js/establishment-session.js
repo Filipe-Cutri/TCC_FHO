@@ -93,7 +93,7 @@ class EstablishmentSessionManager {
      */
     requireAuth() {
         if (!this.isLoggedIn()) {
-            window.location.href = 'establishment-login.html';
+            window.location.href = 'establishment-login-enhanced.html';
             return false;
         }
         return true;
@@ -206,7 +206,7 @@ class EstablishmentSessionManager {
      */
     logout() {
         this.clearSession();
-        window.location.href = 'establishment-login.html';
+        window.location.href = 'establishment-login-enhanced.html';
     }
 
     /**
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.establishmentSession.updateNavigation();
     
     // Add logout handlers
-    document.querySelectorAll('a[href="establishment-login.html"]').forEach(link => {
+    document.querySelectorAll('a[href="establishment-login-enhanced.html"]').forEach(link => {
         if (link.textContent.includes('Sair') || link.innerHTML.includes('sign-out')) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
