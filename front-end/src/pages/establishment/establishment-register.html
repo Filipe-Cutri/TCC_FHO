@@ -12,43 +12,10 @@
   <link rel="stylesheet" href="../../assets/styles/common.css">
   <link rel="stylesheet" href="../../assets/styles/welcome.css">
   <link rel="stylesheet" href="../../assets/styles/logo-system.css">
-  <style>
-    /* Additional styles for fixed navbar */
-    body {
-      padding-top: 80px;
-      font-family: 'Inter', sans-serif;
-    }
-    
-    .navbar {
-      transition: all 0.3s ease;
-    }
-    
-    .main-content {
-      min-height: calc(100vh - 80px);
-    }
-    
-    .register-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 24px !important;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .register-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 50%, #8b5cf6 100%);
-    }
-  </style>
+  <link rel="stylesheet" href="../../assets/styles/auth-styles.css">
+  <link rel="stylesheet" href="../../assets/styles/utilities.css">
 </head>
-<body>
+<body class="auth-page establishment-auth fixed-navbar">
   <!-- Modern Header/Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top">
     <div class="container">
@@ -78,11 +45,11 @@
         </ul>
         
         <div class="navbar-nav">
-          <a class="nav-link btn me-2" href="../client/client-login.html" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500;">
+          <a class="nav-link btn me-2 btn-client-login" href="../client/client-login.html">
             <i class="fas fa-user me-1"></i>
             Login Cliente
           </a>
-          <a class="nav-link btn" href="establishment-login-enhanced.html" style="background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500;">
+          <a class="nav-link btn btn-establishment-login" href="establishment-login-enhanced.html">
             <i class="fas fa-store me-1"></i>
             Login Estabelecimento
           </a>
@@ -90,52 +57,52 @@
       </div>
     </div>
   </nav>
-<div class="body-content" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #faf5ff 100%); min-height: calc(100vh - 80px);">
+<div class="body-content bg-body-content min-height-screen">
   <div class="main-content">
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
           <div class="card register-card">
-            <div class="card-body" style="padding: 40px;">
+            <div class="card-body padding-card">
               <div class="text-center mb-4">
                 <div style="background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%); padding: 20px; border-radius: 20px; display: inline-block; margin-bottom: 20px;">
                   <img src="../../assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-lg mb-0" style="filter: brightness(0) invert(1);">
                 </div>
-                <h2 style="background: linear-gradient(135deg, #0369a1 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">Cadastro do Estabelecimento</h2>
-                <p style="color: #6b7280; font-size: 16px;">Expanda seu negócio com nossa plataforma! 🚀</p>
+                <h2 class="title-gradient">Cadastro do Estabelecimento</h2>
+                <p class="text-muted-styled">Expanda seu negócio com nossa plataforma! 🚀</p>
               </div>
               <form>
-                <div class="mb-3" style="margin-bottom: 24px;">
-                  <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">🏢 Tipo de Estabelecimento</label>
-                  <select class="form-control" id="tipoEstabelecimento" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                <div class="form-group-styled">
+                  <label class="form-label-styled">🏢 Tipo de Estabelecimento</label>
+                  <select class="form-control-styled" id="tipoEstabelecimento" required>
                     <option value="">Selecione o tipo de estabelecimento</option>
                     <option value="barbearia">💈 Barbearia</option>
                     <option value="salao">💇‍♀️ Salão de Beleza</option>
                   </select>
                 </div>
-                <div class="mb-3" style="margin-bottom: 24px;">
-                  <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">🏪 Nome do Estabelecimento</label>
-                  <input type="text" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                <div class="form-group-styled">
+                  <label class="form-label-styled">🏪 Nome do Estabelecimento</label>
+                  <input type="text" class="form-control-styled" required>
                 </div>
-                <div class="mb-3" style="margin-bottom: 24px;">
-                  <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">📧 E-mail Comercial</label>
-                  <input type="email" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                <div class="form-group-styled">
+                  <label class="form-label-styled">📧 E-mail Comercial</label>
+                  <input type="email" class="form-control-styled" required>
                 </div>
-                <div class="mb-3" style="margin-bottom: 24px;">
-                  <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">📞 Telefone Comercial</label>
-                  <input type="text" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                <div class="form-group-styled">
+                  <label class="form-label-styled">📞 Telefone Comercial</label>
+                  <input type="text" class="form-control-styled" required>
                 </div>
-                <div class="mb-3" style="margin-bottom: 32px;">
-                  <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">🔐 Senha</label>
-                  <input type="password" class="form-control" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#0ea5e9'; this.style.boxShadow='0 0 0 3px rgba(14, 165, 233, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                <div class="form-group-styled">
+                  <label class="form-label-styled">🔐 Senha</label>
+                  <input type="password" class="form-control-styled" required>
                 </div>
-                <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none; color: white; font-weight: 600; padding: 16px; border-radius: 12px; box-shadow: 0 8px 25px -8px rgba(139, 92, 246, 0.5); transition: all 0.3s ease; font-size: 16px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px -8px rgba(139, 92, 246, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px -8px rgba(139, 92, 246, 0.5)'">
+                <button type="submit" class="btn-register-establishment">>
                   <i class="fas fa-store me-2"></i>
                   Registrar Estabelecimento
                 </button>
                 <div class="mt-4 text-center">
-                  <p style="color: #6b7280; margin-bottom: 8px;">Já tem uma conta?</p>
-                  <a href="establishment-login-enhanced.html" style="color: #0ea5e9; text-decoration: none; font-weight: 600; padding: 8px 16px; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#eff6ff'" onmouseout="this.style.backgroundColor='transparent'">
+                  <p class="text-muted-styled mb-2">Já tem uma conta?</p>
+                  <a href="establishment-login-enhanced.html" class="link-styled">>
                     <i class="fas fa-sign-in-alt me-1"></i>
                     Fazer Login
                   </a>
@@ -146,24 +113,24 @@
           
           <!-- Business Benefits Section -->
           <div class="text-center mt-4">
-            <div style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-radius: 16px; padding: 20px; border: 1px solid rgba(255, 255, 255, 0.2);">
-              <h6 style="color: #374151; font-weight: 600; margin-bottom: 16px;">💼 Benefícios para seu estabelecimento</h6>
-              <div style="display: flex; justify-content: space-around; gap: 15px;">
-                <div style="text-align: center;">
-                  <i class="fas fa-chart-line" style="color: #0ea5e9; font-size: 20px;"></i>
-                  <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">Aumento<br>de Vendas</p>
+            <div class="benefits-card">
+              <h6 class="benefits-title">💼 Benefícios para seu estabelecimento</h6>
+              <div class="benefits-grid">
+                <div class="text-center-aligned">
+                  <i class="fas fa-chart-line icon-revenue"></i>
+                  <p class="text-feature-small">Aumento<br>de Vendas</p>
                 </div>
-                <div style="text-align: center;">
-                  <i class="fas fa-calendar-check" style="color: #8b5cf6; font-size: 20px;"></i>
-                  <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">Gestão<br>Automatizada</p>
+                <div class="text-center-aligned">
+                  <i class="fas fa-calendar-check icon-feature"></i>
+                  <p class="text-feature-small">Gestão<br>Automatizada</p>
                 </div>
-                <div style="text-align: center;">
-                  <i class="fas fa-users" style="color: #06b6d4; font-size: 20px;"></i>
-                  <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">Mais<br>Clientes</p>
+                <div class="text-center-aligned">
+                  <i class="fas fa-users icon-clients"></i>
+                  <p class="text-feature-small">Mais<br>Clientes</p>
                 </div>
-                <div style="text-align: center;">
-                  <i class="fas fa-mobile-alt" style="color: #10b981; font-size: 20px;"></i>
-                  <p style="font-size: 12px; color: #6b7280; margin: 5px 0 0 0;">App<br>Moderno</p>
+                <div class="text-center-aligned">
+                  <i class="fas fa-mobile-alt icon-mobile"></i>
+                  <p class="text-feature-small">App<br>Moderno</p>
                 </div>
               </div>
             </div>
