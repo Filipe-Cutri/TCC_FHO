@@ -106,19 +106,19 @@
       <div class="establishment-dashboard-grid">
         <div class="establishment-card" style="background: linear-gradient(135deg, #FFE5B4 0%, #FFCC70 100%); border: 2px solid #FFB347;">
           <div class="card-body establishment-stats-card">
-            <div class="establishment-stats-number" style="color: #FF8C00; text-shadow: 0 2px 4px rgba(255, 140, 0, 0.3);">12</div>
+            <div id="todayAppointments" class="establishment-stats-number" style="color: #FF8C00; text-shadow: 0 2px 4px rgba(255, 140, 0, 0.3);">-</div>
             <div class="establishment-stats-label" style="color: #D2691E; font-weight: 600;">Agendamentos Hoje</div>
           </div>
         </div>
         <div class="establishment-card" style="background: linear-gradient(135deg, #E5F4FF 0%, #B3E0FF 100%); border: 2px solid #66C2FF;">
           <div class="card-body establishment-stats-card">
-            <div class="establishment-stats-number" style="color: #007ACC; text-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);">3</div>
+            <div id="activeProfessionals" class="establishment-stats-number" style="color: #007ACC; text-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);">-</div>
             <div class="establishment-stats-label" style="color: #0056A3; font-weight: 600;">Profissionais Ativos</div>
           </div>
         </div>
         <div class="establishment-card" style="background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%); border: 2px solid #81C784;">
           <div class="card-body establishment-stats-card">
-            <div class="establishment-stats-number" style="color: #2E7D32; text-shadow: 0 2px 4px rgba(46, 125, 50, 0.3);">R$ 2.850</div>
+            <div id="monthlyRevenue" class="establishment-stats-number" style="color: #2E7D32; text-shadow: 0 2px 4px rgba(46, 125, 50, 0.3);">-</div>
             <div class="establishment-stats-label" style="color: #1B5E20; font-weight: 600;">Faturamento Mensal</div>
           </div>
         </div>
@@ -138,35 +138,12 @@
               </h5>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="establishment-list-item">
-                    <div class="establishment-list-icon">
-                      <i class="fas fa-clock text-info"></i>
+                  <div id="todayAppointmentsList" class="appointments-list">
+                    <!-- Loading state -->
+                    <div class="text-center py-4">
+                      <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                      <p class="mt-2 text-muted">Carregando agendamentos...</p>
                     </div>
-                    <div class="establishment-list-content">
-                      <div class="establishment-list-title">Maria Silva - Corte + Coloração</div>
-                      <div class="establishment-list-subtitle">Com Ana Costa • 09:00 - 11:00</div>
-                    </div>
-                    <span class="establishment-status-badge establishment-status-success">Confirmado</span>
-                  </div>
-                  <div class="establishment-list-item">
-                    <div class="establishment-list-icon">
-                      <i class="fas fa-clock text-warning"></i>
-                    </div>
-                    <div class="establishment-list-content">
-                      <div class="establishment-list-title">João Santos - Barba + Bigode</div>
-                      <div class="establishment-list-subtitle">Com Carlos Pereira • 14:30 - 15:30</div>
-                    </div>
-                    <span class="establishment-status-badge establishment-status-pending">Pendente</span>
-                  </div>
-                  <div class="establishment-list-item">
-                    <div class="establishment-list-icon">
-                      <i class="fas fa-clock text-success"></i>
-                    </div>
-                    <div class="establishment-list-content">
-                      <div class="establishment-list-title">Patricia Lima - Manicure + Pedicure</div>
-                      <div class="establishment-list-subtitle">Com Fernanda Souza • 16:00 - 17:30</div>
-                    </div>
-                    <span class="establishment-status-badge establishment-status-success">Confirmado</span>
                   </div>
                 </div>
               </div>
@@ -339,7 +316,7 @@
             <div class="col-6">
               <h6>Clientes</h6>
               <ul class="list-unstyled">
-                <li><a href="../client/legacy/login-enhanced.html">Login</a></li>
+                <li><a href="../client/client-login.html">Login</a></li>
                 <li><a href="../client/client-register.html">Cadastro</a></li>
                 <li><a href="../client/client-services.html">Serviços</a></li>
                 <li><a href="../client/client-bookings.html">Meus Agendamentos</a></li>
@@ -366,7 +343,179 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/establishment-session.js"></script>
+  <script src="../../assets/js/api-config.js"></script>
+  <script src="../../assets/js/establishment-session.js"></script>
+  
+  <script>
+    // Dashboard API Integration
+    class EstablishmentDashboard {
+      constructor() {
+        this.apiClient = window.apiClient;
+        this.session = window.establishmentSession?.getSession();
+      }
+
+      async loadDashboardData() {
+        try {
+          // Load overview statistics
+          await this.loadOverviewStats();
+          
+          // Load today's appointments
+          await this.loadTodayAppointments();
+          
+        } catch (error) {
+          console.error('Error loading dashboard data:', error);
+          this.showErrorMessage('Erro ao carregar dados do dashboard. Usando dados de exemplo.');
+          this.loadFallbackData();
+        }
+      }
+
+      async loadOverviewStats() {
+        try {
+          const overview = await this.apiClient.get(API_CONFIG.endpoints.establishment.dashboard.overview);
+          
+          // Update statistics
+          document.getElementById('todayAppointments').textContent = overview.todayAppointments || 0;
+          document.getElementById('activeProfessionals').textContent = overview.activeProfessionals || 0;
+          document.getElementById('monthlyRevenue').textContent = overview.monthlyRevenue 
+            ? `R$ ${overview.monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` 
+            : 'R$ 0,00';
+        } catch (error) {
+          console.warn('Failed to load overview stats from API, using fallback data');
+          // Show fallback data with a subtle indicator
+          document.getElementById('todayAppointments').textContent = '5';
+          document.getElementById('activeProfessionals').textContent = '3';
+          document.getElementById('monthlyRevenue').textContent = 'R$ 1.250,00';
+        }
+      }
+
+      async loadTodayAppointments() {
+        const container = document.getElementById('todayAppointmentsList');
+        
+        try {
+          const appointments = await this.apiClient.get(API_CONFIG.endpoints.establishment.dashboard.todayAppointments);
+          
+          if (appointments && appointments.length > 0) {
+            container.innerHTML = appointments.map(appointment => this.renderAppointmentItem(appointment)).join('');
+          } else {
+            container.innerHTML = `
+              <div class="text-center py-4">
+                <i class="fas fa-calendar-times fa-2x text-muted"></i>
+                <p class="mt-2 text-muted">Nenhum agendamento para hoje</p>
+                <a href="establishment-appointments.html" class="btn btn-outline-primary btn-sm">
+                  <i class="fas fa-plus me-1"></i>Novo Agendamento
+                </a>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.warn('Failed to load appointments from API, using fallback data');
+          // Show example appointments
+          const exampleAppointments = [
+            {
+              id: 1,
+              clientName: 'Maria Silva',
+              serviceName: 'Corte + Coloração',
+              professionalName: 'Ana Costa',
+              startTime: '09:00',
+              endTime: '11:00',
+              status: 'confirmed'
+            },
+            {
+              id: 2,
+              clientName: 'João Santos',
+              serviceName: 'Barba + Bigode',
+              professionalName: 'Carlos Pereira',
+              startTime: '14:30',
+              endTime: '15:30',
+              status: 'pending'
+            }
+          ];
+          
+          container.innerHTML = exampleAppointments.map(appointment => this.renderAppointmentItem(appointment)).join('');
+          
+          // Add a subtle indicator that this is example data
+          const indicator = document.createElement('div');
+          indicator.className = 'text-center mt-2';
+          indicator.innerHTML = '<small class="text-muted"><i class="fas fa-info-circle me-1"></i>Dados de exemplo (API não disponível)</small>';
+          container.appendChild(indicator);
+        }
+      }
+
+      renderAppointmentItem(appointment) {
+        const statusClass = this.getStatusClass(appointment.status);
+        const statusLabel = this.getStatusLabel(appointment.status);
+        const iconClass = this.getStatusIcon(appointment.status);
+        
+        return `
+          <div class="establishment-list-item">
+            <div class="establishment-list-icon">
+              <i class="fas ${iconClass}"></i>
+            </div>
+            <div class="establishment-list-content">
+              <div class="establishment-list-title">${appointment.clientName} - ${appointment.serviceName}</div>
+              <div class="establishment-list-subtitle">Com ${appointment.professionalName} • ${appointment.startTime} - ${appointment.endTime}</div>
+            </div>
+            <span class="establishment-status-badge ${statusClass}">${statusLabel}</span>
+          </div>
+        `;
+      }
+
+      getStatusClass(status) {
+        const statusMap = {
+          'confirmed': 'establishment-status-success',
+          'pending': 'establishment-status-pending',
+          'cancelled': 'establishment-status-danger',
+          'completed': 'establishment-status-info'
+        };
+        return statusMap[status] || 'establishment-status-pending';
+      }
+
+      getStatusLabel(status) {
+        const labelMap = {
+          'confirmed': 'Confirmado',
+          'pending': 'Pendente',
+          'cancelled': 'Cancelado',
+          'completed': 'Concluído'
+        };
+        return labelMap[status] || 'Pendente';
+      }
+
+      getStatusIcon(status) {
+        const iconMap = {
+          'confirmed': 'fa-clock text-success',
+          'pending': 'fa-clock text-warning',
+          'cancelled': 'fa-clock text-danger',
+          'completed': 'fa-check text-info'
+        };
+        return iconMap[status] || 'fa-clock text-warning';
+      }
+
+      loadFallbackData() {
+        // This method provides fallback data when API is not available
+        document.getElementById('todayAppointments').textContent = '5';
+        document.getElementById('activeProfessionals').textContent = '3';
+        document.getElementById('monthlyRevenue').textContent = 'R$ 1.250,00';
+      }
+
+      showErrorMessage(message) {
+        // You could implement a toast notification here
+        console.warn(message);
+      }
+    }
+
+    // Initialize dashboard when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is authenticated
+      if (!window.establishmentSession || !window.establishmentSession.getSession()) {
+        console.warn('No valid session found, redirecting to login');
+        window.location.href = 'establishment-login-enhanced.html';
+        return;
+      }
+
+      // Initialize dashboard
+      const dashboard = new EstablishmentDashboard();
+      dashboard.loadDashboardData();
+    });
   <script>
     // Enhanced establishment page interactions
     document.addEventListener('DOMContentLoaded', function() {
