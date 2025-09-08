@@ -57,8 +57,10 @@
   <link rel="canonical" href="https://slotfy.com/">
   
   <!-- Stylesheets -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/styles/common.css">
   <link rel="stylesheet" href="assets/styles/welcome.css">
   <link rel="stylesheet" href="assets/styles/logo-system.css">
@@ -86,12 +88,12 @@
   </script>
 </head>
 <body>
-  <!-- Professional Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary fixed-top">
+  <!-- Enhanced Navigation -->
+  <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="#">
+      <a class="navbar-brand" href="#">
         <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-navbar me-3">
-        <span class="fw-bold fs-4">Slotfy</span>
+        Slotfy
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -108,43 +110,43 @@
             <a class="nav-link" href="#contato">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-light ms-2 px-3" href="#login">Entrar</a>
+            <button class="btn btn-nav-primary ms-2" onclick="goToEstablishmentLogin()">Entrar</button>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Enhanced Hero Section -->
+  <!-- Revolutionary Hero Section -->
   <section class="hero-section">
     <div class="hero-overlay"></div>
     <div class="container">
       <div class="row min-vh-100 align-items-center">
         <div class="col-lg-6 hero-content">
-          <div class="hero-badge mb-4">
+          <div class="hero-badge">
             <i class="fas fa-star text-warning me-2"></i>
             <span>Sistema de Agendamento #1 do Brasil</span>
           </div>
-          <h1 class="hero-title mb-4">
+          <h1 class="hero-title">
             Transforme seu
-            <span class="text-gradient">Salão</span>
+            <span class="text-gradient" data-text="Salão">Salão</span>
             com Tecnologia
           </h1>
-          <p class="hero-subtitle mb-5">
+          <p class="hero-subtitle">
             Gerencie agendamentos, clientes e serviços de forma inteligente. 
             Aumente sua produtividade e ofereça uma experiência excepcional aos seus clientes.
           </p>
-          <div class="hero-cta d-flex flex-column flex-sm-row gap-3">
-            <button class="btn btn-primary btn-lg px-5 py-3" onclick="goToEstablishmentLogin()">
+          <div class="hero-cta">
+            <button class="btn btn-hero-primary me-3" onclick="goToEstablishmentLogin()">
               <i class="fas fa-rocket me-2"></i>
               Começar Agora - Grátis
             </button>
-            <button class="btn btn-outline-primary btn-lg px-5 py-3" onclick="goToClientLogin()">
+            <button class="btn btn-hero-secondary" onclick="goToClientLogin()">
               <i class="fas fa-user me-2"></i>
               Sou Cliente
             </button>
           </div>
-          <div class="hero-stats mt-5">
+          <div class="hero-stats">
             <div class="row text-center">
               <div class="col-4">
                 <div class="stat-number">500+</div>
@@ -169,6 +171,11 @@
         </div>
       </div>
     </div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
   </section>
 
   <div class="main-content">
