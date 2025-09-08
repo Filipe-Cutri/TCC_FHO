@@ -133,7 +133,7 @@ class NavigationManager {
      * Navigate to establishment login page
      */
     static goToEstablishmentLogin() {
-        window.location.href = 'pages/establishment/establishment-login.html';
+        window.location.href = 'pages/establishment/establishment-login-enhanced.html';
     }
     
     /**
