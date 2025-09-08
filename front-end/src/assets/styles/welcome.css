@@ -2080,3 +2080,32 @@ html {
         animation: none;
     }
 }
+
+/* ============================================ */
+/* INLINE STYLE CLASSES FOR BETTER SEPARATION */
+/* ============================================ */
+
+/* Icon styles for replacing inline styles */
+.icon-star {
+    color: #fbbf24;
+    margin-right: 0.5rem;
+}
+
+.icon-rocket,
+.icon-user,
+.icon-settings,
+.icon-clipboard,
+.icon-gear {
+    margin-right: 0.5rem;
+}
+
+.feature-icon-large {
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-check {
+    color: #4facfe;
+    margin-right: 0.75rem;
+}
+}
