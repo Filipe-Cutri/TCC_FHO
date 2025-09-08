@@ -1,12 +1,18 @@
 package com.slotfy.controller;
 
+import com.slotfy.dto.EstablishmentRegisterRequest;
+import com.slotfy.dto.EstablishmentRegisterResponse;
+import com.slotfy.model.Establishment;
 import com.slotfy.model.EstablishmentUser;
 import com.slotfy.model.UserRole;
+import com.slotfy.service.EstablishmentService;
 import com.slotfy.service.EstablishmentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,10 +22,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/establishment")
 @CrossOrigin(originPatterns = "*")
+@Validated
 public class EstablishmentAuthController {
     
     @Autowired
     private EstablishmentUserService establishmentUserService;
+    
+    @Autowired
+    private EstablishmentService establishmentService;
     
     /**
      * Login endpoint for establishment users
@@ -92,6 +102,51 @@ public class EstablishmentAuthController {
                     "success", false,
                     "message", "Erro interno do servidor"
                 ));
+        }
+    }
+    
+    /**
+     * Complete establishment registration endpoint
+     */
+    @PostMapping("/register-complete")
+    public ResponseEntity<EstablishmentRegisterResponse> registerComplete(@Valid @RequestBody EstablishmentRegisterRequest request) {
+        try {
+            // First, create the establishment
+            Establishment establishment = establishmentService.createEstablishment(
+                request.getNomeEstabelecimento(),
+                request.getEmail(),
+                request.getTelefone(),
+                null, // address - not provided in frontend form
+                null, // description - not provided in frontend form
+                request.getCategory(),
+                null  // cnpj - not provided in frontend form
+            );
+            
+            // Then, create the admin user for this establishment
+            EstablishmentUser adminUser = establishmentUserService.createUser(
+                "Administrador", // default name since not provided in form
+                request.getEmail(),
+                request.getSenha(),
+                UserRole.ADMIN,
+                establishment.getId()
+            );
+            
+            return ResponseEntity.ok(new EstablishmentRegisterResponse(
+                true,
+                "Estabelecimento registrado com sucesso!",
+                establishment.getId(),
+                adminUser.getId(),
+                establishment.getName(),
+                adminUser.getEmail(),
+                adminUser.getRole().getDescription()
+            ));
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(new EstablishmentRegisterResponse(false, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(new EstablishmentRegisterResponse(false, "Erro interno do servidor"));
         }
     }
     
