@@ -71,10 +71,10 @@
                 <h2 class="title-gradient">Cadastro do Estabelecimento</h2>
                 <p class="text-muted-styled">Expanda seu negócio com nossa plataforma! 🚀</p>
               </div>
-              <form>
+              <form id="establishmentRegisterForm">
                 <div class="form-group-styled">
                   <label class="form-label-styled">🏢 Tipo de Estabelecimento</label>
-                  <select class="form-control-styled" id="tipoEstabelecimento" required>
+                  <select class="form-control-styled" id="tipoEstabelecimento" name="tipoEstabelecimento" required>
                     <option value="">Selecione o tipo de estabelecimento</option>
                     <option value="barbearia">💈 Barbearia</option>
                     <option value="salao">💇‍♀️ Salão de Beleza</option>
@@ -82,21 +82,21 @@
                 </div>
                 <div class="form-group-styled">
                   <label class="form-label-styled">🏪 Nome do Estabelecimento</label>
-                  <input type="text" class="form-control-styled" required>
+                  <input type="text" class="form-control-styled" id="nomeEstabelecimento" name="nomeEstabelecimento" required>
                 </div>
                 <div class="form-group-styled">
                   <label class="form-label-styled">📧 E-mail Comercial</label>
-                  <input type="email" class="form-control-styled" required>
+                  <input type="email" class="form-control-styled" id="email" name="email" required>
                 </div>
                 <div class="form-group-styled">
                   <label class="form-label-styled">📞 Telefone Comercial</label>
-                  <input type="text" class="form-control-styled" required>
+                  <input type="text" class="form-control-styled" id="telefone" name="telefone" required>
                 </div>
                 <div class="form-group-styled">
                   <label class="form-label-styled">🔐 Senha</label>
-                  <input type="password" class="form-control-styled" required>
+                  <input type="password" class="form-control-styled" id="senha" name="senha" required>
                 </div>
-                <button type="submit" class="btn-register-establishment">>
+                <button type="submit" class="btn-register-establishment">
                   <i class="fas fa-store me-2"></i>
                   Registrar Estabelecimento
                 </button>
@@ -203,9 +203,61 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    $('form').on('submit', function(e) {
+    $('#establishmentRegisterForm').on('submit', function(e) {
       e.preventDefault();
-      window.location.href = 'dashboard-estab.html';
+      
+      // Get form data
+      const formData = {
+        tipoEstabelecimento: $('#tipoEstabelecimento').val(),
+        nomeEstabelecimento: $('#nomeEstabelecimento').val(),
+        email: $('#email').val(),
+        telefone: $('#telefone').val(),
+        senha: $('#senha').val()
+      };
+      
+      // Validate required fields
+      if (!formData.tipoEstabelecimento || !formData.nomeEstabelecimento || 
+          !formData.email || !formData.telefone || !formData.senha) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+      }
+      
+      // Validate password length
+      if (formData.senha.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      
+      // Show loading state
+      const submitBtn = $('button[type="submit"]');
+      const originalText = submitBtn.html();
+      submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Registrando...').prop('disabled', true);
+      
+      // Submit to backend
+      $.ajax({
+        url: 'http://localhost:8080/api/establishment/register-complete',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+          if (response.success) {
+            alert('Estabelecimento registrado com sucesso!');
+            window.location.href = 'establishment-dashboard.html';
+          } else {
+            alert('Erro: ' + response.message);
+          }
+        },
+        error: function(xhr) {
+          let errorMessage = 'Erro interno do servidor';
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            errorMessage = xhr.responseJSON.message;
+          }
+          alert('Erro: ' + errorMessage);
+        },
+        complete: function() {
+          submitBtn.html(originalText).prop('disabled', false);
+        }
+      });
     });
   </script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
