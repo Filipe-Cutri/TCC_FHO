@@ -64,6 +64,7 @@
   <link rel="stylesheet" href="assets/styles/common.css">
   <link rel="stylesheet" href="assets/styles/welcome.css">
   <link rel="stylesheet" href="assets/styles/logo-system.css">
+  <link rel="stylesheet" href="assets/styles/custom-improvements.css">
 
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -92,7 +93,7 @@
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-navbar me-3">
+        <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-xl me-3">
         Slotfy
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -130,13 +131,9 @@
           <h1 class="hero-title">
             Transforme seu
             <span class="text-gradient" data-text="Salão">Salão</span>
-            com Tecnologia
           </h1>
-          <p class="hero-subtitle">
-            Gerencie agendamentos, clientes e serviços de forma inteligente. 
           <p class="hero-subtitle mb-5">
             Gerencie agendamentos, clientes e serviços de forma inteligente.
-            Aumente sua produtividade e ofereça uma experiência excepcional aos seus clientes.
           </p>
           <div class="hero-cta">
             <button class="btn btn-hero-primary me-3" onclick="goToEstablishmentLogin()">
@@ -167,7 +164,7 @@
         </div>
         <div class="col-lg-6 hero-visual">
           <div class="hero-logo-container">
-            <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="hero-logo">
+            <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="hero-logo logo-2xl">
             <div class="logo-glow"></div>
           </div>
         </div>
@@ -264,15 +261,6 @@
             <div class="col-lg-4 col-md-6">
               <div class="feature-card">
                 <div class="feature-icon">
-                  <span style="color: white; font-size: 2rem;">📱</span>
-                </div>
-                <h5 class="feature-title">100% Mobile</h5>
-                <p class="feature-description">Funciona perfeitamente em qualquer dispositivo, online ou offline</p>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-              <div class="feature-card">
-                <div class="feature-icon">
                   <span style="color: white; font-size: 2rem;">🔔</span>
                 </div>
                 <h5 class="feature-title">Notificações Smart</h5>
@@ -295,15 +283,6 @@
                 </div>
                 <h5 class="feature-title">Segurança Total</h5>
                 <p class="feature-description">Seus dados protegidos com criptografia de banco</p>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-              <div class="feature-card">
-                <div class="feature-icon">
-                  <span style="color: white; font-size: 2rem;">🎧</span>
-                </div>
-                <h5 class="feature-title">Suporte 24/7</h5>
-                <p class="feature-description">Equipe especializada sempre pronta para ajudar</p>
               </div>
             </div>
           </div>
@@ -331,7 +310,7 @@
                 </div>
                 <div class="pricing-price">
                   <span class="price-currency">R$</span>
-                  <span class="price-value">29</span>
+                  <span class="price-value">19,90</span>
                   <span class="price-period">/mês</span>
                 </div>
                 <div class="pricing-features">
@@ -359,12 +338,12 @@
                   <div class="pricing-icon">
                     <i class="fas fa-crown"></i>
                   </div>
-                  <h4 class="pricing-title">Professional</h4>
+                  <h4 class="pricing-title">Growth</h4>
                   <p class="pricing-subtitle">Para crescer sem limites</p>
                 </div>
                 <div class="pricing-price">
                   <span class="price-currency">R$</span>
-                  <span class="price-value">79</span>
+                  <span class="price-value">59,99</span>
                   <span class="price-period">/mês</span>
                 </div>
                 <div class="pricing-features">
@@ -380,7 +359,7 @@
                 </div>
                 <div class="pricing-action">
                   <button class="btn btn-pricing-professional" onclick="goToEstablishmentRegister()">
-                    Escolher Professional
+                    Escolher Growth
                   </button>
                 </div>
               </div>
@@ -393,22 +372,21 @@
                   <div class="pricing-icon">
                     <i class="fas fa-building"></i>
                   </div>
-                  <h4 class="pricing-title">Enterprise</h4>
+                  <h4 class="pricing-title">Infinity</h4>
                   <p class="pricing-subtitle">Para redes e franquias</p>
                 </div>
                 <div class="pricing-price">
                   <span class="price-currency">R$</span>
-                  <span class="price-value">199</span>
+                  <span class="price-value">99,90</span>
                   <span class="price-period">/mês</span>
                 </div>
                 <div class="pricing-features">
                   <ul>
-                    <li><i class="fas fa-check"></i> Tudo do Professional</li>
+                    <li><i class="fas fa-check"></i> Tudo do Growth</li>
                     <li><i class="fas fa-check"></i> Profissionais ilimitados</li>
                     <li><i class="fas fa-check"></i> Múltiplas unidades</li>
                     <li><i class="fas fa-check"></i> API personalizada</li>
                     <li><i class="fas fa-check"></i> Dashboard executivo</li>
-                    <li><i class="fas fa-check"></i> Suporte 24/7</li>
                     <li><i class="fas fa-check"></i> Gerente de conta</li>
                   </ul>
                 </div>
@@ -531,14 +509,13 @@
   <footer id="contato" class="footer footer-enhanced">
     <div class="container">
       <div class="row">
-        <div class="col-lg-4 col-md-6 mb-4">
+        <div class="col-lg-6 col-md-6 mb-4">
           <div class="footer-brand">
-            <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-footer me-3">
+            <img src="assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-xl me-3">
             <h5 class="mb-3">Slotfy</h5>
           </div>
           <p class="footer-description">
             Transformando a forma como você agenda serviços de beleza.
-            Conecte-se com os melhores profissionais da sua região de forma rápida e inteligente.
           </p>
           <div class="footer-social mt-4">
             <h6 class="mb-3">Siga-nos</h6>
@@ -559,27 +536,7 @@
           </div>
         </div>
 
-        <div class="col-lg-2 col-md-6 mb-4">
-          <h6 class="footer-title">Plataforma</h6>
-          <ul class="footer-links">
-            <li><a href="#">Para Clientes</a></li>
-            <li><a href="#">Para Estabelecimentos</a></li>
-            <li><a href="#">Recursos</a></li>
-            <li><a href="#precos">Preços</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-md-6 mb-4">
-          <h6 class="footer-title">Suporte</h6>
-          <ul class="footer-links">
-            <li><a href="#">Central de Ajuda</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Contato</a></li>
-            <li><a href="#">Status do Sistema</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-4">
+        <div class="col-lg-6 col-md-6 mb-4">
           <h6 class="footer-title">Contato</h6>
           <div class="contact-info">
             <div class="contact-item">
@@ -589,19 +546,6 @@
             <div class="contact-item">
               <i class="fas fa-phone me-2"></i>
               <span>(11) 9999-9999</span>
-            </div>
-            <div class="contact-item">
-              <i class="fas fa-map-marker-alt me-2"></i>
-              <span>São Paulo, SP - Brasil</span>
-            </div>
-          </div>
-          <div class="newsletter mt-3">
-            <h6 class="mb-2">Newsletter</h6>
-            <div class="input-group">
-              <input type="email" class="form-control" placeholder="Seu email">
-              <button class="btn btn-primary" type="button">
-                <i class="fas fa-paper-plane"></i>
-              </button>
             </div>
           </div>
         </div>
