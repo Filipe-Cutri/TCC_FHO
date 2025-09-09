@@ -3,7 +3,6 @@ package com.slotfy.service;
 import com.slotfy.model.Client;
 import com.slotfy.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,68 +11,81 @@ import java.util.Optional;
  * Service for managing client users
  */
 @Service
-public class ClientService extends BaseService<Client, Long> {
+public class ClientService extends BaseAuthService<Client, ClientRepository> {
     
     @Autowired
     private ClientRepository clientRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     
     public ClientService(ClientRepository repository) {
         super(repository);
         this.clientRepository = repository;
     }
     
-    /**
-     * Authenticate client with email and password
-     */
-    public Optional<Client> authenticate(String email, String password) {
-        Optional<Client> client = clientRepository.findByEmailAndActive(email, true);
-        
-        if (client.isPresent() && passwordEncoder.matches(password, client.get().getPassword())) {
-            return client;
-        }
-        
-        return Optional.empty();
+    @Override
+    protected String getEntityPassword(Client entity) {
+        return entity.getPassword();
+    }
+    
+    @Override
+    protected Optional<Client> findActiveByEmail(String email) {
+        return clientRepository.findByEmailAndActive(email, true);
+    }
+    
+    @Override
+    protected boolean checkEmailExists(String email) {
+        return clientRepository.existsByEmail(email);
     }
     
     /**
      * Find client by email
      */
+    @Override
     public Optional<Client> findByEmail(String email) {
         return clientRepository.findByEmail(email);
     }
     
     /**
-     * Check if email exists
-     */
-    public boolean emailExists(String email) {
-        return clientRepository.existsByEmail(email);
-    }
-    
-    /**
      * Register new client
      */
-    public Client registerClient(String name, String email, String password, String phone) {
-        if (emailExists(email)) {
+    @Override
+    public Client register(String name, String email, String password, String... additionalParams) {
+        if (existsByEmail(email)) {
             throw new IllegalArgumentException("Email já está em uso");
         }
         
-        // Encode password before saving
-        String encodedPassword = passwordEncoder.encode(password);
+        if (!isValidEmail(email)) {
+            throw new IllegalArgumentException("Email inválido");
+        }
+        
+        if (!isValidPassword(password)) {
+            throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
+        }
+        
+        String phone = additionalParams.length > 0 ? additionalParams[0] : null;
+        String encodedPassword = hashPassword(password);
         
         Client client = new Client(name, email, encodedPassword, phone);
         return save(client);
     }
     
     /**
+     * Register new client (backwards compatibility)
+     */
+    public Client registerClient(String name, String email, String password, String phone) {
+        return register(name, email, password, phone);
+    }
+    
+    /**
      * Update client password
      */
     public void updatePassword(String email, String newPassword) {
+        if (!isValidPassword(newPassword)) {
+            throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
+        }
+        
         Optional<Client> client = findByEmail(email);
         if (client.isPresent()) {
-            String encodedPassword = passwordEncoder.encode(newPassword);
+            String encodedPassword = hashPassword(newPassword);
             client.get().setPassword(encodedPassword);
             save(client.get());
         }

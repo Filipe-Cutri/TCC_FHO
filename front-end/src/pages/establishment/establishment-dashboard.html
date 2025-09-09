@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Estabelecimento - Slotfy</title>
-  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+  <link rel="icon" type="image/png" href="../../assets/favicon-slotfy.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../../assets/styles/logo-system.css">
   <link rel="stylesheet" href="../../assets/styles/establishment-styles.css">
 </head>
-<body class="establishment-page">
+<body class="establishment-page" data-page="dashboard">
   <nav class="navbar navbar-expand-lg navbar-dark establishment-navbar fixed-top">
     <div class="container">
       <a class="navbar-brand" href="establishment-dashboard.html">
@@ -59,7 +59,7 @@
           <a href="establishment-admin.html" class="btn btn-outline-light me-2">
             <i class="fas fa-cog me-1"></i>Administração
           </a>
-          <a href="establishment-login-enhanced.html" class="btn btn-outline-light">
+          <a href="establishment-login.html" class="btn btn-outline-light">
             <i class="fas fa-sign-out-alt me-1"></i>Sair
           </a>
         </div>
@@ -82,8 +82,8 @@
           </div>
           <div class="col-md-4 text-md-end">
             <a href="establishment-appointments.html" class="establishment-btn establishment-btn-success" style="background: linear-gradient(135deg, #4ECDC4 0%, #00D4AA 100%); box-shadow: 0 8px 25px -8px rgba(78, 205, 196, 0.6);">
-              <i class="fas fa-plus me-2" style="color: #FFD700;"></i>
-              Novo Agendamento
+              <i class="fas fa-chart-line me-2" style="color: #FFD700;"></i>
+              Ver Agendamentos
             </a>
           </div>
         </div>
@@ -210,8 +210,8 @@
               </h5>
               <div class="d-grid gap-3">
                 <a href="establishment-appointments.html" class="establishment-btn">
-                  <i class="fas fa-plus me-2"></i>
-                  Novo Agendamento
+                  <i class="fas fa-calendar me-2"></i>
+                  Ver Agendamentos
                 </a>
                 <a href="establishment-professionals.html" class="establishment-btn establishment-btn-secondary">
                   <i class="fas fa-users me-2"></i>
@@ -325,7 +325,7 @@
             <div class="col-6">
               <h6>Estabelecimentos</h6>
               <ul class="list-unstyled">
-                <li><a href="establishment-login-enhanced.html">Login</a></li>
+                <li><a href="establishment-login.html">Login</a></li>
                 <li><a href="establishment-register.html">Cadastro</a></li>
                 <li><a href="establishment-dashboard.html">Dashboard</a></li>
                 <li><a href="#suporte">Suporte</a></li>
@@ -402,7 +402,7 @@
                 <i class="fas fa-calendar-times fa-2x text-muted"></i>
                 <p class="mt-2 text-muted">Nenhum agendamento para hoje</p>
                 <a href="establishment-appointments.html" class="btn btn-outline-primary btn-sm">
-                  <i class="fas fa-plus me-1"></i>Novo Agendamento
+                  <i class="fas fa-calendar me-1"></i>Ver Agendamentos
                 </a>
               </div>
             `;
@@ -508,7 +508,7 @@
       // Check if user is authenticated
       if (!window.establishmentSession || !window.establishmentSession.getSession()) {
         console.warn('No valid session found, redirecting to login');
-        window.location.href = 'establishment-login-enhanced.html';
+        window.location.href = 'establishment-login.html';
         return;
       }
 
