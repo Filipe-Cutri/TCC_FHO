@@ -93,7 +93,7 @@ class EstablishmentSessionManager {
      */
     requireAuth() {
         if (!this.isLoggedIn()) {
-            window.location.href = 'establishment-login-enhanced.html';
+            window.location.href = 'establishment-login.html';
             return false;
         }
         return true;
@@ -206,7 +206,7 @@ class EstablishmentSessionManager {
      */
     logout() {
         this.clearSession();
-        window.location.href = 'establishment-login-enhanced.html';
+        window.location.href = 'establishment-login.html';
     }
 
     /**
@@ -239,7 +239,7 @@ window.establishmentSession = new EstablishmentSessionManager();
 // Auto-initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname.split('/').pop();
-    const loginPages = ['establishment-login-enhanced.html', 'login-estab-enhanced.html'];
+    const loginPages = ['establishment-login.html', 'login-estab-enhanced.html'];
     
     // Skip page access check on login pages to prevent infinite redirect
     if (!loginPages.includes(currentPage)) {
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add logout handlers
-    document.querySelectorAll('a[href="establishment-login-enhanced.html"]').forEach(link => {
+    document.querySelectorAll('a[href="establishment-login.html"]').forEach(link => {
         if (link.textContent.includes('Sair') || link.innerHTML.includes('sign-out')) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
