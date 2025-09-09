@@ -967,7 +967,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .feature-card:hover {
   transform: translateY(-8px);
-  box-shadow: 
+  box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(59, 130, 246, 0.1);
   border-color: rgba(59, 130, 246, 0.2);
@@ -1015,7 +1015,7 @@ h1, h2, h3, h4, h5, h6 {
 /* TESTIMONIALS SECTION */
 /* ============================================ */
 .testimonials-section {
-  background: 
+  background:
     linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%),
     url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="testimonial-pattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(139,92,246,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23testimonial-pattern)"/></svg>');
 }
@@ -1125,7 +1125,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ENHANCED FOOTER */
 /* ============================================ */
 .footer-enhanced {
-  background: 
+  background:
     linear-gradient(135deg, #1e293b 0%, #0f172a 100%),
     url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footer-pattern" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(59,130,246,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23footer-pattern)"/></svg>');
   color: white;
@@ -1294,7 +1294,7 @@ h1, h2, h3, h4, h5, h6 {
   .hero-title {
     font-size: 3rem;
   }
-  
+
   .hero-logo {
     max-width: 350px;
   }
@@ -1305,32 +1305,32 @@ h1, h2, h3, h4, h5, h6 {
     min-height: auto;
     padding: 2rem 0;
   }
-  
+
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.125rem;
   }
-  
+
   .hero-logo {
-    max-width: 300px;
+    max-width: 900px;
     margin-top: 2rem;
   }
-  
+
   .access-card .card-header {
     padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
-  
+
   .access-card .card-body {
     padding: 0 1.5rem 1.5rem 1.5rem;
   }
-  
+
   .feature-card {
     padding: 2rem 1.5rem;
   }
-  
+
   .testimonial-card {
     padding: 1.5rem;
   }
@@ -1340,117 +1340,117 @@ h1, h2, h3, h4, h5, h6 {
   body {
     padding-top: 70px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
     line-height: 1.2;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .hero-cta .btn {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
   }
-  
+
   .hero-logo {
     max-width: 250px;
   }
-  
+
   .stat-number {
     font-size: 1.5rem;
   }
-  
+
   .stat-label {
     font-size: 0.75rem;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .section-subtitle {
     font-size: 1rem;
   }
-  
+
   .access-card .card-header {
     padding: 1.25rem 1.25rem 0.75rem 1.25rem;
   }
-  
+
   .access-card .card-body {
     padding: 0 1.25rem 1.25rem 1.25rem;
   }
-  
+
   .card-icon {
     width: 3rem;
     height: 3rem;
   }
-  
+
   .card-icon i {
     font-size: 1.25rem !important;
   }
-  
+
   .access-card .card-title {
     font-size: 1.25rem;
   }
-  
+
   .access-card .card-text {
     font-size: 0.9rem;
   }
-  
+
   .card-features {
     margin-bottom: 1.5rem;
   }
-  
+
   .card-features li {
     font-size: 0.8rem;
   }
-  
+
   .feature-card {
     padding: 1.5rem 1rem;
   }
-  
+
   .feature-icon {
     width: 3rem;
     height: 3rem;
   }
-  
+
   .feature-icon i {
     font-size: 1.25rem !important;
   }
-  
+
   .feature-title {
     font-size: 1.125rem;
   }
-  
+
   .feature-description {
     font-size: 0.9rem;
   }
-  
+
   .testimonial-card {
     padding: 1.25rem;
   }
-  
+
   .author-avatar {
     width: 2.5rem;
     height: 2.5rem;
   }
-  
+
   .author-avatar i {
     font-size: 1.25rem !important;
   }
-  
+
   .footer-enhanced {
     padding: 3rem 0 1.5rem 0;
   }
-  
+
   .social-link {
     width: 2rem;
     height: 2rem;
   }
-  
+
   .social-link i {
     font-size: 0.875rem !important;
   }
@@ -1461,59 +1461,59 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.75rem;
     padding: 0.375rem 0.75rem;
   }
-  
+
   .hero-title {
     font-size: 1.75rem;
   }
-  
+
   .hero-subtitle {
     font-size: 0.9rem;
   }
-  
+
   .hero-cta {
     gap: 0.75rem;
   }
-  
+
   .hero-cta .btn {
     padding: 0.625rem 1.25rem;
     font-size: 0.875rem;
   }
-  
+
   .hero-logo {
     max-width: 200px;
   }
-  
+
   .access-section {
     padding: 3rem 0;
   }
-  
+
   .section-title {
     font-size: 1.75rem;
   }
-  
+
   .access-card .card-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 0.75rem;
   }
-  
+
   .card-badge {
     order: -1;
   }
-  
+
   .features-section {
     padding: 3rem 0;
   }
-  
+
   .testimonials-section {
     padding: 3rem 0;
   }
-  
+
   .footer-enhanced {
     padding: 2.5rem 0 1.25rem 0;
   }
-  
+
   .footer-legal {
     flex-direction: column;
     gap: 0.5rem;
@@ -1576,15 +1576,15 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .hero-overlay {
     animation: none;
   }
-  
+
   .hero-logo-container {
     animation: none;
   }
-  
+
   .logo-glow {
     animation: none;
   }
@@ -1623,6 +1623,8 @@ html {
     transform: scale(1.05);
     border: 2px solid var(--primary-color);
     box-shadow: var(--shadow-xl);
+    position: relative;
+    padding-top: 60px;
 }
 
 .pricing-card:hover {
@@ -1635,17 +1637,17 @@ html {
 }
 
 .pricing-badge {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: var(--font-weight-semibold);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .pricing-header {
@@ -1855,7 +1857,7 @@ html {
     .hero-title {
         font-size: 3rem;
     }
-    
+
     .hero-logo {
         width: 180px;
         height: 180px;
@@ -1867,29 +1869,29 @@ html {
         min-height: auto;
         padding: 2rem 0;
     }
-    
+
     .hero-title {
         font-size: 2.5rem;
     }
-    
+
     .hero-subtitle {
         font-size: 1.125rem;
     }
-    
+
     .hero-logo {
         width: 150px;
         height: 150px;
         margin-top: 2rem;
     }
-    
+
     .access-card .card-header {
         padding: 1.5rem 1.5rem 1rem 1.5rem;
     }
-    
+
     .access-card .card-body {
         padding: 0 1.5rem 1.5rem 1.5rem;
     }
-    
+
     .feature-card {
         padding: 2rem 1.5rem;
     }
@@ -1899,86 +1901,86 @@ html {
     body {
         overflow-x: hidden;
     }
-    
+
     .hero-title {
         font-size: 2rem;
         line-height: 1.2;
     }
-    
+
     .hero-subtitle {
         font-size: 1rem;
     }
-    
+
     .hero-cta .btn {
         padding: 0.75rem 1.5rem;
         font-size: 0.9rem;
         margin-bottom: 1rem;
     }
-    
+
     .hero-logo {
         width: 120px;
         height: 120px;
     }
-    
+
     .stat-number {
         font-size: 1.5rem;
     }
-    
+
     .stat-label {
         font-size: 0.75rem;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
-    
+
     .section-subtitle {
         font-size: 1rem;
     }
-    
+
     .access-card .card-header {
         padding: 1.25rem 1.25rem 0.75rem 1.25rem;
     }
-    
+
     .access-card .card-body {
         padding: 0 1.25rem 1.25rem 1.25rem;
     }
-    
+
     .card-icon {
         width: 60px;
         height: 60px;
     }
-    
+
     .access-card .card-title {
         font-size: 1.25rem;
     }
-    
+
     .access-card .card-text {
         font-size: 0.9rem;
     }
-    
+
     .feature-card {
         padding: 1.5rem 1rem;
         margin-bottom: 2rem;
     }
-    
+
     .feature-icon {
         width: 60px;
         height: 60px;
     }
-    
+
     .feature-title {
         font-size: 1.125rem;
     }
-    
+
     .feature-description {
         font-size: 0.9rem;
     }
-    
+
     .footer-enhanced {
         padding: 3rem 0 1.5rem 0;
     }
-    
+
     .social-link {
         width: 2rem;
         height: 2rem;
@@ -1990,61 +1992,61 @@ html {
         font-size: 0.75rem;
         padding: 0.375rem 0.75rem;
     }
-    
+
     .hero-title {
         font-size: 1.75rem;
     }
-    
+
     .hero-subtitle {
         font-size: 0.9rem;
     }
-    
+
     .hero-cta {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
     }
-    
+
     .hero-cta .btn {
         padding: 0.625rem 1.25rem;
         font-size: 0.875rem;
         width: 100%;
     }
-    
+
     .hero-logo {
         width: 100px;
         height: 100px;
     }
-    
+
     .access-section {
         padding: 3rem 0;
     }
-    
+
     .section-title {
         font-size: 1.75rem;
     }
-    
+
     .access-card .card-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
         gap: 0.75rem;
     }
-    
+
     .card-badge {
         position: static;
         order: -1;
         margin-bottom: 1rem;
     }
-    
+
     .features-section {
         padding: 3rem 0;
     }
-    
+
     .footer-enhanced {
         padding: 2.5rem 0 1.25rem 0;
     }
-    
+
     .footer-legal {
         flex-direction: column;
         gap: 0.5rem;
@@ -2071,15 +2073,15 @@ html {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-    
+
     .hero-section::before {
         animation: none;
     }
-    
+
     .hero-logo {
         animation: none;
     }
-    
+
     .logo-glow {
         animation: none;
     }
