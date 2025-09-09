@@ -93,12 +93,12 @@ public class ForgotPasswordService extends BaseService {
 
     private boolean isValidClientEmail(String email) {
         // Check if email exists in client table
-        return clientService.emailExists(email);
+        return clientService.existsByEmail(email);
     }
 
     private boolean isValidEstablishmentEmail(String email) {
         // Check if email exists in establishment table
-        return establishmentUserService.emailExists(email);
+        return establishmentUserService.existsByEmail(email);
     }
 
     private boolean updateUserPassword(String email, String userType, String newPassword) {
