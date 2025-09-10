@@ -22,9 +22,8 @@ public class EstablishmentUser extends BaseEntity {
     @Size(max = 255)
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-    
+
     @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")
     @Column(name = "password", nullable = false)
     private String password;
     

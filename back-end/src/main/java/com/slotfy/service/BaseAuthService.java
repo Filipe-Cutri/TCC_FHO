@@ -8,14 +8,15 @@ import java.util.Optional;
 /**
  * Base authentication service with common authentication logic
  */
-public abstract class BaseAuthService<T, R> extends BaseService<T, Long> implements AuthenticatableService<T> {
+public abstract class BaseAuthService<T, R extends com.slotfy.repository.BaseRepository<T, Long>> extends BaseService<T, Long> implements AuthenticatableService<T> {
     
     @Autowired
     protected PasswordEncoder passwordEncoder;
-    
-    protected R authRepository;
-    
+
+    protected final R authRepository;
+
     public BaseAuthService(R repository) {
+        super(repository);
         this.authRepository = repository;
     }
     

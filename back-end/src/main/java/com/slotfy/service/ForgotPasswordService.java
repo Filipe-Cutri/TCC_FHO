@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Service
-public class ForgotPasswordService extends BaseService {
+public class ForgotPasswordService {
 
     public ForgotPasswordService() {
         super(); // Call the default constructor
