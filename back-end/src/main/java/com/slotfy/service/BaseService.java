@@ -18,13 +18,7 @@ public abstract class BaseService<T, ID> {
     public BaseService(com.slotfy.repository.BaseRepository<T, ID> repository) {
         this.repository = repository;
     }
-    
-    /**
-     * Default constructor for services that don't use repository
-     */
-    public BaseService() {
-    }
-    
+
     /**
      * Save an entity
      */

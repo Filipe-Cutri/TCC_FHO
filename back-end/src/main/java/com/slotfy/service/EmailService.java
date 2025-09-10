@@ -3,7 +3,7 @@ package com.slotfy.service;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailService extends BaseService {
+public class EmailService {
 
     public EmailService() {
         super(); // Call the default constructor
