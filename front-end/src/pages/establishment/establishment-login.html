@@ -131,6 +131,14 @@
   <script src="../../assets/js/establishment-session.js"></script>
   
   <script>
+    // Redirect if already logged in
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.establishmentSession && window.establishmentSession.isLoggedIn()) {
+        window.location.href = 'establishment-dashboard.html';
+        return;
+      }
+    });
+
     document.getElementById('establishmentLoginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -151,8 +159,8 @@
         });
         
         if (response.success) {
-          // Store session data
-          sessionStorage.setItem('establishmentSession', JSON.stringify(response.user));
+          // Store session data using the session manager
+          window.establishmentSession.setSession(response.user);
           
           // Redirect to dashboard
           window.location.href = 'establishment-dashboard.html';
