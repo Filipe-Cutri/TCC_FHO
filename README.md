@@ -1,5 +1,8 @@
 # TCC_FHO - Slotfy
 
+[![CI](https://github.com/Filipe-Cutri/TCC_FHO/actions/workflows/ci.yml/badge.svg)](https://github.com/Filipe-Cutri/TCC_FHO/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Filipe-Cutri/TCC_FHO/branch/main/graph/badge.svg)](https://codecov.io/gh/Filipe-Cutri/TCC_FHO)
+
 Sistema de agendamento inteligente para barbearias e salões de beleza.
 
 ## 📖 Documentação
