@@ -8,9 +8,7 @@ dist/
 # Backend specific
 back-end/build/
 back-end/.gradle/
-back-end/gradle/
-back-end/gradlew
-back-end/gradlew.bat
+# Note: gradle wrapper files (gradle/, gradlew, gradlew.bat) should be committed
 back-end/out/
 *.jar
 *.war
