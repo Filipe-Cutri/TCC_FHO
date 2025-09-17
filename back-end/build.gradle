@@ -44,11 +44,10 @@ tasks.named('test') {
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
     reports {
-        xml.required = true
-        html.required = true
+        xml.required = true  // Required for Codecov integration
+        html.required = true // For local viewing and CI artifacts
         csv.required = false
     }
-    executionData fileTree(dir: "$buildDir/jacoco", include: "**/*.exec")
     
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
