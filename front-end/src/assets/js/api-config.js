@@ -5,9 +5,9 @@
 
 // API Configuration
 const API_CONFIG = {
-    // Base URL for API calls
+    // Base URL for API calls - Updated to use HTTPS
     baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'http://localhost:8080' 
+        ? 'https://localhost:8443' 
         : '', // Use relative URLs in production
     
     // API endpoints
