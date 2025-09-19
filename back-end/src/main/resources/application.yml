@@ -28,9 +28,15 @@ spring:
           lob:
             non_contextual_creation: true
 
-# Server Configuration
+# Server Configuration - HTTPS/SSL
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:slotfy.p12
+    key-store-password: slotfypass
+    key-store-type: PKCS12
+    key-alias: slotfy
 
 # Logging Configuration
 logging:
