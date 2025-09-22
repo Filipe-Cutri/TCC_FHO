@@ -3,6 +3,7 @@ package com.slotfy.controller;
 import com.slotfy.model.EstablishmentUser;
 import com.slotfy.model.UserRole;
 import com.slotfy.service.EstablishmentUserService;
+import com.slotfy.service.EstablishmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class EstablishmentAuthControllerTest {
 
     @MockBean
     private EstablishmentUserService establishmentUserService;
+
+    @MockBean
+    private EstablishmentService establishmentService;
 
     @Autowired
     private ObjectMapper objectMapper;
