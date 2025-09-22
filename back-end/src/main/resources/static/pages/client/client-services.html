@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serviços - Slotfy</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon-slotfy.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/styles/common.css">
+  <link rel="stylesheet" href="../../assets/styles/client-styles.css">
+</head>
+<body class="client-page" data-page="services">
+  <nav class="navbar navbar-expand-lg navbar-dark client-navbar fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="client-dashboard.html">
+        <img src="../../assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-lg">
+        Slotfy
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="client-dashboard.html">
+              <i class="fas fa-home me-1"></i>Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="client-services.html">
+              <i class="fas fa-cut me-1"></i>Serviços
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-bookings.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-professionals.html">
+              <i class="fas fa-users me-1"></i>Profissionais
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="client-notifications.html" class="nav-link position-relative me-2">
+            <i class="fas fa-bell"></i>
+            <span class="client-notification-badge">3</span>
+          </a>
+          <a href="client-profile.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-user me-1"></i>Perfil
+          </a>
+          <a href="client-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="client-main-content">
+    <div class="client-container">
+      <!-- Page Header -->
+      <div class="client-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-scissors"></i>
+          </span>
+          Serviços Disponíveis
+        </h1>
+        <p class="client-page-subtitle">Descubra e agende os melhores serviços de beleza</p>
+      </div>
+
+      <!-- AI Scheduling Highlight Section -->
+      <div class="ai-scheduling-hero mb-5">
+        <div class="ai-hero-card">
+          <div class="ai-hero-content">
+            <div class="ai-hero-icon">
+              <i class="fas fa-robot"></i>
+              <div class="ai-pulse"></div>
+            </div>
+            <div class="ai-hero-text">
+              <h2 class="ai-hero-title">
+                <span class="ai-gradient-text">Agendamento Inteligente</span>
+                <span class="ai-badge">IA</span>
+              </h2>
+              <p class="ai-hero-subtitle">
+                Nossa IA analisa sua disponibilidade, histórico de preferências e horários dos profissionais 
+                para sugerir o melhor momento para seu agendamento.
+              </p>
+              <div class="ai-features">
+                <div class="ai-feature">
+                  <i class="fas fa-brain"></i>
+                  <span>Análise Inteligente</span>
+                </div>
+                <div class="ai-feature">
+                  <i class="fas fa-clock"></i>
+                  <span>Melhor Horário</span>
+                </div>
+                <div class="ai-feature">
+                  <i class="fas fa-star"></i>
+                  <span>Experiência Otimizada</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ai-hero-action">
+            <button class="ai-hero-btn" id="aiSchedulingBtn">
+              <span class="ai-btn-icon">
+                <i class="fas fa-magic"></i>
+              </span>
+              <span class="ai-btn-text">
+                <span class="ai-btn-main">Deixe a IA Escolher</span>
+                <span class="ai-btn-sub">O Melhor Horário Para Você</span>
+              </span>
+              <div class="ai-btn-glow"></div>
+            </button>
+            <p class="ai-hero-note">
+              <i class="fas fa-shield-alt"></i>
+              Tecnologia exclusiva do Slotfy
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="row">
+        <!-- Service Category: Cortes -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card" style="border-left: 4px solid var(--color-primary-500);">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon" style="background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%); color: white;">
+                  <i class="fas fa-cut"></i>
+                </span>
+                Corte Masculino
+              </h5>
+              <p class="card-text">Cortes modernos e clássicos com profissionais especializados</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 35</span>
+                <span class="client-stats-label">⏱ 45 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Barba -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card" style="border-left: 4px solid var(--color-accent-success);">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon" style="background: linear-gradient(135deg, var(--color-accent-success) 0%, #059669 100%); color: white;">
+                  <i class="fas fa-beard"></i>
+                </span>
+                Barba Completa
+              </h5>
+              <p class="card-text">Barba bem feita com acabamento profissional e produtos premium</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 25</span>
+                <span class="client-stats-label">⏱ 30 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Combo -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card" style="border-left: 4px solid var(--color-accent-warning);">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon" style="background: linear-gradient(135deg, var(--color-accent-warning) 0%, #d97706 100%); color: white;">
+                  <i class="fas fa-star"></i>
+                </span>
+                Corte + Barba
+              </h5>
+              <p class="card-text">Combo completo para um visual impecável</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-success">R$ 50</span>
+                <span class="client-stats-label">⏱ 60 min</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <small class="text-muted"><s>R$ 60</s></small>
+                <span class="client-status-badge client-status-success">Economize R$ 10</span>
+              </div>
+              <button class="client-btn client-btn-success w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar Combo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Feminino -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-scissors"></i>
+                </span>
+                Corte Feminino
+              </h5>
+              <p class="card-text">Cortes modernos e estilosos para todos os tipos de cabelo</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 65</span>
+                <span class="client-stats-label">⏱ 90 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Escova -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-wind"></i>
+                </span>
+                Escova + Secagem
+              </h5>
+              <p class="card-text">Escova profissional para um cabelo sedoso e brilhante</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 45</span>
+                <span class="client-stats-label">⏱ 60 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category: Manicure -->
+        <div class="col-lg-4 mb-4">
+          <div class="client-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="card-icon">
+                  <i class="fas fa-hand-sparkles"></i>
+                </span>
+                Manicure + Pedicure
+              </h5>
+              <p class="card-text">Cuidados completos para mãos e pés com produtos de qualidade</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="client-stats-number text-primary">R$ 40</span>
+                <span class="client-stats-label">⏱ 75 min</span>
+              </div>
+              <button class="client-btn w-100">
+                <i class="fas fa-calendar-plus me-2"></i>Agendar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+  <!-- Enhanced Footer -->
+  <footer class="footer footer-enhanced">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-3">
+            <img src="../../assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-footer me-3">
+            <h5 class="mb-0">Slotfy</h5>
+          </div>
+          <p>Transformando a forma como você agenda serviços de beleza. Conecte-se com os melhores profissionais da sua região de forma rápida e inteligente.</p>
+          
+          <!-- Social Media Section -->
+          <div class="footer-social text-center text-md-start mt-4">
+            <h6>Siga-nos</h6>
+            <div class="social-links justify-content-center justify-content-md-start">
+              <a href="#" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" aria-label="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-6">
+              <h6>Clientes</h6>
+              <ul class="list-unstyled">
+                <li><a href="client-login.html">Login</a></li>
+                <li><a href="client-register.html">Cadastro</a></li>
+                <li><a href="client-services.html">Serviços</a></li>
+                <li><a href="client-bookings.html">Meus Agendamentos</a></li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <h6>Estabelecimentos</h6>
+              <ul class="list-unstyled">
+                <li><a href="../establishment/establishment-login.html">Login</a></li>
+                <li><a href="../establishment/establishment-register.html">Cadastro</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#suporte">Suporte</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Slotfy. Todos os direitos reservados. | Desenvolvido com ❤️ para conectar pessoas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Slotfy JavaScript Modules -->
+  <script src="../../assets/js/ui-utils.js"></script>
+  <script src="../../assets/js/form-utils.js"></script>
+  <script src="../../assets/js/client-utils.js"></script>
+  <script src="../../assets/js/client-services.js"></script>
+</body>
+</html>
