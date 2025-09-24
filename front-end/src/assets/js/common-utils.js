@@ -192,7 +192,7 @@ class CommonFormManager {
         const form = document.querySelector(formSelector);
         if (!form) return;
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = form.querySelector('input[type="email"]').value;
@@ -212,20 +212,45 @@ class CommonFormManager {
             const submitBtn = form.querySelector('button[type="submit"]');
             const resetButton = LoadingManager.setButtonLoading(submitBtn, 'Entrando...');
             
-            // Simulate login process
-            setTimeout(() => {
-                LoadingManager.setButtonSuccess(submitBtn, 'Logado!');
-                ToastManager.showSuccess('Login realizado com sucesso!');
+            try {
+                // Real API call instead of simulation
+                const endpoint = type === 'client' 
+                    ? API_CONFIG.endpoints.client.login 
+                    : API_CONFIG.endpoints.establishment.login;
                 
-                // Redirect based on type
-                setTimeout(() => {
-                    if (type === 'client') {
-                        window.location.href = 'client-dashboard.html';
-                    } else {
-                        window.location.href = 'establishment-dashboard.html';
+                const response = await apiClient.post(endpoint, {
+                    email: email,
+                    password: password
+                });
+                
+                if (response.success) {
+                    LoadingManager.setButtonSuccess(submitBtn, 'Logado!');
+                    ToastManager.showSuccess('Login realizado com sucesso!');
+                    
+                    // Store user session if needed
+                    if (response.user || response.client || response.establishment) {
+                        const userData = response.user || response.client || response.establishment;
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        localStorage.setItem('userType', type);
                     }
-                }, 1000);
-            }, 2000);
+                    
+                    // Redirect based on type
+                    setTimeout(() => {
+                        if (type === 'client') {
+                            window.location.href = 'client-dashboard.html';
+                        } else {
+                            window.location.href = 'establishment-dashboard.html';
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                LoadingManager.setButtonError(submitBtn, 'Erro no login');
+                ToastManager.showError(error.message || 'Erro ao fazer login. Verifique suas credenciais.');
+                setTimeout(() => {
+                    resetButton();
+                }, 2000);
+            }
         });
     }
 
@@ -257,7 +282,7 @@ class CommonFormManager {
             );
         }
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(form);
@@ -282,32 +307,66 @@ class CommonFormManager {
             const submitBtn = form.querySelector('button[type="submit"]');
             const resetButton = LoadingManager.setButtonLoading(submitBtn, 'Criando conta...');
             
-            // Simulate registration process
-            setTimeout(() => {
-                LoadingManager.setButtonSuccess(submitBtn, 'Conta criada!');
-                ToastManager.showSuccess('Conta criada com sucesso!');
+            try {
+                // Real API call instead of simulation
+                const endpoint = type === 'client' 
+                    ? API_CONFIG.endpoints.client.register 
+                    : API_CONFIG.endpoints.establishment.register;
                 
-                // Redirect based on type
-                setTimeout(() => {
-                    if (type === 'client') {
-                        window.location.href = 'client-preferences-setup.html';
-                    } else {
-                        window.location.href = 'establishment-dashboard.html';
+                const response = await apiClient.post(endpoint, {
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                    phone: data.phone || '',
+                    // Add establishment-specific fields if needed
+                    ...(type === 'establishment' && {
+                        businessName: data.businessName,
+                        address: data.address,
+                        description: data.description
+                    })
+                });
+                
+                if (response.success) {
+                    LoadingManager.setButtonSuccess(submitBtn, 'Conta criada!');
+                    ToastManager.showSuccess('Conta criada com sucesso!');
+                    
+                    // Store user session if needed
+                    if (response.client || response.establishment) {
+                        const userData = response.client || response.establishment;
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        localStorage.setItem('userType', type);
                     }
-                }, 1000);
-            }, 2000);
+                    
+                    // Redirect based on type
+                    setTimeout(() => {
+                        if (type === 'client') {
+                            window.location.href = 'client-preferences-setup.html';
+                        } else {
+                            window.location.href = 'establishment-dashboard.html';
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                LoadingManager.setButtonError(submitBtn, 'Erro ao criar conta');
+                ToastManager.showError(error.message || 'Erro ao criar conta. Tente novamente.');
+                setTimeout(() => {
+                    resetButton();
+                }, 2000);
+            }
         });
     }
 
     /**
      * Setup forgot password form
      * @param {string} formSelector - CSS selector for forgot password form
+     * @param {string} type - 'client' or 'establishment' 
      */
-    static setupForgotPasswordForm(formSelector) {
+    static setupForgotPasswordForm(formSelector, type = 'client') {
         const form = document.querySelector(formSelector);
         if (!form) return;
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = form.querySelector('input[type="email"]').value;
@@ -320,13 +379,30 @@ class CommonFormManager {
             const submitBtn = form.querySelector('button[type="submit"]');
             const resetButton = LoadingManager.setButtonLoading(submitBtn, 'Enviando...');
             
-            // Simulate email sending
-            setTimeout(() => {
-                LoadingManager.setButtonSuccess(submitBtn, 'Enviado!');
-                ToastManager.showSuccess('Email de recuperação enviado! Verifique sua caixa de entrada.');
-                form.reset();
-                resetButton();
-            }, 2000);
+            try {
+                // Real API call instead of simulation
+                const endpoint = type === 'client' 
+                    ? API_CONFIG.endpoints.client.forgotPassword 
+                    : API_CONFIG.endpoints.establishment.forgotPassword;
+                
+                const response = await apiClient.post(endpoint, {
+                    email: email
+                });
+                
+                if (response.success) {
+                    LoadingManager.setButtonSuccess(submitBtn, 'Enviado!');
+                    ToastManager.showSuccess('Email de recuperação enviado! Verifique sua caixa de entrada.');
+                    form.reset();
+                    resetButton();
+                }
+            } catch (error) {
+                console.error('Forgot password error:', error);
+                LoadingManager.setButtonError(submitBtn, 'Erro ao enviar');
+                ToastManager.showError(error.message || 'Erro ao enviar email de recuperação. Tente novamente.');
+                setTimeout(() => {
+                    resetButton();
+                }, 2000);
+            }
         });
     }
 }
