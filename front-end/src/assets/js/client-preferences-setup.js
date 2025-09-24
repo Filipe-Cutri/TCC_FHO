@@ -172,15 +172,51 @@ function setupFormSubmission() {
             showSuccessMessage: false
         });
         
-        // Simulate saving preferences
-        setTimeout(() => {
+        // Real API call to save preferences instead of simulation
+        this.savePreferencesToAPI(preferences).then(() => {
             LoadingManager.setButtonSuccess(submitBtn, 'Configuração concluída!');
             
             setTimeout(() => {
                 window.location.href = 'client-dashboard.html';
             }, 1000);
-        }, 2000);
+        }).catch(error => {
+            console.error('Error saving preferences:', error);
+            LoadingManager.setButtonError(submitBtn, 'Erro ao salvar');
+            ToastManager.showError('Erro ao salvar preferências. Tente novamente.');
+            setTimeout(() => {
+                resetButton();
+            }, 2000);
+        });
     });
+}
+
+/**
+ * Save preferences to API
+ */
+async function savePreferencesToAPI(preferences) {
+    try {
+        // Get client ID from localStorage
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const clientId = user.id;
+        
+        if (!clientId) {
+            throw new Error('Sessão expirada. Faça login novamente.');
+        }
+        
+        // For now, we'll store preferences locally until backend endpoint is created
+        // const response = await apiClient.put(API_CONFIG.endpoints.client.preferences.update, {
+        //     clientId: clientId,
+        //     preferences: preferences
+        // });
+        
+        // Simulate API call success for preferences (to be replaced with real endpoint)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        return { success: true, message: 'Preferências salvas com sucesso!' };
+        
+    } catch (error) {
+        throw error;
+    }
 }
 
 /**

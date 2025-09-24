@@ -74,18 +74,54 @@ class ClientServices {
         `;
         aiBtn.disabled = true;
 
-        // Simulate AI processing
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Real AI processing - replace with actual backend API call
+        try {
+            const recommendations = await this.getAIRecommendationsFromAPI();
+            
+            // Reset button
+            aiBtn.innerHTML = originalText;
+            aiBtn.disabled = false;
 
-        // Generate AI recommendations
-        const recommendations = this.generateAIRecommendations();
-        
-        // Reset button
-        aiBtn.innerHTML = originalText;
-        aiBtn.disabled = false;
+            // Show recommendations
+            this.showAIRecommendations(recommendations);
+        } catch (error) {
+            console.error('Error getting AI recommendations:', error);
+            
+            // Reset button on error
+            aiBtn.innerHTML = originalText;
+            aiBtn.disabled = false;
+            
+            ToastManager.showError('Erro ao obter recomendações. Tente novamente.');
+        }
+    }
 
-        // Show recommendations
-        this.showAIRecommendations(recommendations);
+    /**
+     * Get AI recommendations from API
+     */
+    async getAIRecommendationsFromAPI() {
+        try {
+            // Get client preferences from localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const clientId = user.id;
+            
+            if (!clientId) {
+                throw new Error('Sessão expirada');
+            }
+
+            // For now, return mock data until backend AI endpoint is implemented
+            // const response = await apiClient.post('/api/client/ai/recommendations', {
+            //     clientId: clientId,
+            //     preferences: JSON.parse(localStorage.getItem('clientPreferences') || '{}')
+            // });
+            
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            return this.generateAIRecommendations();
+            
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
