@@ -316,26 +316,59 @@ class ClientServiceManager {
      * @param {HTMLElement} button - Booking button
      * @param {string} serviceName - Name of the service
      */
-    static handleServiceBooking(button, serviceName) {
+    static async handleServiceBooking(button, serviceName) {
         const originalText = button.innerHTML;
         
         // Add loading state
         button.innerHTML = '<span class="client-loading">Agendando...</span>';
         button.disabled = true;
         
-        // Simulate booking process
-        setTimeout(() => {
+        try {
+            // Get client ID from localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const clientId = user.id;
+            
+            if (!clientId) {
+                ToastManager.showError('Sessão expirada. Faça login novamente.');
+                return;
+            }
+            
+            // For now, this is a placeholder until we have service selection and appointment booking flow
+            // In a real implementation, this would:
+            // 1. Open a service selection modal
+            // 2. Allow user to select professional, date, time
+            // 3. Make API call to book appointment
+            
+            // Real API call to book appointment (placeholder structure)
+            // const response = await apiClient.post(API_CONFIG.endpoints.client.appointments.book, {
+            //     clientId: clientId,
+            //     serviceId: serviceId,
+            //     professionalId: professionalId,
+            //     establishmentId: establishmentId,
+            //     appointmentDateTime: selectedDateTime,
+            //     notes: notes
+            // });
+            
+            // Simulate API call for now
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
             button.innerHTML = '<i class="fas fa-check me-2"></i>Agendado!';
             button.classList.add('client-btn-success');
             
             ToastManager.showSuccess(`${serviceName} agendado com sucesso!`);
             
+        } catch (error) {
+            console.error('Error booking service:', error);
+            button.innerHTML = '<i class="fas fa-times me-2"></i>Erro';
+            button.classList.add('client-btn-error');
+            ToastManager.showError(error.message || 'Erro ao agendar serviço. Tente novamente.');
+        } finally {
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.disabled = false;
-                button.classList.remove('client-btn-success');
+                button.classList.remove('client-btn-success', 'client-btn-error');
             }, 2000);
-        }, 1500);
+        }
     }
 
     /**

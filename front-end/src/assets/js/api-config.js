@@ -15,7 +15,21 @@ const API_CONFIG = {
         client: {
             login: '/api/client/login',
             register: '/api/client/register',
-            forgotPassword: '/api/client/forgot-password'
+            forgotPassword: '/api/client/forgot-password',
+            appointments: {
+                next: '/api/client/appointments/next',
+                list: '/api/client/appointments',
+                history: '/api/client/appointments/history',
+                book: '/api/client/appointments/book'
+            },
+            profile: {
+                get: '/api/client/profile',
+                update: '/api/client/profile'
+            },
+            preferences: {
+                get: '/api/client/preferences',
+                update: '/api/client/preferences'
+            }
         },
         establishment: {
             login: '/api/establishment/login',
