@@ -282,4 +282,57 @@ public class AppointmentService extends BaseService<Appointment, Long> {
             })
             .collect(Collectors.toList());
     }
+    
+    /**
+     * Get client's upcoming appointments
+     */
+    public List<Appointment> getClientUpcomingAppointments(Long clientId) {
+        LocalDateTime now = LocalDateTime.now();
+        return appointmentRepository.findByClientIdAndAppointmentDateTimeAfterOrderByAppointmentDateTimeAsc(clientId, now);
+    }
+    
+    /**
+     * Get all client appointments
+     */
+    public List<Appointment> getClientAppointments(Long clientId) {
+        return appointmentRepository.findByClientIdOrderByAppointmentDateTimeDesc(clientId);
+    }
+    
+    /**
+     * Get client appointment history (past appointments)
+     */
+    public List<Appointment> getClientAppointmentHistory(Long clientId) {
+        LocalDateTime now = LocalDateTime.now();
+        return appointmentRepository.findByClientIdAndAppointmentDateTimeBeforeOrderByAppointmentDateTimeDesc(clientId, now);
+    }
+    
+    /**
+     * Check if time slot is available for client (no conflicts)
+     */
+    public boolean isClientTimeSlotAvailable(Long clientId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Appointment> conflicts = appointmentRepository.findByClientIdAndAppointmentDateTimeBetween(clientId, startTime.minusHours(2), endTime.plusHours(2));
+        
+        // Filter to actual conflicts using Java logic
+        return conflicts.stream()
+            .noneMatch(appointment -> {
+                LocalDateTime existingStart = appointment.getAppointmentDateTime();
+                LocalDateTime existingEnd = appointment.getEndDateTime();
+                if (existingEnd == null) {
+                    // Default to 60 minutes if duration is not set
+                    existingEnd = existingStart.plusMinutes(60);
+                }
+                
+                // Check for overlap: appointments conflict if one starts before the other ends
+                return existingStart.isBefore(endTime) && existingEnd.isAfter(startTime);
+            });
+    }
+    
+    /**
+     * Create appointment for client
+     */
+    public Appointment createClientAppointment(Long clientId, Long professionalId, Long serviceId, 
+                                             Long establishmentId, LocalDateTime appointmentDateTime, String notes) {
+        return createAppointment(clientId, professionalId, serviceId, establishmentId, appointmentDateTime,
+                               notes, null, null, null, null, null);
+    }
 }

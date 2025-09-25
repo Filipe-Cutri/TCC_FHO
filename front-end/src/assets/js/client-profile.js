@@ -24,22 +24,60 @@ function initClientProfile() {
 }
 
 /**
- * Setup profile form handling
+ * Setup profile form handling with real API integration
  */
 function setupProfileFormHandling() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const submitBtn = this.querySelector('button[type="submit"]');
             const resetButton = LoadingManager.setButtonLoading(submitBtn, 'Salvando...');
             
-            // Simulate save operation
-            setTimeout(() => {
-                LoadingManager.setButtonSuccess(submitBtn, 'Salvo com sucesso!');
-                resetButton();
-            }, 1500);
+            try {
+                // Get client ID from localStorage
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const clientId = user.id;
+                
+                if (!clientId) {
+                    ToastManager.showError('Sessão expirada. Faça login novamente.');
+                    resetButton();
+                    return;
+                }
+                
+                // Collect form data
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Real API call to update profile
+                const response = await apiClient.put(API_CONFIG.endpoints.client.profile.update, {
+                    clientId: clientId,
+                    name: data.name,
+                    phone: data.phone
+                });
+                
+                if (response.success) {
+                    LoadingManager.setButtonSuccess(submitBtn, 'Salvo com sucesso!');
+                    ToastManager.showSuccess(response.message || 'Perfil atualizado com sucesso!');
+                    
+                    // Update localStorage with new data
+                    if (response.data) {
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                    }
+                } else {
+                    throw new Error(response.message || 'Erro ao salvar perfil');
+                }
+                
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                LoadingManager.setButtonError(submitBtn, 'Erro ao salvar');
+                ToastManager.showError(error.message || 'Erro ao salvar perfil. Tente novamente.');
+            } finally {
+                setTimeout(() => {
+                    resetButton();
+                }, 2000);
+            }
         });
     });
 }
