@@ -32,46 +32,43 @@ class ClientPayments {
     /**
      * Handle appointment selection
      */
-    onAppointmentSelect(appointmentId) {
+    async onAppointmentSelect(appointmentId) {
         if (!appointmentId) {
             this.hideQRCode();
             return;
         }
 
-        // Mock appointment data - replace with API call
-        const appointments = {
-            '1': {
-                id: 1,
-                service: 'Corte + Barba',
-                professional: 'João Silva',
-                establishment: 'Barbearia Premium',
-                date: '10/12/2024',
-                time: '14:00',
-                amount: 85.00
-            },
-            '2': {
-                id: 2,
-                service: 'Corte Masculino',
-                professional: 'Carlos Santos',
-                establishment: 'Salão Modern',
-                date: '15/12/2024',
-                time: '10:00',
-                amount: 45.00
-            },
-            '3': {
-                id: 3,
-                service: 'Barba + Hidratação',
-                professional: 'Pedro Lima',
-                establishment: 'Studio Hair',
-                date: '20/12/2024',
-                time: '16:00',
-                amount: 65.00
+        try {
+            // Get client ID from localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const clientId = user.id;
+            
+            if (!clientId) {
+                ToastManager.showError('Sessão expirada. Faça login novamente.');
+                return;
             }
-        };
 
-        this.selectedAppointment = appointments[appointmentId];
-        if (this.selectedAppointment) {
-            this.generatePixPayment();
+            // Real API call to get client appointments
+            const response = await apiClient.get(API_CONFIG.endpoints.client.appointments.list, {
+                clientId: clientId
+            });
+
+            if (response.success && response.data) {
+                const appointment = response.data.find(apt => apt.id.toString() === appointmentId.toString());
+                
+                if (appointment) {
+                    this.selectedAppointment = appointment;
+                    this.generatePixPayment();
+                } else {
+                    ToastManager.showError('Agendamento não encontrado.');
+                }
+            } else {
+                ToastManager.showError('Erro ao carregar agendamentos.');
+            }
+            
+        } catch (error) {
+            console.error('Error loading appointment:', error);
+            ToastManager.showError('Erro ao carregar dados do agendamento.');
         }
     }
 
@@ -97,13 +94,21 @@ class ClientPayments {
      * Generate PIX code string
      */
     generatePixCode(appointment) {
+        // Parse appointment datetime
+        const appointmentDateTime = new Date(appointment.appointmentDateTime);
+        const formattedDate = appointmentDateTime.toLocaleDateString('pt-BR');
+        const formattedTime = appointmentDateTime.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
         // This is a simplified PIX code format
         // In real implementation, this should follow the official PIX specification
         const pixData = {
-            merchantName: appointment.establishment,
+            merchantName: appointment.establishmentName || 'Estabelecimento',
             merchantCity: 'SAO_PAULO',
-            amount: appointment.amount.toFixed(2),
-            description: `${appointment.service} - ${appointment.date} ${appointment.time}`,
+            amount: (appointment.servicePrice || 50.00).toFixed(2),
+            description: `${appointment.serviceName || 'Serviço'} - ${formattedDate} ${formattedTime}`,
             transactionId: `SLT${appointment.id}${Date.now()}`
         };
 
@@ -119,6 +124,14 @@ class ClientPayments {
         const qrDisplay = document.getElementById('qr-code-display');
         const paymentDetails = document.getElementById('payment-details');
 
+        // Parse appointment datetime for display
+        const appointmentDateTime = new Date(appointment.appointmentDateTime);
+        const formattedDate = appointmentDateTime.toLocaleDateString('pt-BR');
+        const formattedTime = appointmentDateTime.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
         // Display QR Code
         qrDisplay.innerHTML = `
             <img src="${qrCodeUrl}" alt="QR Code PIX" class="img-fluid" style="max-width: 200px;">
@@ -129,19 +142,19 @@ class ClientPayments {
             <div class="payment-details-info">
                 <div class="row text-start">
                     <div class="col-6"><strong>Serviço:</strong></div>
-                    <div class="col-6">${appointment.service}</div>
+                    <div class="col-6">${appointment.serviceName || 'Serviço'}</div>
                 </div>
                 <div class="row text-start">
                     <div class="col-6"><strong>Profissional:</strong></div>
-                    <div class="col-6">${appointment.professional}</div>
+                    <div class="col-6">${appointment.professionalName || 'Profissional'}</div>
                 </div>
                 <div class="row text-start">
                     <div class="col-6"><strong>Data/Hora:</strong></div>
-                    <div class="col-6">${appointment.date} ${appointment.time}</div>
+                    <div class="col-6">${formattedDate} ${formattedTime}</div>
                 </div>
                 <div class="row text-start">
                     <div class="col-6"><strong>Valor:</strong></div>
-                    <div class="col-6"><strong class="text-success">R$ ${appointment.amount.toFixed(2)}</strong></div>
+                    <div class="col-6"><strong class="text-success">R$ ${(appointment.servicePrice || 50.00).toFixed(2)}</strong></div>
                 </div>
             </div>
         `;
@@ -218,11 +231,76 @@ class ClientPayments {
     }
 
     /**
-     * Load payment history (mock data)
+     * Load payment history from API
      */
-    loadPaymentHistory() {
-        // In real implementation, this would fetch from API
-        console.log('Payment history loaded');
+    async loadPaymentHistory() {
+        try {
+            // Get client ID from localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const clientId = user.id;
+            
+            if (!clientId) {
+                console.warn('No client ID found in session');
+                return;
+            }
+
+            // Real API call to get appointment history
+            const response = await apiClient.get(API_CONFIG.endpoints.client.appointments.history, {
+                clientId: clientId
+            });
+
+            if (response.success && response.data) {
+                this.renderPaymentHistory(response.data);
+            } else {
+                console.log('No payment history found');
+            }
+            
+        } catch (error) {
+            console.error('Error loading payment history:', error);
+        }
+    }
+
+    /**
+     * Render payment history
+     */
+    renderPaymentHistory(appointments) {
+        const historyContainer = document.getElementById('payment-history');
+        if (!historyContainer) return;
+
+        if (!appointments || appointments.length === 0) {
+            historyContainer.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-receipt text-muted mb-3" style="font-size: 2rem;"></i>
+                    <p class="text-muted">Nenhum histórico de pagamentos encontrado</p>
+                </div>
+            `;
+            return;
+        }
+
+        const historyHtml = appointments.map(appointment => {
+            const appointmentDateTime = new Date(appointment.appointmentDateTime);
+            const formattedDate = appointmentDateTime.toLocaleDateString('pt-BR');
+            const amount = appointment.servicePrice || 0;
+
+            return `
+                <div class="payment-history-item border-bottom py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1">${appointment.serviceName || 'Serviço'}</h6>
+                            <p class="text-muted mb-1">${appointment.professionalName || 'Profissional'}</p>
+                            <small class="text-muted">${formattedDate}</small>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="fw-bold text-success">R$ ${amount.toFixed(2)}</span>
+                            <br>
+                            <small class="text-muted">${appointment.status || 'COMPLETED'}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        historyContainer.innerHTML = historyHtml;
     }
 }
 

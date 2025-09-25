@@ -112,4 +112,19 @@ public interface AppointmentRepository extends BaseRepository<Appointment, Long>
     List<Object[]> findProfessionalPerformanceStats(@Param("establishmentId") Long establishmentId,
                                                     @Param("startOfMonth") LocalDateTime startOfMonth,
                                                     @Param("endOfMonth") LocalDateTime endOfMonth);
+    
+    /**
+     * Find client's upcoming appointments
+     */
+    List<Appointment> findByClientIdAndAppointmentDateTimeAfterOrderByAppointmentDateTimeAsc(Long clientId, LocalDateTime currentDateTime);
+    
+    /**
+     * Find client's past appointments
+     */
+    List<Appointment> findByClientIdAndAppointmentDateTimeBeforeOrderByAppointmentDateTimeDesc(Long clientId, LocalDateTime currentDateTime);
+    
+    /**
+     * Find appointments for a client in a time range (for conflict checking)
+     */
+    List<Appointment> findByClientIdAndAppointmentDateTimeBetween(Long clientId, LocalDateTime startTime, LocalDateTime endTime);
 }

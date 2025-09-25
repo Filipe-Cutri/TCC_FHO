@@ -101,4 +101,26 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
             save(client.get());
         }
     }
+    
+    /**
+     * Update client profile
+     */
+    public Client updateProfile(Long clientId, String name, String phone) {
+        Optional<Client> clientOpt = findById(clientId);
+        if (!clientOpt.isPresent()) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+        
+        Client client = clientOpt.get();
+        
+        if (name != null && !name.trim().isEmpty()) {
+            client.setName(name.trim());
+        }
+        
+        if (phone != null) {
+            client.setPhone(phone.trim().isEmpty() ? null : phone.trim());
+        }
+        
+        return save(client);
+    }
 }

@@ -17,26 +17,26 @@ class ClientDashboard {
         const appointmentContainer = document.getElementById('next-appointment-content');
         
         try {
-            // TODO: Replace with actual API call
-            // const response = await fetch('/api/client/appointments/next');
-            // const appointment = await response.json();
+            // Get client ID from localStorage (set during login)
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const clientId = user.id;
             
-            // Mock data for now - will be replaced with real API call
-            const mockAppointment = {
-                id: 1,
-                service: "Corte + Barba",
-                professional: "João Silva",
-                date: "2024-12-10",
-                time: "14:00",
-                endTime: "15:00",
-                establishment: "Barbearia Premium - Centro",
-                status: "CONFIRMED"
-            };
-
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            this.renderNextAppointment(mockAppointment, appointmentContainer);
+            if (!clientId) {
+                console.warn('No client ID found in session');
+                this.renderNoAppointment(appointmentContainer);
+                return;
+            }
+            
+            // Real API call instead of mock data
+            const response = await apiClient.get(API_CONFIG.endpoints.client.appointments.next, {
+                clientId: clientId
+            });
+            
+            if (response.success && response.data) {
+                this.renderNextAppointment(response.data, appointmentContainer);
+            } else {
+                this.renderNoAppointment(appointmentContainer);
+            }
             
         } catch (error) {
             console.error('Error loading next appointment:', error);
@@ -48,31 +48,58 @@ class ClientDashboard {
      * Render next appointment data
      */
     static renderNextAppointment(appointment, container) {
-        const appointmentDate = new Date(appointment.date);
-        const formattedDate = appointmentDate.toLocaleDateString('pt-BR', {
+        // Parse appointment datetime from API response
+        const appointmentDateTime = new Date(appointment.appointmentDateTime);
+        const formattedDate = appointmentDateTime.toLocaleDateString('pt-BR', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         });
+        const formattedTime = appointmentDateTime.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        // Calculate end time (default to 1 hour if not provided)
+        let endTime;
+        if (appointment.endDateTime) {
+            const endDateTime = new Date(appointment.endDateTime);
+            endTime = endDateTime.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } else if (appointment.serviceDurationMinutes) {
+            const endDateTime = new Date(appointmentDateTime.getTime() + (appointment.serviceDurationMinutes * 60000));
+            endTime = endDateTime.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } else {
+            const endDateTime = new Date(appointmentDateTime.getTime() + (60 * 60000)); // 1 hour default
+            endTime = endDateTime.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
 
         container.innerHTML = `
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <p class="card-text mb-2"><strong>${appointment.service}</strong> com ${appointment.professional}</p>
+                    <p class="card-text mb-2"><strong>${appointment.serviceName || 'Serviço'}</strong> com ${appointment.professionalName || 'Profissional'}</p>
                     <p class="card-text mb-1">
                         <i class="fas fa-calendar me-2 text-primary"></i>
                         <strong>${formattedDate}</strong>
                     </p>
                     <p class="card-text mb-1">
                         <i class="fas fa-clock me-2 text-primary"></i>
-                        <strong>${appointment.time} - ${appointment.endTime}</strong>
+                        <strong>${formattedTime} - ${endTime}</strong>
                     </p>
                     <p class="card-text mb-3">
                         <i class="fas fa-map-marker-alt me-2 text-primary"></i>
-                        ${appointment.establishment}
+                        ${appointment.establishmentName || 'Estabelecimento'}
                     </p>
-                    <span class="client-status-badge client-status-${appointment.status.toLowerCase()}">
-                        ${this.getStatusText(appointment.status)}
+                    <span class="client-status-badge client-status-${appointment.status ? appointment.status.toLowerCase() : 'pending'}">
+                        ${this.getStatusText(appointment.status || 'PENDING')}
                     </span>
                 </div>
                 <div class="col-md-4 text-md-end">
