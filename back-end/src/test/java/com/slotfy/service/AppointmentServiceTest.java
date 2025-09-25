@@ -10,10 +10,12 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Test to verify AppointmentService compilation and functionality after fixing JPQL queries
@@ -119,5 +121,707 @@ public class AppointmentServiceTest {
         boolean result = service.isTimeSlotAvailable(professionalId, startTime, endTime);
         
         assertFalse(result);
+    }
+    
+    // Test createAppointment method
+    @Test
+    void testCreateAppointment_Success() {
+        Long clientId = 1L;
+        Long professionalId = 2L;
+        Long serviceId = 3L;
+        Long establishmentId = 4L;
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        String notes = "Test notes";
+        String clientName = "Test Client";
+        String professionalName = "Test Professional";
+        String serviceName = "Test Service";
+        Integer serviceDurationMinutes = 60;
+        BigDecimal servicePrice = new BigDecimal("50.00");
+        
+        // Mock no conflicts
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Collections.emptyList());
+        
+        Appointment savedAppointment = new Appointment(clientId, professionalId, serviceId, establishmentId, appointmentDateTime);
+        savedAppointment.setId(1L);
+        when(repository.save(any(Appointment.class))).thenReturn(savedAppointment);
+        
+        Appointment result = service.createAppointment(clientId, professionalId, serviceId, establishmentId,
+                appointmentDateTime, notes, clientName, professionalName, serviceName, serviceDurationMinutes, servicePrice);
+        
+        assertNotNull(result);
+        verify(repository).save(any(Appointment.class));
+    }
+    
+    @Test
+    void testCreateAppointment_NullClientId() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(null, 2L, 3L, 4L, LocalDateTime.now().plusHours(1), 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("ID do cliente é obrigatório", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_NullProfessionalId() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, null, 3L, 4L, LocalDateTime.now().plusHours(1), 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("ID do profissional é obrigatório", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_NullServiceId() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, null, 4L, LocalDateTime.now().plusHours(1), 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("ID do serviço é obrigatório", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_NullEstablishmentId() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, null, LocalDateTime.now().plusHours(1), 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("ID do estabelecimento é obrigatório", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_NullDateTime() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, 4L, null, 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Data e hora são obrigatórias", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_PastDateTime() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, 4L, LocalDateTime.now().minusHours(1), 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Não é possível agendar para uma data passada", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_WithConflicts() {
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        
+        // Mock conflicting appointment
+        Appointment conflictingAppointment = new Appointment();
+        conflictingAppointment.setAppointmentDateTime(appointmentDateTime);
+        conflictingAppointment.setServiceDurationMinutes(60);
+        
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(conflictingAppointment));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, 4L, appointmentDateTime, 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Já existe um agendamento para este profissional neste horário", exception.getMessage());
+    }
+    
+    // Test update status methods
+    @Test
+    void testUpdateStatus_Success() {
+        Long appointmentId = 1L;
+        AppointmentStatus newStatus = AppointmentStatus.CONFIRMED;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.updateStatus(appointmentId, newStatus);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testUpdateStatus_AppointmentNotFound() {
+        Long appointmentId = 1L;
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.updateStatus(appointmentId, AppointmentStatus.CONFIRMED);
+        });
+        assertEquals("Agendamento não encontrado", exception.getMessage());
+    }
+    
+    @Test
+    void testCancelAppointment() {
+        Long appointmentId = 1L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.cancelAppointment(appointmentId);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testConfirmAppointment() {
+        Long appointmentId = 1L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.confirmAppointment(appointmentId);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testCompleteAppointment() {
+        Long appointmentId = 1L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.completeAppointment(appointmentId);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    // Test updateNotes method
+    @Test
+    void testUpdateNotes_Success() {
+        Long appointmentId = 1L;
+        String newNotes = "Updated notes";
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setNotes("Old notes");
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.updateNotes(appointmentId, newNotes);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testUpdateNotes_AppointmentNotFound() {
+        Long appointmentId = 1L;
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.updateNotes(appointmentId, "New notes");
+        });
+        assertEquals("Agendamento não encontrado", exception.getMessage());
+    }
+    
+    // Test reschedule method
+    @Test
+    void testReschedule_Success() {
+        Long appointmentId = 1L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setProfessionalId(2L);
+        appointment.setServiceDurationMinutes(60);
+        appointment.setAppointmentDateTime(LocalDateTime.now().plusHours(1));
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Collections.emptyList());
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.reschedule(appointmentId, newDateTime);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testReschedule_AppointmentNotFound() {
+        Long appointmentId = 1L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.reschedule(appointmentId, newDateTime);
+        });
+        assertEquals("Agendamento não encontrado", exception.getMessage());
+    }
+    
+    @Test
+    void testReschedule_PastDateTime() {
+        Long appointmentId = 1L;
+        LocalDateTime pastDateTime = LocalDateTime.now().minusHours(1);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.reschedule(appointmentId, pastDateTime);
+        });
+        assertEquals("Não é possível reagendar para uma data passada", exception.getMessage());
+    }
+    
+    @Test
+    void testReschedule_WithConflicts() {
+        Long appointmentId = 1L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setProfessionalId(2L);
+        appointment.setServiceDurationMinutes(60);
+        
+        // Mock conflicting appointment (different ID)
+        Appointment conflictingAppointment = new Appointment();
+        conflictingAppointment.setId(2L);
+        conflictingAppointment.setAppointmentDateTime(newDateTime);
+        conflictingAppointment.setServiceDurationMinutes(60);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(conflictingAppointment));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.reschedule(appointmentId, newDateTime);
+        });
+        assertEquals("Já existe um agendamento para este profissional no novo horário", exception.getMessage());
+    }
+    
+    // Test query methods
+    @Test
+    void testGetByEstablishmentId() {
+        Long establishmentId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment(), new Appointment());
+        
+        when(repository.findByEstablishmentIdOrderByAppointmentDateTimeDesc(establishmentId))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getByEstablishmentId(establishmentId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByEstablishmentIdOrderByAppointmentDateTimeDesc(establishmentId);
+    }
+    
+    @Test
+    void testGetByEstablishmentAndStatus() {
+        Long establishmentId = 1L;
+        AppointmentStatus status = AppointmentStatus.CONFIRMED;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment());
+        
+        when(repository.findByEstablishmentIdAndStatusOrderByAppointmentDateTimeAsc(establishmentId, status))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getByEstablishmentAndStatus(establishmentId, status);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByEstablishmentIdAndStatusOrderByAppointmentDateTimeAsc(establishmentId, status);
+    }
+    
+    @Test
+    void testGetByProfessional() {
+        Long professionalId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment(), new Appointment());
+        
+        when(repository.findByProfessionalIdOrderByAppointmentDateTimeAsc(professionalId))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getByProfessional(professionalId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByProfessionalIdOrderByAppointmentDateTimeAsc(professionalId);
+    }
+    
+    @Test
+    void testGetByClient() {
+        Long clientId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment(), new Appointment());
+        
+        when(repository.findByClientIdOrderByAppointmentDateTimeDesc(clientId))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getByClient(clientId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByClientIdOrderByAppointmentDateTimeDesc(clientId);
+    }
+    
+    @Test
+    void testGetUpcomingAppointments() {
+        Long establishmentId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment());
+        
+        when(repository.findUpcomingAppointments(eq(establishmentId), any(LocalDateTime.class)))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getUpcomingAppointments(establishmentId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findUpcomingAppointments(eq(establishmentId), any(LocalDateTime.class));
+    }
+    
+    @Test
+    void testGetByDateRange() {
+        Long establishmentId = 1L;
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plusDays(7);
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment());
+        
+        when(repository.findByEstablishmentIdAndDateRange(establishmentId, startDate, endDate))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getByDateRange(establishmentId, startDate, endDate);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByEstablishmentIdAndDateRange(establishmentId, startDate, endDate);
+    }
+    
+    // Test counting methods
+    @Test
+    void testCountByEstablishment() {
+        Long establishmentId = 1L;
+        long expectedCount = 10L;
+        
+        when(repository.countByEstablishmentId(establishmentId)).thenReturn(expectedCount);
+        
+        long result = service.countByEstablishment(establishmentId);
+        
+        assertEquals(expectedCount, result);
+        verify(repository).countByEstablishmentId(establishmentId);
+    }
+    
+    @Test
+    void testCalculateMonthlyRevenue() {
+        Long establishmentId = 1L;
+        BigDecimal expectedRevenue = new BigDecimal("1500.00");
+        
+        when(repository.calculateMonthlyRevenue(eq(establishmentId), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(expectedRevenue);
+        
+        BigDecimal result = service.calculateMonthlyRevenue(establishmentId);
+        
+        assertEquals(expectedRevenue, result);
+        verify(repository).calculateMonthlyRevenue(eq(establishmentId), any(LocalDateTime.class), any(LocalDateTime.class));
+    }
+    
+    @Test
+    void testGetProfessionalPerformanceStats() {
+        Long establishmentId = 1L;
+        Object[] statsRow = {"Professional 1", 10L, new BigDecimal("500.00")};
+        List<Object[]> expectedStats = Collections.singletonList(statsRow);
+        
+        when(repository.findProfessionalPerformanceStats(eq(establishmentId), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(expectedStats);
+        
+        List<Object[]> result = service.getProfessionalPerformanceStats(establishmentId);
+        
+        assertEquals(expectedStats, result);
+        verify(repository).findProfessionalPerformanceStats(eq(establishmentId), any(LocalDateTime.class), any(LocalDateTime.class));
+    }
+    
+    // Test client-specific methods
+    @Test
+    void testGetClientUpcomingAppointments() {
+        Long clientId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment());
+        
+        when(repository.findByClientIdAndAppointmentDateTimeAfterOrderByAppointmentDateTimeAsc(eq(clientId), any(LocalDateTime.class)))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getClientUpcomingAppointments(clientId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByClientIdAndAppointmentDateTimeAfterOrderByAppointmentDateTimeAsc(eq(clientId), any(LocalDateTime.class));
+    }
+    
+    @Test
+    void testGetClientAppointments() {
+        Long clientId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment(), new Appointment());
+        
+        when(repository.findByClientIdOrderByAppointmentDateTimeDesc(clientId))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getClientAppointments(clientId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByClientIdOrderByAppointmentDateTimeDesc(clientId);
+    }
+    
+    @Test
+    void testGetClientAppointmentHistory() {
+        Long clientId = 1L;
+        List<Appointment> expectedAppointments = Arrays.asList(new Appointment());
+        
+        when(repository.findByClientIdAndAppointmentDateTimeBeforeOrderByAppointmentDateTimeDesc(eq(clientId), any(LocalDateTime.class)))
+            .thenReturn(expectedAppointments);
+        
+        List<Appointment> result = service.getClientAppointmentHistory(clientId);
+        
+        assertEquals(expectedAppointments, result);
+        verify(repository).findByClientIdAndAppointmentDateTimeBeforeOrderByAppointmentDateTimeDesc(eq(clientId), any(LocalDateTime.class));
+    }
+    
+    @Test
+    void testIsClientTimeSlotAvailable_NoConflicts() {
+        Long clientId = 1L;
+        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        
+        when(repository.findByClientIdAndAppointmentDateTimeBetween(eq(clientId), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(Collections.emptyList());
+        
+        boolean result = service.isClientTimeSlotAvailable(clientId, startTime, endTime);
+        
+        assertTrue(result);
+        verify(repository).findByClientIdAndAppointmentDateTimeBetween(eq(clientId), any(LocalDateTime.class), any(LocalDateTime.class));
+    }
+    
+    @Test
+    void testIsClientTimeSlotAvailable_WithConflicts() {
+        Long clientId = 1L;
+        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        
+        Appointment conflictingAppointment = new Appointment();
+        conflictingAppointment.setAppointmentDateTime(startTime.plusMinutes(30));
+        conflictingAppointment.setServiceDurationMinutes(60);
+        
+        when(repository.findByClientIdAndAppointmentDateTimeBetween(eq(clientId), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(Arrays.asList(conflictingAppointment));
+        
+        boolean result = service.isClientTimeSlotAvailable(clientId, startTime, endTime);
+        
+        assertFalse(result);
+        verify(repository).findByClientIdAndAppointmentDateTimeBetween(eq(clientId), any(LocalDateTime.class), any(LocalDateTime.class));
+    }
+    
+    @Test
+    void testCreateClientAppointment() {
+        Long clientId = 1L;
+        Long professionalId = 2L;
+        Long serviceId = 3L;
+        Long establishmentId = 4L;
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        String notes = "Client appointment notes";
+        
+        // Mock no conflicts
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Collections.emptyList());
+        
+        Appointment savedAppointment = new Appointment(clientId, professionalId, serviceId, establishmentId, appointmentDateTime);
+        savedAppointment.setId(1L);
+        when(repository.save(any(Appointment.class))).thenReturn(savedAppointment);
+        
+        Appointment result = service.createClientAppointment(clientId, professionalId, serviceId, establishmentId, appointmentDateTime, notes);
+        
+        assertNotNull(result);
+        verify(repository).save(any(Appointment.class));
+    }
+    
+    // Test edge cases and additional scenarios
+    @Test
+    void testCreateAppointment_WithNullDuration() {
+        Long clientId = 1L;
+        Long professionalId = 2L;
+        Long serviceId = 3L;
+        Long establishmentId = 4L;
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        
+        // Mock no conflicts
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Collections.emptyList());
+        
+        Appointment savedAppointment = new Appointment(clientId, professionalId, serviceId, establishmentId, appointmentDateTime);
+        savedAppointment.setId(1L);
+        when(repository.save(any(Appointment.class))).thenReturn(savedAppointment);
+        
+        // Test with null duration - should default to 60 minutes
+        Appointment result = service.createAppointment(clientId, professionalId, serviceId, establishmentId,
+                appointmentDateTime, "notes", "client", "professional", "service", null, new BigDecimal("50.00"));
+        
+        assertNotNull(result);
+        verify(repository).save(any(Appointment.class));
+    }
+    
+    @Test
+    void testReschedule_WithNullDuration() {
+        Long appointmentId = 1L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setProfessionalId(2L);
+        appointment.setServiceDurationMinutes(null); // null duration
+        appointment.setAppointmentDateTime(LocalDateTime.now().plusHours(1));
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Collections.emptyList());
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.reschedule(appointmentId, newDateTime);
+        
+        assertNotNull(result);
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testIsClientTimeSlotAvailable_WithNullEndDateTime() {
+        Long clientId = 1L;
+        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        
+        Appointment appointmentWithNullDuration = new Appointment();
+        appointmentWithNullDuration.setAppointmentDateTime(startTime.plusMinutes(30));
+        appointmentWithNullDuration.setServiceDurationMinutes(null); // This will cause getEndDateTime() to return null
+        
+        when(repository.findByClientIdAndAppointmentDateTimeBetween(eq(clientId), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(Arrays.asList(appointmentWithNullDuration));
+        
+        boolean result = service.isClientTimeSlotAvailable(clientId, startTime, endTime);
+        
+        assertFalse(result); // Should detect conflict even with null duration (defaults to 60 min)
+        verify(repository).findByClientIdAndAppointmentDateTimeBetween(eq(clientId), any(LocalDateTime.class), any(LocalDateTime.class));
+    }
+    
+    @Test 
+    void testFindConflictingAppointments_WithNullEndDateTime() {
+        Long professionalId = 1L;
+        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        
+        Appointment appointmentWithNullDuration = new Appointment();
+        appointmentWithNullDuration.setAppointmentDateTime(startTime.plusMinutes(30));
+        appointmentWithNullDuration.setServiceDurationMinutes(null);
+        
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(appointmentWithNullDuration));
+        
+        boolean result = service.isTimeSlotAvailable(professionalId, startTime, endTime);
+        
+        assertFalse(result); // Should detect conflict even with null duration (defaults to 60 min)
+    }
+    
+    @Test
+    void testReschedule_ExcludesSelfFromConflicts() {
+        Long appointmentId = 1L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setProfessionalId(2L);
+        appointment.setServiceDurationMinutes(60);
+        appointment.setAppointmentDateTime(LocalDateTime.now().plusHours(1));
+        
+        // Mock the same appointment as a potential conflict (should be excluded)
+        Appointment selfConflict = new Appointment();
+        selfConflict.setId(appointmentId); // Same ID - should be excluded
+        selfConflict.setAppointmentDateTime(newDateTime);
+        selfConflict.setServiceDurationMinutes(60);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(selfConflict));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.reschedule(appointmentId, newDateTime);
+        
+        assertNotNull(result); // Should succeed as self-conflict is excluded
+        verify(repository).findById(appointmentId);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testCreateAppointment_DefaultDurationUsed() {
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        
+        // Mock an appointment that would conflict if default duration (60 min) is used
+        Appointment existingAppointment = new Appointment();
+        existingAppointment.setAppointmentDateTime(appointmentDateTime.plusMinutes(30));
+        existingAppointment.setServiceDurationMinutes(60);
+        
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(existingAppointment));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, 4L, appointmentDateTime, 
+                    "notes", "client", "professional", "service", null, new BigDecimal("50.00"));
+        });
+        assertEquals("Já existe um agendamento para este profissional neste horário", exception.getMessage());
+    }
+    
+    @Test
+    void testIsTimeSlotAvailable_EdgeOverlap() {
+        Long professionalId = 1L;
+        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        
+        // Create an appointment that ends exactly when the new one starts (no overlap)
+        Appointment noOverlapAppointment = new Appointment();
+        noOverlapAppointment.setAppointmentDateTime(startTime.minusHours(1));
+        noOverlapAppointment.setServiceDurationMinutes(60);
+        
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(noOverlapAppointment));
+        
+        boolean result = service.isTimeSlotAvailable(professionalId, startTime, endTime);
+        
+        assertTrue(result); // Should be available as appointments don't overlap
+    }
+    
+    @Test
+    void testIsTimeSlotAvailable_ExactOverlap() {
+        Long professionalId = 1L;
+        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime endTime = startTime.plusHours(1);
+        
+        // Create an appointment with exact same time slot
+        Appointment exactOverlapAppointment = new Appointment();
+        exactOverlapAppointment.setAppointmentDateTime(startTime);
+        exactOverlapAppointment.setServiceDurationMinutes(60);
+        
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Arrays.asList(exactOverlapAppointment));
+        
+        boolean result = service.isTimeSlotAvailable(professionalId, startTime, endTime);
+        
+        assertFalse(result); // Should detect exact overlap
     }
 }
