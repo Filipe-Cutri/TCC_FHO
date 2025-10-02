@@ -6,6 +6,9 @@ class ClientServices {
         this.userPreferences = this.loadUserPreferences();
         this.aiRecommendations = [];
         this.selectedService = null;
+        this.services = [];
+        this.establishmentId = null;
+        this.establishmentCategory = null;
     }
 
     /**
@@ -14,6 +17,7 @@ class ClientServices {
     static init() {
         const instance = new ClientServices();
         instance.setupEventListeners();
+        instance.loadServices();
         return instance;
     }
 
@@ -27,14 +31,12 @@ class ClientServices {
             aiBtn.addEventListener('click', () => this.handleAIScheduling());
         }
 
-        // Service booking buttons
+        // Service booking buttons - using event delegation for dynamic content
         document.addEventListener('click', (e) => {
-            if (e.target.matches('.client-btn')) {
-                const serviceCard = e.target.closest('.client-card');
-                if (serviceCard) {
-                    const serviceName = serviceCard.querySelector('.card-title').textContent.trim();
-                    this.handleServiceBooking(serviceName);
-                }
+            if (e.target.closest('.client-btn[data-service-id]')) {
+                const button = e.target.closest('.client-btn[data-service-id]');
+                const serviceName = button.getAttribute('data-service-name');
+                this.handleServiceBooking(serviceName);
             }
         });
     }
@@ -74,18 +76,54 @@ class ClientServices {
         `;
         aiBtn.disabled = true;
 
-        // Simulate AI processing
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Real AI processing - replace with actual backend API call
+        try {
+            const recommendations = await this.getAIRecommendationsFromAPI();
+            
+            // Reset button
+            aiBtn.innerHTML = originalText;
+            aiBtn.disabled = false;
 
-        // Generate AI recommendations
-        const recommendations = this.generateAIRecommendations();
-        
-        // Reset button
-        aiBtn.innerHTML = originalText;
-        aiBtn.disabled = false;
+            // Show recommendations
+            this.showAIRecommendations(recommendations);
+        } catch (error) {
+            console.error('Error getting AI recommendations:', error);
+            
+            // Reset button on error
+            aiBtn.innerHTML = originalText;
+            aiBtn.disabled = false;
+            
+            ToastManager.showError('Erro ao obter recomendações. Tente novamente.');
+        }
+    }
 
-        // Show recommendations
-        this.showAIRecommendations(recommendations);
+    /**
+     * Get AI recommendations from API
+     */
+    async getAIRecommendationsFromAPI() {
+        try {
+            // Get client preferences from localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const clientId = user.id;
+            
+            if (!clientId) {
+                throw new Error('Sessão expirada');
+            }
+
+            // For now, return mock data until backend AI endpoint is implemented
+            // const response = await apiClient.post('/api/client/ai/recommendations', {
+            //     clientId: clientId,
+            //     preferences: JSON.parse(localStorage.getItem('clientPreferences') || '{}')
+            // });
+            
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            return this.generateAIRecommendations();
+            
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
@@ -169,6 +207,199 @@ class ClientServices {
     handleServiceBooking(serviceName) {
         localStorage.setItem('selectedService', JSON.stringify({ name: serviceName }));
         window.location.href = `client-professionals.html?service=${encodeURIComponent(serviceName)}`;
+    }
+
+    /**
+     * Load services from API based on selected establishment
+     */
+    async loadServices() {
+        try {
+            // Get user session to find selected establishment
+            const session = this.getUserSession();
+            
+            if (!session || !session.selectedEstablishmentId) {
+                this.showEmptyState('Por favor, selecione um estabelecimento primeiro.');
+                return;
+            }
+
+            this.establishmentId = session.selectedEstablishmentId;
+            
+            // Show loading state
+            this.showLoading();
+
+            // Fetch establishment details to get category
+            const establishmentResponse = await window.apiClient.get('/api/establishment/list');
+            
+            if (establishmentResponse.success) {
+                const establishment = establishmentResponse.data.find(e => e.id === this.establishmentId);
+                if (establishment) {
+                    this.establishmentCategory = establishment.category;
+                }
+            }
+
+            // Fetch services for this establishment
+            const response = await window.apiClient.get('/api/establishment/services/active', {
+                establishmentId: this.establishmentId
+            });
+
+            if (response.success && response.data) {
+                this.services = response.data;
+                this.renderServices();
+            } else {
+                this.showEmptyState('Nenhum serviço disponível no momento.');
+            }
+
+        } catch (error) {
+            console.error('Error loading services:', error);
+            this.showEmptyState('Erro ao carregar serviços. Tente novamente mais tarde.');
+        }
+    }
+
+    /**
+     * Get user session from localStorage
+     */
+    getUserSession() {
+        try {
+            const sessionData = localStorage.getItem('slotfy_client_session');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                return session.user;
+            }
+        } catch (error) {
+            console.error('Error reading session:', error);
+        }
+        return null;
+    }
+
+    /**
+     * Show loading state
+     */
+    showLoading() {
+        document.getElementById('servicesLoading').style.display = 'block';
+        document.getElementById('servicesEmpty').style.display = 'none';
+        document.getElementById('servicesGrid').style.display = 'none';
+    }
+
+    /**
+     * Show empty state
+     */
+    showEmptyState(message) {
+        document.getElementById('servicesLoading').style.display = 'none';
+        document.getElementById('servicesEmpty').style.display = 'block';
+        document.getElementById('servicesGrid').style.display = 'none';
+        
+        const emptyStateText = document.querySelector('#servicesEmpty p');
+        if (emptyStateText) {
+            emptyStateText.textContent = message;
+        }
+    }
+
+    /**
+     * Render services grid
+     */
+    renderServices() {
+        const grid = document.getElementById('servicesGrid');
+        
+        if (!this.services || this.services.length === 0) {
+            this.showEmptyState('Nenhum serviço disponível no momento.');
+            return;
+        }
+
+        // Hide loading and empty states
+        document.getElementById('servicesLoading').style.display = 'none';
+        document.getElementById('servicesEmpty').style.display = 'none';
+        grid.style.display = 'flex';
+
+        // Clear existing content
+        grid.innerHTML = '';
+
+        // Render each service
+        this.services.forEach((service, index) => {
+            const serviceCard = this.createServiceCard(service, index);
+            grid.appendChild(serviceCard);
+        });
+    }
+
+    /**
+     * Create a service card element
+     */
+    createServiceCard(service, index) {
+        const col = document.createElement('div');
+        col.className = 'col-lg-4 mb-4';
+
+        // Determine color based on index
+        const colors = [
+            { border: 'var(--color-primary-500)', gradient: 'var(--color-primary-500) 0%, var(--color-primary-600) 100%' },
+            { border: 'var(--color-accent-success)', gradient: 'var(--color-accent-success) 0%, #059669 100%' },
+            { border: 'var(--color-accent-warning)', gradient: 'var(--color-accent-warning) 0%, #d97706 100%' },
+            { border: '#8b5cf6', gradient: '#8b5cf6 0%, #7c3aed 100%' },
+            { border: '#ec4899', gradient: '#ec4899 0%, #db2777 100%' },
+            { border: '#14b8a6', gradient: '#14b8a6 0%, #0d9488 100%' }
+        ];
+        const color = colors[index % colors.length];
+
+        // Get icon based on category or use default
+        const icon = this.getServiceIcon(service.category || service.name);
+
+        col.innerHTML = `
+            <div class="client-card" style="border-left: 4px solid ${color.border};">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span class="card-icon" style="background: linear-gradient(135deg, ${color.gradient}); color: white;">
+                            <i class="${icon}"></i>
+                        </span>
+                        ${this.escapeHtml(service.name)}
+                    </h5>
+                    <p class="card-text">${this.escapeHtml(service.description || 'Serviço de qualidade com profissionais especializados')}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="client-stats-number text-primary">R$ ${service.price.toFixed(2)}</span>
+                        <span class="client-stats-label">⏱ ${service.durationMinutes} min</span>
+                    </div>
+                    <button class="client-btn w-100" data-service-id="${service.id}" data-service-name="${this.escapeHtml(service.name)}">
+                        <i class="fas fa-calendar-plus me-2"></i>Agendar
+                    </button>
+                </div>
+            </div>
+        `;
+
+        return col;
+    }
+
+    /**
+     * Get appropriate icon for service
+     */
+    getServiceIcon(categoryOrName) {
+        const name = (categoryOrName || '').toLowerCase();
+        
+        // Map common service names to icons
+        if (name.includes('corte') && name.includes('masculino')) return 'fas fa-cut';
+        if (name.includes('corte') && name.includes('feminino')) return 'fas fa-scissors';
+        if (name.includes('barba')) return 'fas fa-beard';
+        if (name.includes('escova')) return 'fas fa-wind';
+        if (name.includes('manicure') || name.includes('pedicure') || name.includes('unha')) return 'fas fa-hand-sparkles';
+        if (name.includes('coloração') || name.includes('tintura')) return 'fas fa-palette';
+        if (name.includes('hidratação') || name.includes('tratamento')) return 'fas fa-spa';
+        if (name.includes('maquiagem')) return 'fas fa-magic';
+        if (name.includes('sobrancelha')) return 'fas fa-eye';
+        if (name.includes('depilação')) return 'fas fa-burn';
+        if (name.includes('combo') || name.includes('pacote')) return 'fas fa-star';
+        
+        // Default icon
+        return 'fas fa-cut';
+    }
+
+    /**
+     * Escape HTML to prevent XSS
+     */
+    escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
     }
 }
 
