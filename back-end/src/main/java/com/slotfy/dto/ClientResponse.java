@@ -10,6 +10,7 @@ public class ClientResponse {
     private String email;
     private String phone;
     private Boolean active;
+    private Long selectedEstablishmentId;
     
     // Default constructor
     public ClientResponse() {}
@@ -21,6 +22,16 @@ public class ClientResponse {
         this.email = email;
         this.phone = phone;
         this.active = active;
+    }
+    
+    // Constructor with establishment
+    public ClientResponse(Long id, String name, String email, String phone, Boolean active, Long selectedEstablishmentId) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.active = active;
+        this.selectedEstablishmentId = selectedEstablishmentId;
     }
     
     // Getters and setters
@@ -62,5 +73,13 @@ public class ClientResponse {
     
     public void setActive(Boolean active) {
         this.active = active;
+    }
+    
+    public Long getSelectedEstablishmentId() {
+        return selectedEstablishmentId;
+    }
+    
+    public void setSelectedEstablishmentId(Long selectedEstablishmentId) {
+        this.selectedEstablishmentId = selectedEstablishmentId;
     }
 }
