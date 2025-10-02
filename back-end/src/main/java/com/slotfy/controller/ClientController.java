@@ -198,6 +198,58 @@ public class ClientController {
     }
     
     /**
+     * Get client dashboard data
+     */
+    @GetMapping("/dashboard")
+    public ResponseEntity<Map<String, Object>> getDashboardData(@RequestParam Long clientId) {
+        try {
+            Optional<Client> clientOpt = clientService.findById(clientId);
+            
+            if (clientOpt.isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Cliente não encontrado"
+                    ));
+            }
+            
+            Client client = clientOpt.get();
+            
+            // Get appointment counts
+            List<Appointment> allAppointments = appointmentService.getClientAppointmentHistory(clientId);
+            long totalAppointments = allAppointments.size();
+            
+            // For now, return basic stats with empty next appointment
+            // This will be populated when actual appointments exist
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "data", Map.of(
+                        "client", Map.of(
+                            "id", client.getId(),
+                            "name", client.getName(),
+                            "email", client.getEmail(),
+                            "phone", client.getPhone() != null ? client.getPhone() : ""
+                        ),
+                        "stats", Map.of(
+                            "totalAppointments", totalAppointments,
+                            "favoriteProfessionals", 0,
+                            "totalSpent", 0.0
+                        ),
+                        "nextAppointment", (Object) null
+                    )
+                ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro interno do servidor: " + e.getMessage()
+                ));
+        }
+    }
+    
+    /**
      * Update client profile
      */
     @PutMapping("/profile")

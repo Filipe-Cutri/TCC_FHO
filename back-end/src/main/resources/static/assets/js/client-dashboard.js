@@ -6,42 +6,88 @@ class ClientDashboard {
      * Initialize dashboard functionality
      */
     static init() {
-        this.loadNextAppointment();
+        this.loadDashboardData();
         this.setupEventListeners();
     }
 
     /**
-     * Load next appointment from backend
+     * Load dashboard data from backend
      */
-    static async loadNextAppointment() {
-        const appointmentContainer = document.getElementById('next-appointment-content');
-        
+    static async loadDashboardData() {
         try {
-            // TODO: Replace with actual API call
-            // const response = await fetch('/api/client/appointments/next');
-            // const appointment = await response.json();
+            // Get client session
+            const session = window.clientSession.getSession();
             
-            // Mock data for now - will be replaced with real API call
-            const mockAppointment = {
-                id: 1,
-                service: "Corte + Barba",
-                professional: "João Silva",
-                date: "2024-12-10",
-                time: "14:00",
-                endTime: "15:00",
-                establishment: "Barbearia Premium - Centro",
-                status: "CONFIRMED"
-            };
+            if (!session || !session.id) {
+                console.error('No client session found');
+                return;
+            }
 
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Update user name in welcome section
+            const userNameElement = document.querySelector('.client-user-name');
+            if (userNameElement) {
+                userNameElement.textContent = session.name;
+            }
 
-            this.renderNextAppointment(mockAppointment, appointmentContainer);
+            // Fetch dashboard data from API
+            const response = await fetch(`/api/client/dashboard?clientId=${session.id}`);
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                this.updateDashboardStats(result.data.stats);
+                this.updateNextAppointment(result.data.nextAppointment);
+            } else {
+                console.error('Failed to load dashboard data:', result.message);
+            }
             
         } catch (error) {
-            console.error('Error loading next appointment:', error);
-            this.renderNoAppointment(appointmentContainer);
+            console.error('Error loading dashboard data:', error);
         }
+    }
+
+    /**
+     * Update dashboard statistics
+     */
+    static updateDashboardStats(stats) {
+        // Update appointments count
+        const statsCards = document.querySelectorAll('.client-stats-card');
+        if (statsCards.length >= 3) {
+            // First card - appointments
+            const appointmentsNumber = statsCards[0].querySelector('.client-stats-number');
+            if (appointmentsNumber) {
+                appointmentsNumber.textContent = stats.totalAppointments || '0';
+            }
+
+            // Second card - favorite professionals
+            const professionalsNumber = statsCards[1].querySelector('.client-stats-number');
+            if (professionalsNumber) {
+                professionalsNumber.textContent = stats.favoriteProfessionals || '0';
+            }
+
+            // Third card - total spent
+            const totalSpentNumber = statsCards[2].querySelector('.client-stats-number');
+            if (totalSpentNumber) {
+                const formattedAmount = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(stats.totalSpent || 0);
+                totalSpentNumber.textContent = formattedAmount;
+            }
+        }
+    }
+
+    /**
+     * Update next appointment display
+     */
+    static updateNextAppointment(appointment) {
+        const appointmentCard = document.querySelector('.client-card .card-body');
+        
+        if (!appointment || !appointmentCard) {
+            this.renderNoAppointment(appointmentCard);
+            return;
+        }
+
+        this.renderNextAppointment(appointment, appointmentCard);
     }
 
     /**
@@ -56,6 +102,12 @@ class ClientDashboard {
         });
 
         container.innerHTML = `
+            <h5 class="card-title">
+                <span class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </span>
+                Próximo Agendamento
+            </h5>
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <p class="card-text mb-2"><strong>${appointment.service}</strong> com ${appointment.professional}</p>
@@ -92,6 +144,12 @@ class ClientDashboard {
      */
     static renderNoAppointment(container) {
         container.innerHTML = `
+            <h5 class="card-title">
+                <span class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </span>
+                Próximo Agendamento
+            </h5>
             <div class="text-center py-4">
                 <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 3rem;"></i>
                 <h6 class="text-muted mb-3">Nenhum agendamento próximo</h6>
