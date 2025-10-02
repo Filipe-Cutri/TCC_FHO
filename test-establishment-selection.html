@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste - Seleção de Estabelecimento</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="front-end/src/assets/styles/establishment-selector.css">
+  <style>
+    body {
+      padding: 2rem;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+      min-height: 100vh;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .test-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 4px solid #6366f1;
+    }
+    .test-btn {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .test-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    .status {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      display: none;
+    }
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+    }
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .status.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1 class="mb-4">
+      <i class="fas fa-flask me-2"></i>
+      Teste: Seleção de Estabelecimento para Clientes
+    </h1>
+    
+    <div class="alert alert-info">
+      <strong>ℹ️ Instruções:</strong> Esta página permite testar a funcionalidade de seleção de estabelecimento implementada. 
+      Certifique-se de que o backend está rodando em <code>http://localhost:8080</code> ou ajuste a configuração da API.
+    </div>
+
+    <!-- Test 1: Load Establishments -->
+    <div class="test-section">
+      <h3>
+        <i class="fas fa-list me-2"></i>
+        Teste 1: Carregar Lista de Estabelecimentos
+      </h3>
+      <p>Testa o endpoint GET /api/establishment/list</p>
+      <button class="test-btn" onclick="testLoadEstablishments()">
+        <i class="fas fa-play me-2"></i>
+        Executar Teste 1
+      </button>
+      <div id="status1" class="status"></div>
+    </div>
+
+    <!-- Test 2: Show Establishment Selector -->
+    <div class="test-section">
+      <h3>
+        <i class="fas fa-mouse-pointer me-2"></i>
+        Teste 2: Exibir Seletor de Estabelecimento
+      </h3>
+      <p>Testa a interface de seleção visual de estabelecimentos</p>
+      <button class="test-btn" onclick="testShowSelector()">
+        <i class="fas fa-play me-2"></i>
+        Executar Teste 2
+      </button>
+      <div id="status2" class="status"></div>
+      <div id="selectedEstablishment" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Test 3: Register with Establishment -->
+    <div class="test-section">
+      <h3>
+        <i class="fas fa-user-plus me-2"></i>
+        Teste 3: Registro com Estabelecimento
+      </h3>
+      <p>Testa o endpoint POST /api/client/register com establishmentId</p>
+      <div class="mb-3">
+        <label class="form-label">Email de teste:</label>
+        <input type="email" class="form-control" id="testEmail" value="teste@example.com" placeholder="Digite um email para teste">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Establishment ID:</label>
+        <input type="number" class="form-control" id="testEstId" value="1" placeholder="ID do estabelecimento">
+      </div>
+      <button class="test-btn" onclick="testRegisterWithEstablishment()">
+        <i class="fas fa-play me-2"></i>
+        Executar Teste 3
+      </button>
+      <div id="status3" class="status"></div>
+    </div>
+
+    <!-- Test 4: Update Establishment -->
+    <div class="test-section">
+      <h3>
+        <i class="fas fa-sync-alt me-2"></i>
+        Teste 4: Atualizar Estabelecimento
+      </h3>
+      <p>Testa o endpoint PUT /api/client/establishment</p>
+      <div class="mb-3">
+        <label class="form-label">Client ID:</label>
+        <input type="number" class="form-control" id="testClientId" value="1" placeholder="ID do cliente">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Novo Establishment ID:</label>
+        <input type="number" class="form-control" id="testNewEstId" value="2" placeholder="Novo ID do estabelecimento">
+      </div>
+      <button class="test-btn" onclick="testUpdateEstablishment()">
+        <i class="fas fa-play me-2"></i>
+        Executar Teste 4
+      </button>
+      <div id="status4" class="status"></div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="test-section" style="border-left-color: #10b981;">
+      <h3>
+        <i class="fas fa-chart-bar me-2"></i>
+        Resumo dos Testes
+      </h3>
+      <div id="summary">
+        <p>Execute os testes acima para ver o resumo.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="front-end/src/assets/js/api-config.js"></script>
+  <script src="front-end/src/assets/js/establishment-selector.js"></script>
+  
+  <script>
+    let testResults = {
+      test1: null,
+      test2: null,
+      test3: null,
+      test4: null
+    };
+
+    function showStatus(testNum, type, message) {
+      const status = document.getElementById(`status${testNum}`);
+      status.className = `status ${type}`;
+      status.style.display = 'block';
+      status.innerHTML = `<strong>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</strong> ${message}`;
+      testResults[`test${testNum}`] = type === 'success';
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const passed = Object.values(testResults).filter(r => r === true).length;
+      const failed = Object.values(testResults).filter(r => r === false).length;
+      const pending = Object.values(testResults).filter(r => r === null).length;
+      
+      document.getElementById('summary').innerHTML = `
+        <div class="row text-center">
+          <div class="col-md-4">
+            <div style="font-size: 2rem; color: #10b981;">✅ ${passed}</div>
+            <div>Aprovados</div>
+          </div>
+          <div class="col-md-4">
+            <div style="font-size: 2rem; color: #ef4444;">❌ ${failed}</div>
+            <div>Falharam</div>
+          </div>
+          <div class="col-md-4">
+            <div style="font-size: 2rem; color: #6b7280;">⏳ ${pending}</div>
+            <div>Pendentes</div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function testLoadEstablishments() {
+      showStatus(1, 'info', 'Carregando estabelecimentos...');
+      try {
+        const response = await window.apiClient.get(API_CONFIG.endpoints.establishment.list);
+        if (response.success && response.data) {
+          showStatus(1, 'success', `✅ Carregados ${response.count} estabelecimentos com sucesso!`);
+          console.log('Establishments:', response.data);
+        } else {
+          showStatus(1, 'error', 'Resposta da API não contém dados esperados');
+        }
+      } catch (error) {
+        showStatus(1, 'error', `Erro: ${error.message}`);
+        console.error(error);
+      }
+    }
+
+    async function testShowSelector() {
+      showStatus(2, 'info', 'Abrindo seletor...');
+      try {
+        const selector = new EstablishmentSelector();
+        await selector.loadEstablishments();
+        
+        await selector.showModal(null, function(estId) {
+          const establishment = selector.getEstablishmentById(estId);
+          document.getElementById('selectedEstablishment').innerHTML = `
+            <div class="alert alert-success">
+              <strong>Estabelecimento Selecionado:</strong><br>
+              ID: ${establishment.id}<br>
+              Nome: ${establishment.name}<br>
+              Categoria: ${establishment.category || 'N/A'}
+            </div>
+          `;
+          showStatus(2, 'success', `✅ Estabelecimento selecionado: ${establishment.name}`);
+        });
+      } catch (error) {
+        showStatus(2, 'error', `Erro: ${error.message}`);
+        console.error(error);
+      }
+    }
+
+    async function testRegisterWithEstablishment() {
+      const email = document.getElementById('testEmail').value;
+      const estId = document.getElementById('testEstId').value;
+      
+      showStatus(3, 'info', 'Registrando cliente...');
+      try {
+        const response = await window.apiClient.post(API_CONFIG.endpoints.client.register, {
+          name: 'Cliente Teste',
+          email: email,
+          password: 'senha123',
+          phone: '11999999999',
+          establishmentId: estId
+        });
+        
+        if (response.success) {
+          showStatus(3, 'success', `✅ Cliente registrado! ID: ${response.client.id}, Establishment: ${response.client.selectedEstablishmentId || 'N/A'}`);
+          console.log('Client:', response.client);
+        } else {
+          showStatus(3, 'error', `Falha: ${response.message}`);
+        }
+      } catch (error) {
+        showStatus(3, 'error', `Erro: ${error.message}`);
+        console.error(error);
+      }
+    }
+
+    async function testUpdateEstablishment() {
+      const clientId = document.getElementById('testClientId').value;
+      const newEstId = document.getElementById('testNewEstId').value;
+      
+      showStatus(4, 'info', 'Atualizando estabelecimento...');
+      try {
+        const response = await window.apiClient.put(API_CONFIG.endpoints.client.updateEstablishment, {
+          clientId: clientId,
+          establishmentId: newEstId
+        });
+        
+        if (response.success) {
+          showStatus(4, 'success', `✅ Estabelecimento atualizado! Novo: ${response.client.selectedEstablishmentId}`);
+          console.log('Updated client:', response.client);
+        } else {
+          showStatus(4, 'error', `Falha: ${response.message}`);
+        }
+      } catch (error) {
+        showStatus(4, 'error', `Erro: ${error.message}`);
+        console.error(error);
+      }
+    }
+
+    // Initialize summary
+    updateSummary();
+  </script>
+</body>
+</html>
