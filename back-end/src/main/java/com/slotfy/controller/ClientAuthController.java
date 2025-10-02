@@ -27,12 +27,18 @@ public class ClientAuthController extends BaseAuthController<Client> {
     
     @Override
     protected Map<String, Object> createUserResponse(Client client) {
-        return Map.of(
+        Map<String, Object> response = new java.util.HashMap<>(Map.of(
             "id", client.getId(),
             "name", client.getName(),
             "email", client.getEmail(),
             "phone", client.getPhone() != null ? client.getPhone() : ""
-        );
+        ));
+        
+        if (client.getSelectedEstablishmentId() != null) {
+            response.put("selectedEstablishmentId", client.getSelectedEstablishmentId());
+        }
+        
+        return response;
     }
     
     @Override
@@ -58,6 +64,7 @@ public class ClientAuthController extends BaseAuthController<Client> {
             String email = request.get("email");
             String password = request.get("password");
             String phone = request.get("phone");
+            String establishmentIdStr = request.get("establishmentId");
             
             // Validate input
             ResponseEntity<Map<String, Object>> validationError = validateRegistrationData(name, email, password);
@@ -65,7 +72,16 @@ public class ClientAuthController extends BaseAuthController<Client> {
                 return validationError;
             }
             
-            Client client = clientService.registerClient(name, email, password, phone);
+            Long establishmentId = null;
+            if (establishmentIdStr != null && !establishmentIdStr.trim().isEmpty()) {
+                try {
+                    establishmentId = Long.parseLong(establishmentIdStr);
+                } catch (NumberFormatException e) {
+                    // Ignore invalid establishment ID
+                }
+            }
+            
+            Client client = clientService.registerClient(name, email, password, phone, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -76,6 +92,60 @@ public class ClientAuthController extends BaseAuthController<Client> {
                 
         } catch (Exception e) {
             return handleRegistrationError(e);
+        }
+    }
+    
+    /**
+     * Update client's selected establishment
+     */
+    @PutMapping("/establishment")
+    public ResponseEntity<Map<String, Object>> updateSelectedEstablishment(@RequestBody Map<String, String> request) {
+        try {
+            String clientIdStr = request.get("clientId");
+            String establishmentIdStr = request.get("establishmentId");
+            
+            if (clientIdStr == null || clientIdStr.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "ID do cliente é obrigatório"
+                    ));
+            }
+            
+            Long clientId = Long.parseLong(clientIdStr);
+            Long establishmentId = null;
+            
+            if (establishmentIdStr != null && !establishmentIdStr.trim().isEmpty()) {
+                establishmentId = Long.parseLong(establishmentIdStr);
+            }
+            
+            Client client = clientService.updateSelectedEstablishment(clientId, establishmentId);
+            
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "message", "Estabelecimento selecionado com sucesso",
+                    "client", createUserResponse(client)
+                ));
+                
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", "ID inválido"
+                ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao atualizar estabelecimento selecionado"
+                ));
         }
     }
 }

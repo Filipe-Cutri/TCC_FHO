@@ -62,9 +62,13 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
         }
         
         String phone = additionalParams.length > 0 ? additionalParams[0] : null;
+        Long establishmentId = additionalParams.length > 1 && additionalParams[1] != null 
+            ? Long.parseLong(additionalParams[1]) : null;
+        
         String encodedPassword = hashPassword(password);
         
         Client client = new Client(name, email, encodedPassword, phone);
+        client.setSelectedEstablishmentId(establishmentId);
         return save(client);
     }
     
@@ -73,6 +77,27 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
      */
     public Client registerClient(String name, String email, String password, String phone) {
         return register(name, email, password, phone);
+    }
+    
+    /**
+     * Register new client with establishment
+     */
+    public Client registerClient(String name, String email, String password, String phone, Long establishmentId) {
+        return register(name, email, password, phone, establishmentId != null ? establishmentId.toString() : null);
+    }
+    
+    /**
+     * Update client's selected establishment
+     */
+    public Client updateSelectedEstablishment(Long clientId, Long establishmentId) {
+        Optional<Client> clientOpt = findById(clientId);
+        if (!clientOpt.isPresent()) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+        
+        Client client = clientOpt.get();
+        client.setSelectedEstablishmentId(establishmentId);
+        return save(client);
     }
     
     /**
