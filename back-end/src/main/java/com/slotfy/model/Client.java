@@ -35,6 +35,9 @@ public class Client extends BaseEntity {
     @Column(name = "active")
     private Boolean active = true;
     
+    @Column(name = "selected_establishment_id")
+    private Long selectedEstablishmentId;
+    
     // Default constructor
     public Client() {}
     
@@ -94,5 +97,13 @@ public class Client extends BaseEntity {
     
     public void setActive(Boolean active) {
         this.active = active;
+    }
+    
+    public Long getSelectedEstablishmentId() {
+        return selectedEstablishmentId;
+    }
+    
+    public void setSelectedEstablishmentId(Long selectedEstablishmentId) {
+        this.selectedEstablishmentId = selectedEstablishmentId;
     }
 }

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../assets/styles/common.css">
   <link rel="stylesheet" href="../../assets/styles/welcome.css">
   <link rel="stylesheet" href="../../assets/styles/logo-system.css">
+  <link rel="stylesheet" href="../../assets/styles/establishment-selector.css">
   <style>
     /* Additional styles for fixed navbar */
     body {
@@ -117,9 +118,21 @@
                   <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">📱 Telefone</label>
                   <input type="text" class="form-control" id="telefone" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
                 </div>
-                <div class="mb-3" style="margin-bottom: 32px;">
+                <div class="mb-3" style="margin-bottom: 24px;">
                   <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">🔒 Senha</label>
                   <input type="password" class="form-control" id="senha" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                </div>
+                <div class="mb-3" style="margin-bottom: 32px;">
+                  <label class="form-label" style="color: #374151; font-weight: 600; margin-bottom: 8px;">
+                    <i class="fas fa-store me-1"></i> Estabelecimento (opcional)
+                  </label>
+                  <div id="establishmentSelectorContainer">
+                    <button type="button" class="btn w-100" id="selectEstablishmentBtn" style="border: 2px dashed #e5e7eb; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); transition: all 0.3s ease; font-size: 16px; color: #6b7280; text-align: left;">
+                      <i class="fas fa-plus-circle me-2"></i>
+                      Selecione um estabelecimento (você pode fazer isso depois)
+                    </button>
+                  </div>
+                  <input type="hidden" id="establishmentId" value="">
                 </div>
                 <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; font-weight: 600; padding: 16px; border-radius: 12px; box-shadow: 0 8px 25px -8px rgba(16, 185, 129, 0.5); transition: all 0.3s ease; font-size: 16px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px -8px rgba(16, 185, 129, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px -8px rgba(16, 185, 129, 0.5)'">
                   <i class="fas fa-user-plus me-2"></i>
@@ -229,7 +242,56 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../../assets/js/api-config.js"></script>
   <script src="../../assets/js/client-session.js"></script>
+  <script src="../../assets/js/establishment-selector.js"></script>
   <script>
+    // Initialize establishment selector
+    const establishmentSelector = new EstablishmentSelector();
+    let selectedEstablishmentId = null;
+    
+    // Load establishments on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        await establishmentSelector.loadEstablishments();
+      } catch (error) {
+        console.error('Error loading establishments:', error);
+      }
+      
+      // Setup establishment selector button
+      document.getElementById('selectEstablishmentBtn').addEventListener('click', async function() {
+        await establishmentSelector.showModal(selectedEstablishmentId, function(estId) {
+          selectedEstablishmentId = estId;
+          const establishment = establishmentSelector.getEstablishmentById(estId);
+          
+          // Update UI to show selected establishment
+          const container = document.getElementById('establishmentSelectorContainer');
+          container.innerHTML = `
+            <div class="selected-establishment">
+              ${establishment.imageUrl ? 
+                `<img src="${establishment.imageUrl}" alt="${establishment.name}" class="selected-establishment-image">` : 
+                `<div class="selected-establishment-placeholder"><i class="fas fa-store"></i></div>`
+              }
+              <div class="selected-establishment-info">
+                <div class="selected-establishment-name">${establishment.name}</div>
+                <div class="selected-establishment-category">${establishment.category || 'Estabelecimento'}</div>
+              </div>
+              <button type="button" class="change-establishment-btn" onclick="document.getElementById('selectEstablishmentBtn').click()">
+                <i class="fas fa-exchange-alt"></i> Trocar
+              </button>
+            </div>
+          `;
+          
+          // Update hidden field
+          document.getElementById('establishmentId').value = estId;
+          
+          // Re-add click listener for change button
+          container.querySelector('.change-establishment-btn').addEventListener('click', async function(e) {
+            e.stopPropagation();
+            await establishmentSelector.showModal(selectedEstablishmentId, arguments.callee.parent);
+          });
+        });
+      });
+    });
+    
     // Handle form submission with API integration
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('registerForm');
@@ -240,6 +302,7 @@
         const email = document.getElementById('email').value.trim();
         const telefone = document.getElementById('telefone').value.trim();
         const senha = document.getElementById('senha').value.trim();
+        const establishmentId = document.getElementById('establishmentId').value;
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         
@@ -255,12 +318,19 @@
         
         try {
           // Call client registration API
-          const data = await window.apiClient.post(API_CONFIG.endpoints.client.register, {
+          const requestData = {
             name: nome,
             email: email,
             phone: telefone,
             password: senha
-          });
+          };
+          
+          // Add establishment ID if selected
+          if (establishmentId) {
+            requestData.establishmentId = establishmentId;
+          }
+          
+          const data = await window.apiClient.post(API_CONFIG.endpoints.client.register, requestData);
           
           if (data.success) {
             // Save session

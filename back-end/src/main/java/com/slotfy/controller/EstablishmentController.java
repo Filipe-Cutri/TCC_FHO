@@ -15,7 +15,7 @@ import java.util.Optional;
  * Controller for Establishment management
  */
 @RestController
-@RequestMapping("/api/establishment/profile")
+@RequestMapping("/api/establishment")
 @CrossOrigin(originPatterns = "*")
 public class EstablishmentController {
     
@@ -23,9 +23,45 @@ public class EstablishmentController {
     private EstablishmentService establishmentService;
     
     /**
+     * Get all active establishments for client selection
+     */
+    @GetMapping("/list")
+    public ResponseEntity<Map<String, Object>> listActiveEstablishments() {
+        try {
+            List<Establishment> establishments = establishmentService.getByStatus(EstablishmentStatus.ACTIVE);
+            
+            // Create simplified response with only necessary fields
+            List<Map<String, Object>> simplifiedEstablishments = new java.util.ArrayList<>();
+            for (Establishment est : establishments) {
+                Map<String, Object> estMap = new java.util.HashMap<>();
+                estMap.put("id", est.getId());
+                estMap.put("name", est.getName());
+                estMap.put("category", est.getCategory() != null ? est.getCategory() : "");
+                estMap.put("address", est.getAddress() != null ? est.getAddress() : "");
+                estMap.put("description", est.getDescription() != null ? est.getDescription() : "");
+                estMap.put("imageUrl", est.getImageUrl() != null ? est.getImageUrl() : "");
+                simplifiedEstablishments.add(estMap);
+            }
+            
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "data", simplifiedEstablishments,
+                    "count", simplifiedEstablishments.size()
+                ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao listar estabelecimentos"
+                ));
+        }
+    }
+    
+    /**
      * Get establishment by ID
      */
-    @GetMapping("/{id}")
+    @GetMapping("/profile/{id}")
     public ResponseEntity<Map<String, Object>> getEstablishment(@PathVariable Long id) {
         try {
             Optional<Establishment> establishment = establishmentService.findById(id);
@@ -51,7 +87,7 @@ public class EstablishmentController {
     /**
      * Create a new establishment
      */
-    @PostMapping
+    @PostMapping("/profile")
     public ResponseEntity<Map<String, Object>> createEstablishment(@RequestBody Map<String, Object> request) {
         try {
             String name = (String) request.get("name");
@@ -99,7 +135,7 @@ public class EstablishmentController {
     /**
      * Update establishment information
      */
-    @PutMapping("/{id}")
+    @PutMapping("/profile/{id}")
     public ResponseEntity<Map<String, Object>> updateEstablishment(@PathVariable Long id, @RequestBody Map<String, Object> request) {
         try {
             String name = (String) request.get("name");
@@ -140,7 +176,7 @@ public class EstablishmentController {
     /**
      * Update establishment status
      */
-    @PutMapping("/{id}/status")
+    @PutMapping("/profile/{id}/status")
     public ResponseEntity<Map<String, Object>> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> request) {
         try {
             String statusCode = request.get("status");
@@ -181,7 +217,7 @@ public class EstablishmentController {
     /**
      * Update establishment settings
      */
-    @PutMapping("/{id}/settings")
+    @PutMapping("/profile/{id}/settings")
     public ResponseEntity<Map<String, Object>> updateSettings(@PathVariable Long id, @RequestBody Map<String, String> request) {
         try {
             String settings = request.get("settings");
@@ -213,7 +249,7 @@ public class EstablishmentController {
     /**
      * Update establishment image
      */
-    @PutMapping("/{id}/image")
+    @PutMapping("/profile/{id}/image")
     public ResponseEntity<Map<String, Object>> updateImage(@PathVariable Long id, @RequestBody Map<String, String> request) {
         try {
             String imageUrl = request.get("imageUrl");
@@ -245,7 +281,7 @@ public class EstablishmentController {
     /**
      * Get establishments by status
      */
-    @GetMapping("/status/{status}")
+    @GetMapping("/profile/status/{status}")
     public ResponseEntity<Map<String, Object>> getEstablishmentsByStatus(@PathVariable String status) {
         try {
             EstablishmentStatus establishmentStatus = EstablishmentStatus.fromCode(status);
@@ -275,7 +311,7 @@ public class EstablishmentController {
     /**
      * Get establishments by category
      */
-    @GetMapping("/category/{category}")
+    @GetMapping("/profile/category/{category}")
     public ResponseEntity<Map<String, Object>> getEstablishmentsByCategory(@PathVariable String category) {
         try {
             List<Establishment> establishments = establishmentService.getByCategory(category);
@@ -298,7 +334,7 @@ public class EstablishmentController {
     /**
      * Get all categories
      */
-    @GetMapping("/categories")
+    @GetMapping("/profile/categories")
     public ResponseEntity<Map<String, Object>> getCategories() {
         try {
             List<String> categories = establishmentService.getCategories();
@@ -321,7 +357,7 @@ public class EstablishmentController {
     /**
      * Search establishments
      */
-    @GetMapping("/search")
+    @GetMapping("/profile/search")
     public ResponseEntity<Map<String, Object>> searchEstablishments(@RequestParam String term) {
         try {
             List<Establishment> establishments = establishmentService.searchEstablishments(term);
@@ -344,7 +380,7 @@ public class EstablishmentController {
     /**
      * Find establishment by email
      */
-    @GetMapping("/email/{email}")
+    @GetMapping("/profile/email/{email}")
     public ResponseEntity<Map<String, Object>> findByEmail(@PathVariable String email) {
         try {
             Optional<Establishment> establishment = establishmentService.findByEmail(email);
@@ -370,7 +406,7 @@ public class EstablishmentController {
     /**
      * Find establishment by CNPJ
      */
-    @GetMapping("/cnpj/{cnpj}")
+    @GetMapping("/profile/cnpj/{cnpj}")
     public ResponseEntity<Map<String, Object>> findByCnpj(@PathVariable String cnpj) {
         try {
             Optional<Establishment> establishment = establishmentService.findByCnpj(cnpj);
@@ -396,7 +432,7 @@ public class EstablishmentController {
     /**
      * Activate establishment
      */
-    @PutMapping("/{id}/activate")
+    @PutMapping("/profile/{id}/activate")
     public ResponseEntity<Map<String, Object>> activateEstablishment(@PathVariable Long id) {
         try {
             Establishment establishment = establishmentService.activateEstablishment(id);
@@ -426,7 +462,7 @@ public class EstablishmentController {
     /**
      * Deactivate establishment
      */
-    @PutMapping("/{id}/deactivate")
+    @PutMapping("/profile/{id}/deactivate")
     public ResponseEntity<Map<String, Object>> deactivateEstablishment(@PathVariable Long id) {
         try {
             Establishment establishment = establishmentService.deactivateEstablishment(id);
@@ -456,7 +492,7 @@ public class EstablishmentController {
     /**
      * Get establishment statistics
      */
-    @GetMapping("/statistics")
+    @GetMapping("/profile/statistics")
     public ResponseEntity<Map<String, Object>> getStatistics() {
         try {
             long activeCount = establishmentService.countByStatus(EstablishmentStatus.ACTIVE);

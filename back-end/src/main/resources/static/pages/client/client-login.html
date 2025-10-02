@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../assets/styles/auth-styles.css">
   <link rel="stylesheet" href="../../assets/styles/auth-improvements.css">
   <link rel="stylesheet" href="../../assets/styles/utilities.css">
+  <link rel="stylesheet" href="../../assets/styles/establishment-selector.css">
 </head>
 <body class="auth-page client-auth">
   <!-- Unified Navigation -->
@@ -155,6 +156,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../../assets/js/api-config.js"></script>
   <script src="../../assets/js/client-session.js"></script>
+  <script src="../../assets/js/establishment-selector.js">
   
   <script>
     document.getElementById('clientLoginForm').addEventListener('submit', async function(e) {
@@ -179,6 +181,41 @@
         if (response.success) {
           // Store session data
           sessionStorage.setItem('clientSession', JSON.stringify(response.user));
+          
+          // Check if user has selected an establishment
+          if (!response.user.selectedEstablishmentId) {
+            // Show establishment selection modal
+            const establishmentSelector = new EstablishmentSelector();
+            try {
+              await establishmentSelector.loadEstablishments();
+              
+              // Ask if user wants to select now
+              if (confirm('Deseja selecionar um estabelecimento agora? Isso facilitará seus agendamentos futuros.')) {
+                await establishmentSelector.showModal(null, async function(estId) {
+                  try {
+                    // Update selected establishment via API
+                    const updateResponse = await apiClient.put(API_CONFIG.endpoints.client.updateEstablishment, {
+                      clientId: response.user.id.toString(),
+                      establishmentId: estId.toString()
+                    });
+                    
+                    if (updateResponse.success) {
+                      // Update session with new data
+                      sessionStorage.setItem('clientSession', JSON.stringify(updateResponse.client));
+                    }
+                  } catch (error) {
+                    console.error('Error updating establishment:', error);
+                  }
+                  
+                  // Redirect to dashboard
+                  window.location.href = 'client-dashboard.html';
+                });
+                return; // Wait for modal selection
+              }
+            } catch (error) {
+              console.error('Error loading establishments:', error);
+            }
+          }
           
           // Redirect to dashboard
           window.location.href = 'client-dashboard.html';
