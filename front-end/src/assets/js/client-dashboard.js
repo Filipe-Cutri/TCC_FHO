@@ -6,100 +6,125 @@ class ClientDashboard {
      * Initialize dashboard functionality
      */
     static init() {
-        this.loadNextAppointment();
+        this.loadDashboardData();
         this.setupEventListeners();
     }
 
     /**
-     * Load next appointment from backend
+     * Load dashboard data from backend
      */
-    static async loadNextAppointment() {
-        const appointmentContainer = document.getElementById('next-appointment-content');
-        
+    static async loadDashboardData() {
         try {
-            // Get client ID from localStorage (set during login)
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const clientId = user.id;
+            // Get client session
+            const session = window.clientSession.getSession();
             
-            if (!clientId) {
-                console.warn('No client ID found in session');
-                this.renderNoAppointment(appointmentContainer);
+            if (!session || !session.id) {
+                console.error('No client session found');
                 return;
             }
-            
-            // Real API call instead of mock data
-            const response = await apiClient.get(API_CONFIG.endpoints.client.appointments.next, {
-                clientId: clientId
-            });
-            
-            if (response.success && response.data) {
-                this.renderNextAppointment(response.data, appointmentContainer);
+
+            // Update user name in welcome section
+            const userNameElement = document.querySelector('.client-user-name');
+            if (userNameElement) {
+                userNameElement.textContent = session.name;
+            }
+
+            // Fetch dashboard data from API
+            const response = await fetch(`/api/client/dashboard?clientId=${session.id}`);
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                this.updateDashboardStats(result.data.stats);
+                this.updateNextAppointment(result.data.nextAppointment);
             } else {
-                this.renderNoAppointment(appointmentContainer);
+                console.error('Failed to load dashboard data:', result.message);
             }
             
         } catch (error) {
-            console.error('Error loading next appointment:', error);
-            this.renderNoAppointment(appointmentContainer);
+            console.error('Error loading dashboard data:', error);
         }
+    }
+
+    /**
+     * Update dashboard statistics
+     */
+    static updateDashboardStats(stats) {
+        // Update appointments count
+        const statsCards = document.querySelectorAll('.client-stats-card');
+        if (statsCards.length >= 3) {
+            // First card - appointments
+            const appointmentsNumber = statsCards[0].querySelector('.client-stats-number');
+            if (appointmentsNumber) {
+                appointmentsNumber.textContent = stats.totalAppointments || '0';
+            }
+
+            // Second card - favorite professionals
+            const professionalsNumber = statsCards[1].querySelector('.client-stats-number');
+            if (professionalsNumber) {
+                professionalsNumber.textContent = stats.favoriteProfessionals || '0';
+            }
+
+            // Third card - total spent
+            const totalSpentNumber = statsCards[2].querySelector('.client-stats-number');
+            if (totalSpentNumber) {
+                const formattedAmount = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(stats.totalSpent || 0);
+                totalSpentNumber.textContent = formattedAmount;
+            }
+        }
+    }
+
+    /**
+     * Update next appointment display
+     */
+    static updateNextAppointment(appointment) {
+        const appointmentCard = document.querySelector('.client-card .card-body');
+        
+        if (!appointment || !appointmentCard) {
+            this.renderNoAppointment(appointmentCard);
+            return;
+        }
+
+        this.renderNextAppointment(appointment, appointmentCard);
     }
 
     /**
      * Render next appointment data
      */
     static renderNextAppointment(appointment, container) {
-        // Parse appointment datetime from API response
-        const appointmentDateTime = new Date(appointment.appointmentDateTime);
-        const formattedDate = appointmentDateTime.toLocaleDateString('pt-BR', {
+        const appointmentDate = new Date(appointment.date);
+        const formattedDate = appointmentDate.toLocaleDateString('pt-BR', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         });
-        const formattedTime = appointmentDateTime.toLocaleTimeString('pt-BR', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        // Calculate end time (default to 1 hour if not provided)
-        let endTime;
-        if (appointment.endDateTime) {
-            const endDateTime = new Date(appointment.endDateTime);
-            endTime = endDateTime.toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        } else if (appointment.serviceDurationMinutes) {
-            const endDateTime = new Date(appointmentDateTime.getTime() + (appointment.serviceDurationMinutes * 60000));
-            endTime = endDateTime.toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        } else {
-            const endDateTime = new Date(appointmentDateTime.getTime() + (60 * 60000)); // 1 hour default
-            endTime = endDateTime.toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
 
         container.innerHTML = `
+            <h5 class="card-title">
+                <span class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </span>
+                Próximo Agendamento
+            </h5>
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <p class="card-text mb-2"><strong>${appointment.serviceName || 'Serviço'}</strong> com ${appointment.professionalName || 'Profissional'}</p>
+                    <p class="card-text mb-2"><strong>${appointment.service}</strong> com ${appointment.professional}</p>
                     <p class="card-text mb-1">
                         <i class="fas fa-calendar me-2 text-primary"></i>
                         <strong>${formattedDate}</strong>
                     </p>
                     <p class="card-text mb-1">
                         <i class="fas fa-clock me-2 text-primary"></i>
-                        <strong>${formattedTime} - ${endTime}</strong>
+                        <strong>${appointment.time} - ${appointment.endTime}</strong>
                     </p>
                     <p class="card-text mb-3">
                         <i class="fas fa-map-marker-alt me-2 text-primary"></i>
-                        ${appointment.establishmentName || 'Estabelecimento'}
+                        ${appointment.establishment}
                     </p>
-                    <span class="client-status-badge client-status-${appointment.status ? appointment.status.toLowerCase() : 'pending'}">
-                        ${this.getStatusText(appointment.status || 'PENDING')}
+                    <span class="client-status-badge client-status-${appointment.status.toLowerCase()}">
+                        ${this.getStatusText(appointment.status)}
                     </span>
                 </div>
                 <div class="col-md-4 text-md-end">
@@ -119,6 +144,12 @@ class ClientDashboard {
      */
     static renderNoAppointment(container) {
         container.innerHTML = `
+            <h5 class="card-title">
+                <span class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </span>
+                Próximo Agendamento
+            </h5>
             <div class="text-center py-4">
                 <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 3rem;"></i>
                 <h6 class="text-muted mb-3">Nenhum agendamento próximo</h6>
