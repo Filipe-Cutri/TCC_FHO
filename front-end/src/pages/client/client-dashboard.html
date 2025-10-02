@@ -47,10 +47,6 @@
           </li>
         </ul>
         <div class="navbar-nav">
-          <a href="client-notifications.html" class="nav-link position-relative me-2">
-            <i class="fas fa-bell"></i>
-            <span class="client-notification-badge">3</span>
-          </a>
           <a href="client-profile.html" class="btn btn-outline-light me-2">
             <i class="fas fa-user me-1"></i>Perfil
           </a>
@@ -68,8 +64,8 @@
       <div class="client-welcome-section">
         <div class="row align-items-center">
           <div class="col-md-8">
-            <h1 class="client-welcome-title">Bem-vindo de volta, Maria! 👋</h1>
-            <p class="client-welcome-subtitle">Pronto para sua próxima experiência de beleza? Veja seus agendamentos e descubra novos serviços.</p>
+            <h1 class="client-welcome-title">Bem-vindo de volta, <span class="client-user-name">Cliente</span>!</h1>
+            <p class="client-welcome-subtitle">Acompanhe seus agendamentos e descubra novos serviços.</p>
           </div>
           <div class="col-md-4 text-md-end">
             <a href="client-services.html" class="client-btn client-btn-success">
@@ -88,7 +84,7 @@
           </span>
           Dashboard
         </h1>
-        <p class="client-page-subtitle">Acompanhe seus agendamentos e atividades</p>
+        <p class="client-page-subtitle">Acompanhe seus agendamentos</p>
       </div>
       <!-- Statistics Cards -->
       <div class="client-dashboard-grid">
@@ -152,48 +148,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Recent Activity -->
-          <div class="client-card">
-            <div class="card-body">
-              <h5 class="card-title">
-                <span class="card-icon">
-                  <i class="fas fa-history"></i>
-                </span>
-                Atividade Recente
-              </h5>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-check-circle text-success"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Agendamento confirmado</div>
-                  <div class="client-list-subtitle">Corte + Barba para 10/08 às 14:00</div>
-                </div>
-                <small class="text-muted">2h atrás</small>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-star text-warning"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Avaliação enviada</div>
-                  <div class="client-list-subtitle">5 estrelas para João Silva</div>
-                </div>
-                <small class="text-muted">1 dia atrás</small>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-credit-card text-info"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Pagamento processado</div>
-                  <div class="client-list-subtitle">R$ 85,00 - Corte + Barba</div>
-                </div>
-                <small class="text-muted">2 dias atrás</small>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="col-lg-4">
@@ -222,51 +176,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Notifications -->
-          <div class="client-card">
-            <div class="card-body">
-              <h5 class="card-title">
-                <span class="card-icon">
-                  <i class="fas fa-bell"></i>
-                </span>
-                Notificações
-                <span class="client-notification-badge">3</span>
-              </h5>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-info-circle text-info"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Lembrete de agendamento</div>
-                  <div class="client-list-subtitle">Você tem um agendamento amanhã</div>
-                </div>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-gift text-success"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Promoção especial</div>
-                  <div class="client-list-subtitle">20% de desconto em pacotes</div>
-                </div>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-user-plus text-primary"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Novo profissional</div>
-                  <div class="client-list-subtitle">Carlos adicionou novos serviços</div>
-                </div>
-              </div>
-              <div class="text-center mt-3">
-                <a href="client-notifications.html" class="client-btn client-btn-secondary">
-                  <i class="fas fa-eye me-2"></i>Ver Todas
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -279,6 +188,7 @@
   <script src="../../assets/js/template-manager.js"></script>
   <script src="../../assets/js/ui-utils.js"></script>
   <script src="../../assets/js/form-utils.js"></script>
+  <script src="../../assets/js/client-session.js"></script>
   <script src="../../assets/js/client-utils.js"></script>
   <script src="../../assets/js/client-dashboard.js"></script>
   <script>
