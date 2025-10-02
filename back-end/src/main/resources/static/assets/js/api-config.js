@@ -16,6 +16,7 @@ const API_CONFIG = {
             login: '/api/client/login',
             register: '/api/client/register',
             forgotPassword: '/api/client/forgot-password',
+            updateEstablishment: '/api/client/establishment',
             appointments: {
                 next: '/api/client/appointments/next',
                 list: '/api/client/appointments',
@@ -35,6 +36,7 @@ const API_CONFIG = {
             login: '/api/establishment/login',
             register: '/api/establishment/register',
             forgotPassword: '/api/establishment/forgot-password',
+            list: '/api/establishment/list',
             createStaff: '/api/establishment/create-staff',
             roles: '/api/establishment/roles',
             dashboard: {
