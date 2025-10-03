@@ -26,6 +26,7 @@ Este diretório contém toda a documentação do projeto TCC_FHO - Sistema Slotf
 - [Relatório de Autenticação](development/AUTHENTICATION_VERIFICATION_REPORT.md) - Testes de segurança
 - [Solução](development/SOLUTION.md) - Visão geral da solução implementada
 - [Configuração CI/CD](development/CI_CD_SETUP.md) - Setup de integração contínua e testes
+- [Relatório de Cobertura de Testes](TEST_COVERAGE_REPORT.md) - Análise detalhada da cobertura de testes unitários
 
 ## 🚀 Links Rápidos
 
@@ -34,6 +35,7 @@ Este diretório contém toda a documentação do projeto TCC_FHO - Sistema Slotf
 2. [Estrutura do Projeto](architecture/SPRING_BOOT_STRUCTURE.md)
 3. [Banco de Dados](database/TABELAS_BANCO_DADOS.md)
 4. [CI/CD e Testes](development/CI_CD_SETUP.md)
+5. [Cobertura de Testes](TEST_COVERAGE_REPORT.md) ⭐ **NOVO**
 
 ### Para Arquitetos
 1. [Diagramas UML](architecture/DIAGRAMAS_UML.md)
