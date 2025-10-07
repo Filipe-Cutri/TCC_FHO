@@ -177,11 +177,14 @@ public class AppointmentController {
     
     /**
      * Get appointment by ID
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getAppointment(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getAppointment(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            Optional<Appointment> appointment = appointmentService.findById(id);
+            Optional<Appointment> appointment = appointmentService.findByIdAndEstablishment(id, establishmentId);
             
             if (appointment.isPresent()) {
                 return ResponseEntity.ok()
@@ -269,9 +272,13 @@ public class AppointmentController {
     
     /**
      * Update appointment status
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/status")
-    public ResponseEntity<Map<String, Object>> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> updateStatus(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> request,
+            @RequestParam Long establishmentId) {
         try {
             String statusCode = request.get("status");
             
@@ -284,7 +291,7 @@ public class AppointmentController {
             }
             
             AppointmentStatus status = AppointmentStatus.fromCode(statusCode);
-            Appointment appointment = appointmentService.updateStatus(id, status);
+            Appointment appointment = appointmentService.updateStatus(id, status, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -293,6 +300,12 @@ public class AppointmentController {
                     "data", appointment
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -310,9 +323,13 @@ public class AppointmentController {
     
     /**
      * Reschedule appointment
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/reschedule")
-    public ResponseEntity<Map<String, Object>> reschedule(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> reschedule(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> request,
+            @RequestParam Long establishmentId) {
         try {
             String newDateTimeStr = request.get("newDateTime");
             
@@ -325,7 +342,7 @@ public class AppointmentController {
             }
             
             LocalDateTime newDateTime = LocalDateTime.parse(newDateTimeStr);
-            Appointment appointment = appointmentService.reschedule(id, newDateTime);
+            Appointment appointment = appointmentService.reschedule(id, newDateTime, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -334,6 +351,12 @@ public class AppointmentController {
                     "data", appointment
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -351,13 +374,17 @@ public class AppointmentController {
     
     /**
      * Update appointment notes
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/notes")
-    public ResponseEntity<Map<String, Object>> updateNotes(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> updateNotes(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> request,
+            @RequestParam Long establishmentId) {
         try {
             String notes = request.get("notes");
             
-            Appointment appointment = appointmentService.updateNotes(id, notes);
+            Appointment appointment = appointmentService.updateNotes(id, notes, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -366,6 +393,12 @@ public class AppointmentController {
                     "data", appointment
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -383,11 +416,14 @@ public class AppointmentController {
     
     /**
      * Cancel appointment
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<Map<String, Object>> cancelAppointment(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> cancelAppointment(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            Appointment appointment = appointmentService.cancelAppointment(id);
+            Appointment appointment = appointmentService.updateStatus(id, AppointmentStatus.CANCELLED, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -396,6 +432,12 @@ public class AppointmentController {
                     "data", appointment
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -413,11 +455,14 @@ public class AppointmentController {
     
     /**
      * Confirm appointment
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/confirm")
-    public ResponseEntity<Map<String, Object>> confirmAppointment(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> confirmAppointment(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            Appointment appointment = appointmentService.confirmAppointment(id);
+            Appointment appointment = appointmentService.updateStatus(id, AppointmentStatus.CONFIRMED, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -426,6 +471,12 @@ public class AppointmentController {
                     "data", appointment
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -443,11 +494,14 @@ public class AppointmentController {
     
     /**
      * Complete appointment
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/complete")
-    public ResponseEntity<Map<String, Object>> completeAppointment(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> completeAppointment(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            Appointment appointment = appointmentService.completeAppointment(id);
+            Appointment appointment = appointmentService.updateStatus(id, AppointmentStatus.COMPLETED, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -456,6 +510,12 @@ public class AppointmentController {
                     "data", appointment
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(

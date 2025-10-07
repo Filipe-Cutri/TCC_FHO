@@ -71,11 +71,14 @@ public class ProfessionalController {
     
     /**
      * Get professional by ID
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getProfessional(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getProfessional(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            Optional<Professional> professional = professionalService.findById(id);
+            Optional<Professional> professional = professionalService.findByIdAndEstablishment(id, establishmentId);
             
             if (professional.isPresent()) {
                 return ResponseEntity.ok()
@@ -152,16 +155,20 @@ public class ProfessionalController {
     
     /**
      * Update a professional
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateProfessional(@PathVariable Long id, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<Map<String, Object>> updateProfessional(
+            @PathVariable Long id, 
+            @RequestBody Map<String, Object> request,
+            @RequestParam Long establishmentId) {
         try {
             String name = (String) request.get("name");
             String email = (String) request.get("email");
             String phone = (String) request.get("phone");
             String specialties = (String) request.get("specialties");
             
-            Professional professional = professionalService.updateProfessional(id, name, email, phone, specialties);
+            Professional professional = professionalService.updateProfessional(id, name, email, phone, specialties, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -170,6 +177,12 @@ public class ProfessionalController {
                     "data", professional
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -187,9 +200,13 @@ public class ProfessionalController {
     
     /**
      * Update professional status
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/status")
-    public ResponseEntity<Map<String, Object>> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> updateStatus(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> request,
+            @RequestParam Long establishmentId) {
         try {
             String statusCode = request.get("status");
             
@@ -202,7 +219,7 @@ public class ProfessionalController {
             }
             
             ProfessionalStatus status = ProfessionalStatus.fromCode(statusCode);
-            Professional professional = professionalService.updateStatus(id, status);
+            Professional professional = professionalService.updateStatus(id, status, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -211,6 +228,12 @@ public class ProfessionalController {
                     "data", professional
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -313,11 +336,14 @@ public class ProfessionalController {
     
     /**
      * Delete professional
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteProfessional(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deleteProfessional(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            professionalService.deleteProfessional(id);
+            professionalService.deleteProfessional(id, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -325,6 +351,12 @@ public class ProfessionalController {
                     "message", "Profissional removido com sucesso"
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(

@@ -71,11 +71,14 @@ public class ServiceController {
     
     /**
      * Get service by ID
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getService(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getService(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            Optional<Service> service = serviceService.findById(id);
+            Optional<Service> service = serviceService.findByIdAndEstablishment(id, establishmentId);
             
             if (service.isPresent()) {
                 return ResponseEntity.ok()
@@ -171,9 +174,13 @@ public class ServiceController {
     
     /**
      * Update a service
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateService(@PathVariable Long id, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<Map<String, Object>> updateService(
+            @PathVariable Long id, 
+            @RequestBody Map<String, Object> request,
+            @RequestParam Long establishmentId) {
         try {
             String name = (String) request.get("name");
             String description = (String) request.get("description");
@@ -183,7 +190,7 @@ public class ServiceController {
                 new BigDecimal(request.get("price").toString()) : null;
             String category = (String) request.get("category");
             
-            Service service = serviceService.updateService(id, name, description, durationMinutes, price, category);
+            Service service = serviceService.updateService(id, name, description, durationMinutes, price, category, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -192,6 +199,12 @@ public class ServiceController {
                     "data", service
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -209,9 +222,13 @@ public class ServiceController {
     
     /**
      * Update service status
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @PutMapping("/{id}/status")
-    public ResponseEntity<Map<String, Object>> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> updateStatus(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> request,
+            @RequestParam Long establishmentId) {
         try {
             String statusCode = request.get("status");
             
@@ -224,7 +241,7 @@ public class ServiceController {
             }
             
             ServiceStatus status = ServiceStatus.fromCode(statusCode);
-            Service service = serviceService.updateStatus(id, status);
+            Service service = serviceService.updateStatus(id, status, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -233,6 +250,12 @@ public class ServiceController {
                     "data", service
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
@@ -350,11 +373,14 @@ public class ServiceController {
     
     /**
      * Delete service
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteService(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deleteService(
+            @PathVariable Long id,
+            @RequestParam Long establishmentId) {
         try {
-            serviceService.deleteService(id);
+            serviceService.deleteService(id, establishmentId);
             
             return ResponseEntity.ok()
                 .body(Map.of(
@@ -362,6 +388,12 @@ public class ServiceController {
                     "message", "Serviço removido com sucesso"
                 ));
                 
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(Map.of(
