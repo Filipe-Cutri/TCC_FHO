@@ -181,4 +181,66 @@ public class ProfessionalService extends BaseService<Professional, Long> {
         // For now, we'll just delete the professional
         professionalRepository.deleteById(professionalId);
     }
+    
+    /**
+     * Validate that a professional belongs to the specified establishment
+     * This is critical for multi-establishment data isolation
+     */
+    public void validateProfessionalBelongsToEstablishment(Long professionalId, Long establishmentId) {
+        Optional<Professional> optionalProfessional = professionalRepository.findById(professionalId);
+        if (optionalProfessional.isEmpty()) {
+            throw new IllegalArgumentException("Profissional não encontrado");
+        }
+        
+        Professional professional = optionalProfessional.get();
+        if (!professional.getEstablishmentId().equals(establishmentId)) {
+            throw new SecurityException("Acesso negado: profissional não pertence ao estabelecimento");
+        }
+    }
+    
+    /**
+     * Get professional by ID with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Optional<Professional> findByIdAndEstablishment(Long professionalId, Long establishmentId) {
+        Optional<Professional> optionalProfessional = professionalRepository.findById(professionalId);
+        if (optionalProfessional.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        Professional professional = optionalProfessional.get();
+        if (!professional.getEstablishmentId().equals(establishmentId)) {
+            // Return empty instead of throwing exception for GET operations
+            return Optional.empty();
+        }
+        
+        return optionalProfessional;
+    }
+    
+    /**
+     * Update professional with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Professional updateProfessional(Long professionalId, String name, String email, String phone, String specialties, Long establishmentId) {
+        validateProfessionalBelongsToEstablishment(professionalId, establishmentId);
+        return updateProfessional(professionalId, name, email, phone, specialties);
+    }
+    
+    /**
+     * Update professional status with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Professional updateStatus(Long professionalId, ProfessionalStatus status, Long establishmentId) {
+        validateProfessionalBelongsToEstablishment(professionalId, establishmentId);
+        return updateStatus(professionalId, status);
+    }
+    
+    /**
+     * Delete professional with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public void deleteProfessional(Long professionalId, Long establishmentId) {
+        validateProfessionalBelongsToEstablishment(professionalId, establishmentId);
+        deleteProfessional(professionalId);
+    }
 }
