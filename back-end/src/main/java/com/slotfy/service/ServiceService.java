@@ -175,4 +175,67 @@ public class ServiceService extends BaseService<Service, Long> {
         // For now, we'll just delete the service
         serviceRepository.deleteById(serviceId);
     }
+    
+    /**
+     * Validate that a service belongs to the specified establishment
+     * This is critical for multi-establishment data isolation
+     */
+    public void validateServiceBelongsToEstablishment(Long serviceId, Long establishmentId) {
+        Optional<Service> optionalService = serviceRepository.findById(serviceId);
+        if (optionalService.isEmpty()) {
+            throw new IllegalArgumentException("Serviço não encontrado");
+        }
+        
+        Service service = optionalService.get();
+        if (!service.getEstablishmentId().equals(establishmentId)) {
+            throw new SecurityException("Acesso negado: serviço não pertence ao estabelecimento");
+        }
+    }
+    
+    /**
+     * Get service by ID with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Optional<Service> findByIdAndEstablishment(Long serviceId, Long establishmentId) {
+        Optional<Service> optionalService = serviceRepository.findById(serviceId);
+        if (optionalService.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        Service service = optionalService.get();
+        if (!service.getEstablishmentId().equals(establishmentId)) {
+            // Return empty instead of throwing exception for GET operations
+            return Optional.empty();
+        }
+        
+        return optionalService;
+    }
+    
+    /**
+     * Update service with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Service updateService(Long serviceId, String name, String description, Integer durationMinutes, 
+                               BigDecimal price, String category, Long establishmentId) {
+        validateServiceBelongsToEstablishment(serviceId, establishmentId);
+        return updateService(serviceId, name, description, durationMinutes, price, category);
+    }
+    
+    /**
+     * Update service status with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Service updateStatus(Long serviceId, ServiceStatus status, Long establishmentId) {
+        validateServiceBelongsToEstablishment(serviceId, establishmentId);
+        return updateStatus(serviceId, status);
+    }
+    
+    /**
+     * Delete service with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public void deleteService(Long serviceId, Long establishmentId) {
+        validateServiceBelongsToEstablishment(serviceId, establishmentId);
+        deleteService(serviceId);
+    }
 }

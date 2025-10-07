@@ -138,6 +138,15 @@ public class AppointmentService extends BaseService<Appointment, Long> {
     }
     
     /**
+     * Update appointment status with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Appointment updateStatus(Long appointmentId, AppointmentStatus status, Long establishmentId) {
+        validateAppointmentBelongsToEstablishment(appointmentId, establishmentId);
+        return updateStatus(appointmentId, status);
+    }
+    
+    /**
      * Update appointment date/time
      */
     public Appointment reschedule(Long appointmentId, LocalDateTime newDateTime) {
@@ -169,6 +178,15 @@ public class AppointmentService extends BaseService<Appointment, Long> {
     }
     
     /**
+     * Update appointment date/time with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Appointment reschedule(Long appointmentId, LocalDateTime newDateTime, Long establishmentId) {
+        validateAppointmentBelongsToEstablishment(appointmentId, establishmentId);
+        return reschedule(appointmentId, newDateTime);
+    }
+    
+    /**
      * Update appointment notes
      */
     public Appointment updateNotes(Long appointmentId, String notes) {
@@ -181,6 +199,15 @@ public class AppointmentService extends BaseService<Appointment, Long> {
         appointment.setNotes(notes);
         
         return appointmentRepository.save(appointment);
+    }
+    
+    /**
+     * Update appointment notes with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Appointment updateNotes(Long appointmentId, String notes, Long establishmentId) {
+        validateAppointmentBelongsToEstablishment(appointmentId, establishmentId);
+        return updateNotes(appointmentId, notes);
     }
     
     /**
@@ -334,5 +361,40 @@ public class AppointmentService extends BaseService<Appointment, Long> {
                                              Long establishmentId, LocalDateTime appointmentDateTime, String notes) {
         return createAppointment(clientId, professionalId, serviceId, establishmentId, appointmentDateTime,
                                notes, null, null, null, null, null);
+    }
+    
+    /**
+     * Validate that an appointment belongs to the specified establishment
+     * This is critical for multi-establishment data isolation
+     */
+    public void validateAppointmentBelongsToEstablishment(Long appointmentId, Long establishmentId) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+        if (optionalAppointment.isEmpty()) {
+            throw new IllegalArgumentException("Agendamento não encontrado");
+        }
+        
+        Appointment appointment = optionalAppointment.get();
+        if (!appointment.getEstablishmentId().equals(establishmentId)) {
+            throw new SecurityException("Acesso negado: agendamento não pertence ao estabelecimento");
+        }
+    }
+    
+    /**
+     * Get appointment by ID with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Optional<Appointment> findByIdAndEstablishment(Long appointmentId, Long establishmentId) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+        if (optionalAppointment.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        Appointment appointment = optionalAppointment.get();
+        if (!appointment.getEstablishmentId().equals(establishmentId)) {
+            // Return empty instead of throwing exception for GET operations
+            return Optional.empty();
+        }
+        
+        return optionalAppointment;
     }
 }
