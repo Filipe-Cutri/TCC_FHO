@@ -51,7 +51,7 @@ class ClientDashboard {
     static updateDashboardStats(stats) {
         // Update appointments count
         const statsCards = document.querySelectorAll('.client-stats-card');
-        if (statsCards.length >= 3) {
+        if (statsCards.length >= 2) {
             // First card - appointments
             const appointmentsNumber = statsCards[0].querySelector('.client-stats-number');
             if (appointmentsNumber) {
@@ -62,16 +62,6 @@ class ClientDashboard {
             const professionalsNumber = statsCards[1].querySelector('.client-stats-number');
             if (professionalsNumber) {
                 professionalsNumber.textContent = stats.favoriteProfessionals || '0';
-            }
-
-            // Third card - total spent
-            const totalSpentNumber = statsCards[2].querySelector('.client-stats-number');
-            if (totalSpentNumber) {
-                const formattedAmount = new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                }).format(stats.totalSpent || 0);
-                totalSpentNumber.textContent = formattedAmount;
             }
         }
     }
