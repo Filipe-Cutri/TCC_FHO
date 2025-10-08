@@ -39,6 +39,38 @@ class ClientServices {
                 this.handleServiceBooking(serviceName);
             }
         });
+
+        // Professional selection - load time slots when professional is selected
+        const professionalSelect = document.getElementById('professionalSelect');
+        if (professionalSelect) {
+            professionalSelect.addEventListener('change', (e) => {
+                const date = document.getElementById('appointmentDate').value;
+                if (e.target.value && date) {
+                    this.loadAvailableTimeSlots(e.target.value, date);
+                }
+            });
+        }
+
+        // Date selection - load time slots when date is selected
+        const dateInput = document.getElementById('appointmentDate');
+        if (dateInput) {
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+
+            dateInput.addEventListener('change', (e) => {
+                const professionalId = document.getElementById('professionalSelect').value;
+                if (professionalId && e.target.value) {
+                    this.loadAvailableTimeSlots(professionalId, e.target.value);
+                }
+            });
+        }
+
+        // Confirm booking button
+        const confirmBtn = document.getElementById('confirmBookingBtn');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => this.confirmBooking());
+        }
     }
 
     /**
@@ -202,11 +234,179 @@ class ClientServices {
     }
 
     /**
-     * Handle service booking
+     * Handle service booking - opens manual booking modal
      */
-    handleServiceBooking(serviceName) {
-        localStorage.setItem('selectedService', JSON.stringify({ name: serviceName }));
-        window.location.href = `client-professionals.html?service=${encodeURIComponent(serviceName)}`;
+    async handleServiceBooking(serviceName) {
+        const service = this.services.find(s => s.name === serviceName);
+        
+        if (!service) {
+            alert('Serviço não encontrado. Por favor, tente novamente.');
+            return;
+        }
+
+        // Store selected service
+        this.selectedService = service;
+        
+        // Display service info in modal
+        const serviceDisplay = document.getElementById('selectedServiceDisplay');
+        serviceDisplay.innerHTML = `
+            <strong>${service.name}</strong><br>
+            <small>Duração: ${service.durationMinutes} minutos | Preço: R$ ${service.price.toFixed(2)}</small>
+        `;
+        
+        // Load professionals for this service
+        await this.loadProfessionalsForService(service);
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('manualBookingModal'));
+        modal.show();
+    }
+
+    /**
+     * Load professionals for the selected service
+     */
+    async loadProfessionalsForService(service) {
+        try {
+            const professionalSelect = document.getElementById('professionalSelect');
+            professionalSelect.innerHTML = '<option value="">Carregando...</option>';
+            
+            // Fetch professionals from the selected establishment
+            const response = await window.apiClient.get('/api/professional/active', {
+                establishmentId: this.establishmentId
+            });
+            
+            if (response.success && response.data && response.data.length > 0) {
+                professionalSelect.innerHTML = '<option value="">Selecione um profissional</option>';
+                response.data.forEach(prof => {
+                    const option = document.createElement('option');
+                    option.value = prof.id;
+                    option.textContent = `${prof.name} - ${prof.specialty || 'Especialista'}`;
+                    professionalSelect.appendChild(option);
+                });
+            } else {
+                professionalSelect.innerHTML = '<option value="">Nenhum profissional disponível</option>';
+            }
+        } catch (error) {
+            console.error('Error loading professionals:', error);
+            const professionalSelect = document.getElementById('professionalSelect');
+            professionalSelect.innerHTML = '<option value="">Erro ao carregar profissionais</option>';
+        }
+    }
+
+    /**
+     * Load available time slots for selected professional and date
+     */
+    async loadAvailableTimeSlots(professionalId, date) {
+        try {
+            const timeSelect = document.getElementById('appointmentTime');
+            timeSelect.innerHTML = '<option value="">Carregando horários...</option>';
+            
+            // For now, generate time slots (8:00 to 18:00, every 30 minutes)
+            // In a real implementation, this would call the backend API to get available slots
+            const slots = this.generateTimeSlots();
+            
+            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+            slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot;
+                option.textContent = slot;
+                timeSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading time slots:', error);
+            const timeSelect = document.getElementById('appointmentTime');
+            timeSelect.innerHTML = '<option value="">Erro ao carregar horários</option>';
+        }
+    }
+
+    /**
+     * Generate time slots for booking
+     */
+    generateTimeSlots() {
+        const slots = [];
+        for (let hour = 8; hour < 18; hour++) {
+            slots.push(`${hour.toString().padStart(2, '0')}:00`);
+            slots.push(`${hour.toString().padStart(2, '0')}:30`);
+        }
+        return slots;
+    }
+
+    /**
+     * Confirm and submit the booking
+     */
+    async confirmBooking() {
+        try {
+            const professionalId = document.getElementById('professionalSelect').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const notes = document.getElementById('appointmentNotes').value;
+
+            // Validation
+            if (!professionalId) {
+                alert('Por favor, selecione um profissional.');
+                return;
+            }
+            if (!date) {
+                alert('Por favor, selecione uma data.');
+                return;
+            }
+            if (!time) {
+                alert('Por favor, selecione um horário.');
+                return;
+            }
+
+            // Get client ID from session
+            const session = this.getUserSession();
+            if (!session || !session.id) {
+                alert('Sessão expirada. Por favor, faça login novamente.');
+                window.location.href = 'client-login.html';
+                return;
+            }
+
+            const confirmBtn = document.getElementById('confirmBookingBtn');
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processando...';
+            confirmBtn.disabled = true;
+
+            // Combine date and time
+            const appointmentDateTime = `${date}T${time}:00`;
+
+            // Submit booking to API
+            const response = await window.apiClient.post('/api/client/appointments/book', {
+                clientId: session.id,
+                professionalId: parseInt(professionalId),
+                serviceId: this.selectedService.id,
+                establishmentId: this.establishmentId,
+                appointmentDateTime: appointmentDateTime,
+                notes: notes
+            });
+
+            if (response.success) {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('manualBookingModal'));
+                modal.hide();
+
+                // Show success message
+                alert('✅ Agendamento realizado com sucesso!\n\n' +
+                      `Serviço: ${this.selectedService.name}\n` +
+                      `Data: ${new Date(appointmentDateTime).toLocaleDateString('pt-BR')}\n` +
+                      `Horário: ${time}`);
+
+                // Redirect to bookings page
+                setTimeout(() => {
+                    window.location.href = 'client-bookings.html';
+                }, 1500);
+            } else {
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+                alert('Erro ao realizar agendamento: ' + (response.message || 'Tente novamente.'));
+            }
+        } catch (error) {
+            console.error('Error confirming booking:', error);
+            const confirmBtn = document.getElementById('confirmBookingBtn');
+            confirmBtn.disabled = false;
+            alert('Erro ao processar agendamento. Por favor, tente novamente.');
+        }
     }
 
     /**
