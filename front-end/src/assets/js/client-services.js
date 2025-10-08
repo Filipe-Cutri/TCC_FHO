@@ -271,7 +271,7 @@ class ClientServices {
             professionalSelect.innerHTML = '<option value="">Carregando...</option>';
             
             // Fetch professionals from the selected establishment
-            const response = await window.apiClient.get('/api/professional/active', {
+            const response = await window.apiClient.get('/api/establishment/professionals/active', {
                 establishmentId: this.establishmentId
             });
             
