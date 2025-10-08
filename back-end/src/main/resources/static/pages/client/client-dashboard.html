@@ -27,12 +27,7 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link active" href="client-dashboard.html">
-              <i class="fas fa-home me-1"></i>Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="client-services.html">
-              <i class="fas fa-cut me-1"></i>Serviços
+              <i class="fas fa-home me-1"></i>Início
             </a>
           </li>
           <li class="nav-item">
@@ -63,15 +58,28 @@
       <!-- Welcome Section -->
       <div class="client-welcome-section">
         <div class="row align-items-center">
-          <div class="col-md-8">
+          <div class="col-md-12 text-center">
             <h1 class="client-welcome-title">Bem-vindo de volta, <span class="client-user-name">Cliente</span>!</h1>
-            <p class="client-welcome-subtitle">Acompanhe seus agendamentos e descubra novos serviços.</p>
-          </div>
-          <div class="col-md-4 text-md-end">
-            <a href="client-services.html" class="client-btn client-btn-success">
-              <i class="fas fa-plus me-2"></i>
-              Novo Agendamento
-            </a>
+            <p class="client-welcome-subtitle mb-4">Agende seu serviço de forma rápida e fácil</p>
+            
+            <!-- Prominent Scheduling Options -->
+            <div class="row justify-content-center g-3 mt-3">
+              <div class="col-lg-5 col-md-6">
+                <a href="client-services.html#ai-scheduling" class="client-btn client-btn-success d-block py-4" style="font-size: 1.1rem;">
+                  <i class="fas fa-magic me-2"></i>
+                  <span class="ai-badge" style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 5px;">IA</span>
+                  <br>
+                  <span style="font-size: 0.9rem; opacity: 0.9;">Agendamento Inteligente</span>
+                </a>
+              </div>
+              <div class="col-lg-5 col-md-6">
+                <a href="client-services.html" class="client-btn d-block py-4" style="font-size: 1.1rem;">
+                  <i class="fas fa-calendar-plus me-2"></i>
+                  <br>
+                  <span style="font-size: 0.9rem; opacity: 0.9;">Agendamento Manual</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -98,12 +106,6 @@
           <div class="card-body client-stats-card" style="background: linear-gradient(135deg, var(--color-accent-success) 0%, #059669 100%); color: white;">
             <div class="client-stats-number" style="color: white;">3</div>
             <div class="client-stats-label" style="color: rgba(255,255,255,0.8);">Profissionais favoritos</div>
-          </div>
-        </div>
-        <div class="client-card">
-          <div class="card-body client-stats-card" style="background: linear-gradient(135deg, var(--color-accent-warning) 0%, #d97706 100%); color: white;">
-            <div class="client-stats-number" style="color: white;">R$ 450</div>
-            <div class="client-stats-label" style="color: rgba(255,255,255,0.8);">Gastos este mês</div>
           </div>
         </div>
       </div>
@@ -161,17 +163,13 @@
                 Ações Rápidas
               </h5>
               <div class="d-grid gap-3">
-                <a href="client-services.html" class="client-btn">
-                  <i class="fas fa-plus me-2"></i>
-                  Novo Agendamento
-                </a>
                 <a href="client-professionals.html" class="client-btn client-btn-secondary">
-                  <i class="fas fa-search me-2"></i>
-                  Buscar Profissionais
+                  <i class="fas fa-users me-2"></i>
+                  Profissionais
                 </a>
-                <a href="client-payments.html" class="client-btn client-btn-secondary">
-                  <i class="fas fa-credit-card me-2"></i>
-                  Histórico de Pagamentos
+                <a href="client-bookings.html" class="client-btn client-btn-secondary">
+                  <i class="fas fa-calendar me-2"></i>
+                  Meus Agendamentos
                 </a>
               </div>
             </div>

@@ -233,8 +233,7 @@ public class ClientController {
                         ),
                         "stats", Map.of(
                             "totalAppointments", totalAppointments,
-                            "favoriteProfessionals", 0,
-                            "totalSpent", 0.0
+                            "favoriteProfessionals", 0
                         ),
                         "nextAppointment", (Object) null
                     )
