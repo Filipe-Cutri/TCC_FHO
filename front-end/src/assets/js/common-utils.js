@@ -133,7 +133,43 @@ class NavigationManager {
      * Navigate to establishment login page
      */
     static goToEstablishmentLogin() {
-        window.location.href = 'pages/establishment/establishment-login.html';
+        // Show login type selection modal instead of direct navigation
+        NavigationManager.showLoginTypeModal();
+    }
+    
+    /**
+     * Show login type selection modal
+     */
+    static showLoginTypeModal() {
+        const modalElement = document.getElementById('loginTypeModal');
+        if (modalElement) {
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        } else {
+            // Fallback if modal doesn't exist - go directly to establishment login
+            window.location.href = 'pages/establishment/establishment-login.html';
+        }
+    }
+    
+    /**
+     * Handle login type selection from modal
+     * @param {string} type - 'client' or 'establishment'
+     */
+    static selectLoginType(type) {
+        const modalElement = document.getElementById('loginTypeModal');
+        if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+        
+        // Navigate to appropriate login page
+        if (type === 'client') {
+            window.location.href = 'pages/client/client-login.html';
+        } else if (type === 'establishment') {
+            window.location.href = 'pages/establishment/establishment-login.html';
+        }
     }
     
     /**
@@ -176,6 +212,7 @@ class NavigationManager {
         window.goToEstablishmentRegister = NavigationManager.goToEstablishmentRegister;
         window.goToClientRegister = NavigationManager.goToClientRegister;
         window.contactSales = NavigationManager.contactSales;
+        window.selectLoginType = NavigationManager.selectLoginType;
     }
 }
 
