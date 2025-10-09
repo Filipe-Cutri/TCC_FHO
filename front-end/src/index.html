@@ -527,6 +527,48 @@
     </div>
 </div>
 
+<!-- Login Type Selection Modal -->
+<div class="modal fade" id="loginTypeModal" tabindex="-1" aria-labelledby="loginTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; padding: 1.5rem;">
+                <h5 class="modal-title" id="loginTypeModalLabel" style="font-weight: 600; color: #1f2937;">
+                    <i class="fas fa-sign-in-alt me-2" style="color: #3b82f6;"></i>
+                    Selecione o Tipo de Login
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                <p class="text-center mb-4" style="color: #6b7280;">Escolha como deseja acessar o Slotfy</p>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <button class="btn w-100 d-flex align-items-center justify-content-center" 
+                                onclick="selectLoginType('client')"
+                                style="padding: 1.25rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; border-radius: 12px; color: white; font-size: 1rem; font-weight: 600; transition: all 0.3s ease;">
+                            <i class="fas fa-user me-3" style="font-size: 1.5rem;"></i>
+                            <div class="text-start">
+                                <div>Login como Cliente</div>
+                                <small style="font-weight: 400; opacity: 0.9; font-size: 0.875rem;">Para agendar serviços</small>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn w-100 d-flex align-items-center justify-content-center"
+                                onclick="selectLoginType('establishment')"
+                                style="padding: 1.25rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 12px; color: white; font-size: 1rem; font-weight: 600; transition: all 0.3s ease;">
+                            <i class="fas fa-store me-3" style="font-size: 1.5rem;"></i>
+                            <div class="text-start">
+                                <div>Login como Estabelecimento</div>
+                                <small style="font-weight: 400; opacity: 0.9; font-size: 0.875rem;">Para gerenciar seu negócio</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Enhanced Footer -->
 <footer id="contato" class="footer footer-enhanced">
     <div class="container">
