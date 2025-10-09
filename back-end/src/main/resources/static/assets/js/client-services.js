@@ -137,23 +137,34 @@ class ClientServices {
             // Get client preferences from localStorage
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             const clientId = user.id;
+            const establishmentId = user.selectedEstablishmentId || this.establishmentId;
             
             if (!clientId) {
                 throw new Error('Sessão expirada');
             }
+            
+            if (!establishmentId) {
+                throw new Error('Nenhum estabelecimento selecionado');
+            }
 
-            // For now, return mock data until backend AI endpoint is implemented
-            // const response = await apiClient.post('/api/client/ai/recommendations', {
-            //     clientId: clientId,
-            //     preferences: JSON.parse(localStorage.getItem('clientPreferences') || '{}')
-            // });
+            // Get client preferences
+            const preferences = JSON.parse(localStorage.getItem('clientPreferences') || '{}');
             
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Call backend API
+            const response = await window.apiClient.post('/api/client/ai/recommendations', {
+                clientId: clientId,
+                establishmentId: establishmentId,
+                preferences: preferences
+            });
             
-            return this.generateAIRecommendations();
+            if (response.success && response.data) {
+                return response.data;
+            } else {
+                throw new Error(response.message || 'Erro ao obter recomendações');
+            }
             
         } catch (error) {
+            console.error('Error getting AI recommendations:', error);
             throw error;
         }
     }
@@ -197,12 +208,32 @@ class ClientServices {
      * Show AI recommendations
      */
     showAIRecommendations(recommendations) {
+        if (!recommendations || recommendations.length === 0) {
+            alert('❌ Nenhuma recomendação disponível no momento.\n\nTente novamente mais tarde ou use o agendamento manual.');
+            return;
+        }
+        
         const bestRec = recommendations[0];
+        
+        // Parse date if it's a string
+        let dateObj;
+        if (typeof bestRec.date === 'string') {
+            dateObj = new Date(bestRec.date);
+        } else if (bestRec.date instanceof Date) {
+            dateObj = bestRec.date;
+        } else {
+            dateObj = new Date();
+        }
+        
+        const formattedDate = dateObj.toLocaleDateString('pt-BR');
+        const formattedPrice = typeof bestRec.price === 'number' 
+            ? bestRec.price.toFixed(2) 
+            : parseFloat(bestRec.price).toFixed(2);
         
         const message = `🤖 IA do Slotfy encontrou a melhor opção!\n\n` +
                        `✂️ ${bestRec.service} com ${bestRec.professional}\n` +
-                       `📅 ${bestRec.date.toLocaleDateString('pt-BR')} às ${bestRec.time}\n` +
-                       `💰 R$ ${bestRec.price},00 (${bestRec.confidence}% confiança)\n\n` +
+                       `📅 ${formattedDate} às ${bestRec.time}\n` +
+                       `💰 R$ ${formattedPrice} (${bestRec.confidence}% confiança)\n\n` +
                        `💡 ${bestRec.reason}\n\n` +
                        `Aceitar esta recomendação?`;
 
@@ -212,25 +243,68 @@ class ClientServices {
     }
 
     /**
-     * Accept AI recommendation
+     * Accept AI recommendation and book appointment
      */
-    acceptAIRecommendation(recommendation) {
-        // Update preferences
-        const prefs = this.userPreferences;
-        if (!prefs.serviceHistory) prefs.serviceHistory = [];
-        prefs.serviceHistory.push({
-            serviceName: recommendation.service,
-            date: new Date(),
-            aiAccepted: true
-        });
-        localStorage.setItem('clientPreferences', JSON.stringify(prefs));
-        
-        alert(`✅ Perfeito! Agendamento confirmado:\n${recommendation.service} com ${recommendation.professional}\n${recommendation.date.toLocaleDateString('pt-BR')} às ${recommendation.time}`);
-        
-        // Redirect to bookings
-        setTimeout(() => {
-            window.location.href = 'client-bookings.html';
-        }, 2000);
+    async acceptAIRecommendation(recommendation) {
+        try {
+            // Get client session
+            const session = this.getUserSession();
+            if (!session || !session.id) {
+                alert('Sessão expirada. Por favor, faça login novamente.');
+                window.location.href = 'client-login.html';
+                return;
+            }
+            
+            // Parse date
+            let dateObj;
+            if (typeof recommendation.date === 'string') {
+                dateObj = new Date(recommendation.date);
+            } else if (recommendation.date instanceof Date) {
+                dateObj = recommendation.date;
+            } else {
+                dateObj = new Date();
+            }
+            
+            // Format appointment datetime
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const appointmentDateTime = `${year}-${month}-${day}T${recommendation.time}:00`;
+            
+            // Book appointment via API
+            const response = await window.apiClient.post('/api/client/appointments/book', {
+                clientId: session.id,
+                professionalId: recommendation.professionalId,
+                serviceId: recommendation.serviceId,
+                establishmentId: recommendation.establishmentId,
+                appointmentDateTime: appointmentDateTime,
+                notes: `Agendamento via IA - Confiança: ${recommendation.confidence}%`
+            });
+            
+            if (response.success) {
+                // Update preferences
+                const prefs = this.userPreferences;
+                if (!prefs.serviceHistory) prefs.serviceHistory = [];
+                prefs.serviceHistory.push({
+                    serviceName: recommendation.service,
+                    date: new Date(),
+                    aiAccepted: true
+                });
+                localStorage.setItem('clientPreferences', JSON.stringify(prefs));
+                
+                alert(`✅ Perfeito! Agendamento confirmado:\n${recommendation.service} com ${recommendation.professional}\n${dateObj.toLocaleDateString('pt-BR')} às ${recommendation.time}`);
+                
+                // Redirect to bookings
+                setTimeout(() => {
+                    window.location.href = 'client-bookings.html';
+                }, 1500);
+            } else {
+                alert('Erro ao confirmar agendamento: ' + (response.message || 'Tente novamente.'));
+            }
+        } catch (error) {
+            console.error('Error accepting AI recommendation:', error);
+            alert('Erro ao processar agendamento. Por favor, tente novamente.');
+        }
     }
 
     /**

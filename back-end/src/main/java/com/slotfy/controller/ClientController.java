@@ -1,7 +1,10 @@
 package com.slotfy.controller;
 
+import com.slotfy.dto.AIRecommendationRequest;
+import com.slotfy.dto.AIRecommendationResponse;
 import com.slotfy.model.Appointment;
 import com.slotfy.model.Client;
+import com.slotfy.service.AISchedulingService;
 import com.slotfy.service.AppointmentService;
 import com.slotfy.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,54 @@ public class ClientController {
     
     @Autowired
     private ClientService clientService;
+    
+    @Autowired
+    private AISchedulingService aiSchedulingService;
+    
+    /**
+     * Get AI scheduling recommendations
+     */
+    @PostMapping("/ai/recommendations")
+    public ResponseEntity<Map<String, Object>> getAIRecommendations(@RequestBody AIRecommendationRequest request) {
+        try {
+            // Validate required fields
+            if (request.getClientId() == null || request.getEstablishmentId() == null) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "clientId e establishmentId são obrigatórios"
+                    ));
+            }
+            
+            // Verify client exists
+            Optional<Client> client = clientService.findById(request.getClientId());
+            if (client.isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Cliente não encontrado"
+                    ));
+            }
+            
+            // Generate AI recommendations
+            List<AIRecommendationResponse> recommendations = aiSchedulingService.generateRecommendations(request);
+            
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "data", recommendations,
+                    "count", recommendations.size()
+                ));
+                
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao gerar recomendações: " + e.getMessage()
+                ));
+        }
+    }
     
     /**
      * Get client's next upcoming appointment
