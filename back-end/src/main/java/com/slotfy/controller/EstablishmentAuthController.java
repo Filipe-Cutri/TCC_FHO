@@ -7,6 +7,8 @@ import com.slotfy.model.EstablishmentUser;
 import com.slotfy.model.UserRole;
 import com.slotfy.service.EstablishmentService;
 import com.slotfy.service.EstablishmentUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +26,8 @@ import java.util.Optional;
 @CrossOrigin(originPatterns = "*")
 @Validated
 public class EstablishmentAuthController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EstablishmentAuthController.class);
     
     @Autowired
     private EstablishmentUserService establishmentUserService;
@@ -97,6 +101,7 @@ public class EstablishmentAuthController {
             }
             
         } catch (Exception e) {
+            logger.error("Unexpected error during establishment login", e);
             return ResponseEntity.internalServerError()
                 .body(Map.of(
                     "success", false,
@@ -142,11 +147,13 @@ public class EstablishmentAuthController {
             ));
             
         } catch (IllegalArgumentException e) {
+            logger.error("Validation error during establishment registration: {}", e.getMessage());
             return ResponseEntity.badRequest()
                 .body(new EstablishmentRegisterResponse(false, e.getMessage()));
         } catch (Exception e) {
+            logger.error("Unexpected error during establishment registration", e);
             return ResponseEntity.internalServerError()
-                .body(new EstablishmentRegisterResponse(false, "Erro interno do servidor"));
+                .body(new EstablishmentRegisterResponse(false, "Erro interno do servidor: " + e.getMessage()));
         }
     }
     
@@ -203,12 +210,14 @@ public class EstablishmentAuthController {
                 ));
                 
         } catch (IllegalArgumentException e) {
+            logger.error("Validation error during establishment user registration: {}", e.getMessage());
             return ResponseEntity.badRequest()
                 .body(Map.of(
                     "success", false,
                     "message", e.getMessage()
                 ));
         } catch (Exception e) {
+            logger.error("Unexpected error during establishment user registration", e);
             return ResponseEntity.internalServerError()
                 .body(Map.of(
                     "success", false,
@@ -256,12 +265,14 @@ public class EstablishmentAuthController {
                 ));
                 
         } catch (IllegalArgumentException e) {
+            logger.error("Validation error during staff user creation: {}", e.getMessage());
             return ResponseEntity.badRequest()
                 .body(Map.of(
                     "success", false,
                     "message", e.getMessage()
                 ));
         } catch (Exception e) {
+            logger.error("Unexpected error during staff user creation", e);
             return ResponseEntity.internalServerError()
                 .body(Map.of(
                     "success", false,
