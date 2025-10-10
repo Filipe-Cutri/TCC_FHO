@@ -7,6 +7,7 @@
  */
 function initClientProfile() {
     document.addEventListener('DOMContentLoaded', function() {
+        loadProfileData();
         ClientCommonManager.setupCommonInteractions();
         setupProfileFormHandling();
         setupInputEffects();
@@ -21,6 +22,39 @@ function initClientProfile() {
             });
         });
     });
+}
+
+/**
+ * Load profile data from session/API
+ */
+async function loadProfileData() {
+    try {
+        // Get client session
+        const session = window.clientSession ? window.clientSession.getSession() : null;
+        
+        if (!session || !session.id) {
+            console.warn('No client session found');
+            return;
+        }
+        
+        // Populate form fields with session data
+        const nameInput = document.querySelector('input[value="Maria da Silva"]');
+        if (nameInput && session.name) {
+            nameInput.value = session.name;
+        }
+        
+        const emailInput = document.querySelector('input[type="email"]');
+        if (emailInput && session.email) {
+            emailInput.value = session.email;
+        }
+        
+        const phoneInput = document.querySelector('input[value="(11) 99999-9999"]');
+        if (phoneInput && session.phone) {
+            phoneInput.value = session.phone;
+        }
+    } catch (error) {
+        console.error('Error loading profile data:', error);
+    }
 }
 
 /**

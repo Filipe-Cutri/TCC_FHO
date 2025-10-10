@@ -70,9 +70,15 @@ class ClientDashboard {
      * Update next appointment display
      */
     static updateNextAppointment(appointment) {
-        const appointmentCard = document.querySelector('.client-card .card-body');
+        // Find the appointment card specifically (first card in col-lg-8)
+        const appointmentCard = document.querySelector('.col-lg-8 .client-card .card-body');
         
-        if (!appointment || !appointmentCard) {
+        if (!appointmentCard) {
+            console.warn('Appointment card container not found');
+            return;
+        }
+        
+        if (!appointment) {
             this.renderNoAppointment(appointmentCard);
             return;
         }
