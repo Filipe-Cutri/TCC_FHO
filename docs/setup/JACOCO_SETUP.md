@@ -47,7 +47,7 @@ open build/reports/jacoco/test/html/index.html
 - **Meta Mínima**: 5% (configurável)
 - **Status**: ✅ Aprovado na verificação
 
-📄 **Veja o relatório completo**: [TEST_COVERAGE_REPORT.md](TEST_COVERAGE_REPORT.md)
+📄 **Veja o relatório completo**: [TEST_COVERAGE_REPORT.md](../TEST_COVERAGE_REPORT.md)
 
 ### 🔧 Configuração Otimizada
 
