@@ -121,87 +121,15 @@
                 Próximos Agendamentos
               </h5>
               
-              <!-- Appointment Item -->
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-cut text-primary"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Corte + Barba</div>
-                  <div class="client-list-subtitle">
-                    <i class="fas fa-calendar me-2"></i>10 de Agosto, 2025 às 14:00
-                    <br>
-                    <i class="fas fa-user me-2"></i>João Silva - Barbearia Premium
-                    <br>
-                    <i class="fas fa-money-bill me-2"></i>R$ 85,00
-                  </div>
-                </div>
-                <div class="d-flex flex-column align-items-end">
-                  <span class="client-status-badge client-status-success mb-2">Confirmado</span>
-                  <div class="d-flex gap-2">
-                    <button class="client-btn client-btn-secondary btn-sm">
-                      <i class="fas fa-edit me-1"></i>Editar
-                    </button>
-                    <button class="client-btn btn-sm">
-                      <i class="fas fa-eye me-1"></i>Detalhes
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Another Appointment -->
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-spa text-success"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Limpeza de Pele</div>
-                  <div class="client-list-subtitle">
-                    <i class="fas fa-calendar me-2"></i>15 de Agosto, 2025 às 16:00
-                    <br>
-                    <i class="fas fa-user me-2"></i>Maria Santos - Estética Bella
-                    <br>
-                    <i class="fas fa-money-bill me-2"></i>R$ 120,00
-                  </div>
-                </div>
-                <div class="d-flex flex-column align-items-end">
-                  <span class="client-status-badge client-status-pending mb-2">Pendente</span>
-                  <div class="d-flex gap-2">
-                    <button class="client-btn client-btn-secondary btn-sm">
-                      <i class="fas fa-edit me-1"></i>Editar
-                    </button>
-                    <button class="client-btn btn-sm">
-                      <i class="fas fa-eye me-1"></i>Detalhes
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Another Appointment -->
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-scissors text-info"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Corte Feminino</div>
-                  <div class="client-list-subtitle">
-                    <i class="fas fa-calendar me-2"></i>22 de Agosto, 2025 às 10:00
-                    <br>
-                    <i class="fas fa-user me-2"></i>Ana Costa - Salão Elegance
-                    <br>
-                    <i class="fas fa-money-bill me-2"></i>R$ 150,00
-                  </div>
-                </div>
-                <div class="d-flex flex-column align-items-end">
-                  <span class="client-status-badge client-status-success mb-2">Confirmado</span>
-                  <div class="d-flex gap-2">
-                    <button class="client-btn client-btn-secondary btn-sm">
-                      <i class="fas fa-edit me-1"></i>Editar
-                    </button>
-                    <button class="client-btn btn-sm">
-                      <i class="fas fa-eye me-1"></i>Detalhes
-                    </button>
-                  </div>
+              <!-- Dynamic content loaded by JavaScript -->
+              <div id="upcomingAppointmentsList">
+                <div class="text-center py-4">
+                  <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 3rem;"></i>
+                  <h6 class="text-muted mb-3">Nenhum agendamento próximo</h6>
+                  <p class="text-muted mb-4">Que tal agendar um novo serviço?</p>
+                  <a href="client-services.html" class="client-btn">
+                    <i class="fas fa-plus me-2"></i>Agendar Serviço
+                  </a>
                 </div>
               </div>
             </div>
@@ -219,21 +147,21 @@
                 </span>
                 Estatísticas
               </h5>
-              <div class="row text-center">
+              <div class="row text-center" id="bookingStats">
                 <div class="col-6 mb-3">
-                  <div class="client-stats-number" style="color: var(--color-primary-600);">3</div>
+                  <div class="client-stats-number" style="color: var(--color-primary-600);">0</div>
                   <div class="client-stats-label">Próximos</div>
                 </div>
                 <div class="col-6 mb-3">
-                  <div class="client-stats-number" style="color: var(--color-accent-success);">12</div>
+                  <div class="client-stats-number" style="color: var(--color-accent-success);">0</div>
                   <div class="client-stats-label">Concluídos</div>
                 </div>
                 <div class="col-6">
-                  <div class="client-stats-number" style="color: var(--color-accent-warning);">1</div>
+                  <div class="client-stats-number" style="color: var(--color-accent-warning);">0</div>
                   <div class="client-stats-label">Pendentes</div>
                 </div>
                 <div class="col-6">
-                  <div class="client-stats-number" style="color: var(--color-accent-info);">R$ 355</div>
+                  <div class="client-stats-number" style="color: var(--color-accent-info);">R$ 0</div>
                   <div class="client-stats-label">Total Agendado</div>
                 </div>
               </div>
@@ -249,35 +177,11 @@
                 </span>
                 Histórico Recente
               </h5>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-check-circle text-success"></i>
+              <div id="recentHistoryList">
+                <div class="text-center py-4">
+                  <i class="fas fa-history text-muted mb-3" style="font-size: 2rem;"></i>
+                  <p class="text-muted">Nenhum histórico disponível</p>
                 </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Corte Masculino</div>
-                  <div class="client-list-subtitle">05/07/2025 - João Silva</div>
-                </div>
-                <span class="client-status-badge client-status-success">Concluído</span>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-check-circle text-success"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Barba Completa</div>
-                  <div class="client-list-subtitle">21/06/2025 - Lucas Santos</div>
-                </div>
-                <span class="client-status-badge client-status-success">Concluído</span>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-times-circle text-danger"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Spa Facial</div>
-                  <div class="client-list-subtitle">15/06/2025 - Ana Costa</div>
-                </div>
-                <span class="client-status-badge" style="background: var(--color-accent-error); color: white;">Cancelado</span>
               </div>
             </div>
           </div>
