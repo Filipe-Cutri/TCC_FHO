@@ -109,51 +109,48 @@ public class EstablishmentAuthController {
                 ));
         }
     }
-    
-    /**
-     * Complete establishment registration endpoint
-     */
+
     @PostMapping("/register-complete")
     public ResponseEntity<EstablishmentRegisterResponse> registerComplete(@Valid @RequestBody EstablishmentRegisterRequest request) {
         try {
             // First, create the establishment
             Establishment establishment = establishmentService.createEstablishment(
-                request.getNomeEstabelecimento(),
-                request.getEmail(),
-                request.getTelefone(),
-                null, // address - not provided in frontend form
-                null, // description - not provided in frontend form
-                request.getCategory(),
-                null  // cnpj - not provided in frontend form
+                    request.getNomeEstabelecimento(),
+                    request.getEmail(),
+                    request.getTelefone(),
+                    null, // address - not provided in frontend form
+                    null, // description - not provided in frontend form
+                    request.getCategory(), // ✅ Usa o método que converte tipoEstabelecimento para categoria
+                    null  // cnpj - not provided in frontend form
             );
-            
+
             // Then, create the admin user for this establishment
             EstablishmentUser adminUser = establishmentUserService.createUser(
-                "Administrador", // default name since not provided in form
-                request.getEmail(),
-                request.getSenha(),
-                UserRole.ADMIN,
-                establishment.getId()
+                    request.getNomeEstabelecimento(), // ✅ Usa o nome do estabelecimento como nome do admin
+                    request.getEmail(),
+                    request.getSenha(),
+                    UserRole.ADMIN,
+                    establishment.getId()
             );
-            
+
             return ResponseEntity.ok(new EstablishmentRegisterResponse(
-                true,
-                "Estabelecimento registrado com sucesso!",
-                establishment.getId(),
-                adminUser.getId(),
-                establishment.getName(),
-                adminUser.getEmail(),
-                adminUser.getRole().getDescription()
+                    true,
+                    "Estabelecimento registrado com sucesso!",
+                    establishment.getId(),
+                    adminUser.getId(),
+                    establishment.getName(),
+                    adminUser.getEmail(),
+                    adminUser.getRole().getDescription()
             ));
-            
+
         } catch (IllegalArgumentException e) {
             logger.error("Validation error during establishment registration: {}", e.getMessage());
             return ResponseEntity.badRequest()
-                .body(new EstablishmentRegisterResponse(false, e.getMessage()));
+                    .body(new EstablishmentRegisterResponse(false, e.getMessage()));
         } catch (Exception e) {
             logger.error("Unexpected error during establishment registration", e);
             return ResponseEntity.internalServerError()
-                .body(new EstablishmentRegisterResponse(false, "Erro interno do servidor: " + e.getMessage()));
+                    .body(new EstablishmentRegisterResponse(false, "Erro interno do servidor: " + e.getMessage()));
         }
     }
     
