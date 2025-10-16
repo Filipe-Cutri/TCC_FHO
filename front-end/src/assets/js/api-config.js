@@ -17,11 +17,20 @@ const API_CONFIG = {
             register: '/api/client/register',
             forgotPassword: '/api/client/forgot-password',
             updateEstablishment: '/api/client/establishment',
+            establishments: {
+                list: '/api/client/establishments',
+                details: '/api/client/establishments/{id}',
+                services: '/api/client/establishments/{id}/services',
+                professionals: '/api/client/establishments/{id}/professionals',
+                availability: '/api/client/establishments/{id}/availability'
+            },
             appointments: {
                 next: '/api/client/appointments/next',
                 list: '/api/client/appointments',
                 history: '/api/client/appointments/history',
-                book: '/api/client/appointments/book'
+                book: '/api/client/appointments/book',
+                details: '/api/client/appointments/{id}',
+                cancel: '/api/client/appointments/{id}/cancel'
             },
             profile: {
                 get: '/api/client/profile',
@@ -39,6 +48,7 @@ const API_CONFIG = {
             list: '/api/establishment/list',
             createStaff: '/api/establishment/create-staff',
             roles: '/api/establishment/roles',
+            clients: '/api/establishment/clients',
             dashboard: {
                 overview: '/api/establishment/dashboard/overview',
                 todayAppointments: '/api/establishment/dashboard/today-appointments',
