@@ -4,9 +4,16 @@ import com.slotfy.dto.AIRecommendationRequest;
 import com.slotfy.dto.AIRecommendationResponse;
 import com.slotfy.model.Appointment;
 import com.slotfy.model.Client;
+import com.slotfy.model.Establishment;
+import com.slotfy.model.EstablishmentStatus;
+import com.slotfy.model.Professional;
+import com.slotfy.model.Service;
 import com.slotfy.service.AISchedulingService;
 import com.slotfy.service.AppointmentService;
 import com.slotfy.service.ClientService;
+import com.slotfy.service.EstablishmentService;
+import com.slotfy.service.ProfessionalService;
+import com.slotfy.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +39,15 @@ public class ClientController {
 
     @Autowired
     private AISchedulingService aiSchedulingService;
+
+    @Autowired
+    private EstablishmentService establishmentService;
+
+    @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private ProfessionalService professionalService;
 
     /**
      * Get AI scheduling recommendations
@@ -336,6 +352,235 @@ public class ClientController {
                             )
                     ));
 
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", e.getMessage()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro interno do servidor"
+                    ));
+        }
+    }
+
+    /**
+     * List all active establishments for client browsing
+     */
+    @GetMapping("/establishments")
+    public ResponseEntity<Map<String, Object>> listEstablishments() {
+        try {
+            List<Establishment> establishments = establishmentService.getByStatus(EstablishmentStatus.ACTIVE);
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", establishments,
+                            "count", establishments.size()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao listar estabelecimentos"
+                    ));
+        }
+    }
+
+    /**
+     * Get establishment details by ID
+     */
+    @GetMapping("/establishments/{id}")
+    public ResponseEntity<Map<String, Object>> getEstablishmentDetails(@PathVariable Long id) {
+        try {
+            Optional<Establishment> establishment = establishmentService.findById(id);
+            
+            if (establishment.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            if (!establishment.get().isActive()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Estabelecimento não está ativo"
+                        ));
+            }
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", establishment.get()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro interno do servidor"
+                    ));
+        }
+    }
+
+    /**
+     * Get active services of an establishment
+     */
+    @GetMapping("/establishments/{id}/services")
+    public ResponseEntity<Map<String, Object>> getEstablishmentServices(@PathVariable Long id) {
+        try {
+            // Verify establishment exists and is active
+            Optional<Establishment> establishment = establishmentService.findById(id);
+            if (establishment.isEmpty() || !establishment.get().isActive()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Estabelecimento não encontrado ou inativo"
+                        ));
+            }
+            
+            List<Service> services = serviceService.getActiveByEstablishmentId(id);
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", services,
+                            "count", services.size()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao listar serviços"
+                    ));
+        }
+    }
+
+    /**
+     * Get active professionals of an establishment
+     */
+    @GetMapping("/establishments/{id}/professionals")
+    public ResponseEntity<Map<String, Object>> getEstablishmentProfessionals(@PathVariable Long id) {
+        try {
+            // Verify establishment exists and is active
+            Optional<Establishment> establishment = establishmentService.findById(id);
+            if (establishment.isEmpty() || !establishment.get().isActive()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Estabelecimento não encontrado ou inativo"
+                        ));
+            }
+            
+            List<Professional> professionals = professionalService.getActiveByEstablishmentId(id);
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", professionals,
+                            "count", professionals.size()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao listar profissionais"
+                    ));
+        }
+    }
+
+    /**
+     * Check availability for booking
+     */
+    @GetMapping("/establishments/{id}/availability")
+    public ResponseEntity<Map<String, Object>> checkAvailability(
+            @PathVariable Long id,
+            @RequestParam Long professionalId,
+            @RequestParam String dateTime,
+            @RequestParam Integer durationMinutes) {
+        try {
+            LocalDateTime startTime = LocalDateTime.parse(dateTime);
+            LocalDateTime endTime = startTime.plusMinutes(durationMinutes);
+            
+            boolean available = appointmentService.isTimeSlotAvailable(professionalId, startTime, endTime);
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "available", available,
+                            "message", available ? "Horário disponível" : "Horário indisponível"
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao verificar disponibilidade"
+                    ));
+        }
+    }
+
+    /**
+     * Get appointment details by ID (for client)
+     */
+    @GetMapping("/appointments/{id}")
+    public ResponseEntity<Map<String, Object>> getAppointmentDetails(
+            @PathVariable Long id,
+            @RequestParam Long clientId) {
+        try {
+            Optional<Appointment> appointmentOpt = appointmentService.findById(id);
+            
+            if (appointmentOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Appointment appointment = appointmentOpt.get();
+            
+            // Verify that this appointment belongs to the requesting client
+            if (!appointment.getClientId().equals(clientId)) {
+                return ResponseEntity.status(403)
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Acesso negado"
+                        ));
+            }
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", appointment
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro interno do servidor"
+                    ));
+        }
+    }
+
+    /**
+     * Cancel appointment (client side)
+     */
+    @PutMapping("/appointments/{id}/cancel")
+    public ResponseEntity<Map<String, Object>> cancelAppointment(
+            @PathVariable Long id,
+            @RequestParam Long clientId) {
+        try {
+            Appointment appointment = appointmentService.cancelClientAppointment(id, clientId);
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "message", "Agendamento cancelado com sucesso",
+                            "data", appointment
+                    ));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                    .body(Map.of(
+                            "success", false,
+                            "message", e.getMessage()
+                    ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(Map.of(
