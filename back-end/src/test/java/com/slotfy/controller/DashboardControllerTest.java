@@ -117,7 +117,8 @@ public class DashboardControllerTest {
     @Test
     @WithMockUser
     public void testGetTopProfessionals() throws Exception {
-        when(professionalService.getTopRatedProfessionals(anyLong(), any(BigDecimal.class)))
+        // DashboardController uses a minimum rating of 4.0
+        when(professionalService.getTopRatedProfessionals(anyLong(), eq(new BigDecimal("4.0"))))
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/api/establishment/dashboard/top-professionals")
@@ -156,7 +157,7 @@ public class DashboardControllerTest {
     @Test
     @WithMockUser
     public void testGetQuickActions() throws Exception {
-        when(appointmentService.getByEstablishmentAndStatus(anyLong(), any(AppointmentStatus.class)))
+        when(appointmentService.getByEstablishmentAndStatus(anyLong(), eq(AppointmentStatus.SCHEDULED)))
                 .thenReturn(new ArrayList<>());
         when(professionalService.countActiveByEstablishment(anyLong())).thenReturn(5L);
         when(serviceService.countActiveByEstablishment(anyLong())).thenReturn(10L);
