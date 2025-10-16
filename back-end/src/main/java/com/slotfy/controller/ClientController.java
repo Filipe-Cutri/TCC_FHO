@@ -125,20 +125,19 @@ public class ClientController {
     @GetMapping("/appointments")
     public ResponseEntity<Map<String, Object>> getClientAppointments(@RequestParam Long clientId) {
         try {
-            // For now, return empty list since there are no appointments in the system
-            // This can be implemented fully once we have sample data
+            List<Appointment> appointments = appointmentService.getByClient(clientId);
+            
             return ResponseEntity.ok()
                     .body(Map.of(
                             "success", true,
-                            "data", java.util.Collections.emptyList(),
-                            "count", 0
+                            "data", appointments,
+                            "count", appointments.size()
                     ));
         } catch (Exception e) {
-            e.printStackTrace(); // For debugging
             return ResponseEntity.internalServerError()
                     .body(Map.of(
                             "success", false,
-                            "message", "Erro interno do servidor: " + e.getMessage()
+                            "message", "Erro interno do servidor"
                     ));
         }
     }
