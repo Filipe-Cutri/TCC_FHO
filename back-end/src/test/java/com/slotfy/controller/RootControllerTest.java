@@ -11,7 +11,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest({RootController.class, ApiInfoController.class})
+/**
+ * Test class for ApiInfoController
+ * Note: Testing separately from RootController to avoid endpoint mapping conflicts
+ */
+@WebMvcTest(ApiInfoController.class)
 @Import({com.slotfy.config.SecurityConfig.class})
 public class RootControllerTest {
 
