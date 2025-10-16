@@ -8,13 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Security configuration for password encoding and web security
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     /**
      * Password encoder bean for secure password hashing
      */
@@ -22,20 +19,20 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     /**
      * Security filter chain configuration to allow all requests
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers
-                .frameOptions().sameOrigin() // Allow frames for H2 console
-            )
-            .authorizeHttpRequests(authz -> authz
-                .anyRequest().permitAll()
-            );
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin()) // Sintaxe moderna para frames (H2 console)
+                )
+                .authorizeHttpRequests(authz -> authz
+                        .anyRequest().permitAll()
+                );
         return http.build();
     }
 }
