@@ -594,4 +594,65 @@ public class ClientController {
                     ));
         }
     }
+
+    /**
+     * Get client profile with service history
+     */
+    @GetMapping("/profile/{clientId}")
+    public ResponseEntity<Map<String, Object>> getClientProfile(@PathVariable Long clientId) {
+        try {
+            Optional<Client> clientOpt = clientService.findById(clientId);
+            
+            if (clientOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Client client = clientOpt.get();
+            List<Appointment> history = appointmentService.getClientAppointmentHistory(clientId);
+            List<Appointment> upcoming = appointmentService.getClientUpcomingAppointments(clientId);
+
+            // Remove password from response
+            client.setPassword(null);
+
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", Map.of(
+                                    "profile", client,
+                                    "serviceHistory", history,
+                                    "upcomingAppointments", upcoming,
+                                    "totalServices", history.size()
+                            )
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao buscar perfil do cliente"
+                    ));
+        }
+    }
+
+    /**
+     * Get client service history
+     */
+    @GetMapping("/service-history/{clientId}")
+    public ResponseEntity<Map<String, Object>> getServiceHistory(@PathVariable Long clientId) {
+        try {
+            List<Appointment> history = appointmentService.getClientAppointmentHistory(clientId);
+
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", history,
+                            "count", history.size()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao buscar histórico de serviços"
+                    ));
+        }
+    }
 }
