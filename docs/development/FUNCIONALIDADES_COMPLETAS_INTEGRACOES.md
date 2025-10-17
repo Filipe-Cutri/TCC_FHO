@@ -1464,7 +1464,25 @@ Response (Success - 200 OK):
 - Todos os endpoints devem validar autenticação via token JWT
 - Validar que o cliente/estabelecimento tem permissão para acessar o recurso
 - Sanitizar todos os inputs para prevenir SQL Injection e XSS
-- Rate limiting para prevenir abuso de APIs
+- **Rate Limiting para prevenir abuso de APIs:**
+  - Implementar usando Spring Cloud Gateway ou Bucket4j
+  - Limites sugeridos:
+    - APIs públicas: 100 requisições/minuto por IP
+    - APIs autenticadas: 1000 requisições/minuto por usuário
+    - Login/Registro: 5 tentativas/minuto por IP
+  - Exemplo de configuração com Bucket4j:
+    ```java
+    @Configuration
+    public class RateLimitConfig {
+        public Bucket createBucket() {
+            Bandwidth limit = Bandwidth.classic(100, 
+                Refill.intervally(100, Duration.ofMinutes(1)));
+            return Bucket.builder()
+                .addLimit(limit)
+                .build();
+        }
+    }
+    ```
 
 ### Performance
 - Implementar cache para dados frequentemente acessados

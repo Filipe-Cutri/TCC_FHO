@@ -539,8 +539,10 @@ Response (Success - 200 OK):
 
 ### 5.1 Configuração Spring Boot
 
+**Arquivo: `application.yml` (ou `application.yaml`)**
+
 ```yaml
-# application.yml
+# application.yml (Production configuration)
 spring:
   mail:
     host: smtp.gmail.com
@@ -708,10 +710,14 @@ public class SmsService {
 @Configuration
 public class FirebaseConfig {
     
+    @Value("${firebase.credentials.path}")
+    private String firebaseCredentialsPath;
+    
     @PostConstruct
     public void initialize() {
         try {
-            FileInputStream serviceAccount = new FileInputStream("firebase-adminsdk.json");
+            // Use environment variable or secure configuration
+            FileInputStream serviceAccount = new FileInputStream(firebaseCredentialsPath);
             
             FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -881,12 +887,13 @@ public class EmailServiceIntegrationTest {
 @Component
 public class NotificationRateLimiter {
     
+    private static final double SECONDS_PER_HOUR = 3600.0;
     private final Map<String, RateLimiter> limiters = new ConcurrentHashMap<>();
     
     public boolean tryAcquire(String key, int maxPerHour) {
         RateLimiter limiter = limiters.computeIfAbsent(
             key,
-            k -> RateLimiter.create(maxPerHour / 3600.0)
+            k -> RateLimiter.create(maxPerHour / SECONDS_PER_HOUR)
         );
         return limiter.tryAcquire();
     }

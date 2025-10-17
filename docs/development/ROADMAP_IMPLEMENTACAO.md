@@ -209,10 +209,15 @@ POST /api/notifications/send (interno)
 **Configuração:**
 ```yaml
 # application-prod.yml
+# IMPORTANT: For production, use a dedicated email service like SendGrid, AWS SES, or Mailgun
+# Gmail SMTP is suitable for development/testing only
 spring:
   mail:
-    host: smtp.gmail.com
-    port: 587
+    # Production example with SendGrid:
+    # host: smtp.sendgrid.net
+    # Development example with Gmail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PASSWORD}
     properties:
@@ -225,9 +230,15 @@ spring:
 
 app:
   email:
-    from: noreply@slotfy.com
-    from-name: Slotfy
+    from: ${EMAIL_FROM:noreply@slotfy.com}
+    from-name: ${EMAIL_FROM_NAME:Slotfy}
 ```
+
+**Recommended Email Services for Production:**
+- SendGrid (recommended for high volume)
+- AWS SES (cost-effective for AWS infrastructure)
+- Mailgun (good deliverability)
+- Postmark (transactional emails)
 
 ---
 
