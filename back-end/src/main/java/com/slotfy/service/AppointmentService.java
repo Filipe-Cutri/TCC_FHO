@@ -428,4 +428,21 @@ public class AppointmentService extends BaseService<Appointment, Long> {
         appointment.setStatus(AppointmentStatus.CANCELLED);
         return appointmentRepository.save(appointment);
     }
+
+    /**
+     * Get appointments that need reminders (24 hours before)
+     */
+    public List<Appointment> getAppointmentsNeedingReminders() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime reminderWindow = now.plusHours(24);
+        
+        List<Appointment> allAppointments = appointmentRepository.findAll();
+        
+        return allAppointments.stream()
+            .filter(apt -> apt.getAppointmentDateTime() != null)
+            .filter(apt -> apt.getAppointmentDateTime().isAfter(now))
+            .filter(apt -> apt.getAppointmentDateTime().isBefore(reminderWindow))
+            .filter(apt -> apt.isScheduled() || apt.isConfirmed())
+            .collect(Collectors.toList());
+    }
 }
