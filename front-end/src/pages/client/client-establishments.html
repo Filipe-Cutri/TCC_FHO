@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estabelecimentos - Slotfy</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon-slotfy.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../../assets/styles/common.css">
+  <link rel="stylesheet" href="../../assets/styles/client-styles.css">
+</head>
+<body class="client-page" data-page="establishments">
+  <nav class="navbar navbar-expand-lg navbar-dark client-navbar fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="client-dashboard.html">
+        <img src="../../assets/logo-slotfy.png" alt="Slotfy Logo" class="logo logo-lg">
+        Slotfy
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="client-dashboard.html">
+              <i class="fas fa-home me-1"></i>Início
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="client-establishments.html">
+              <i class="fas fa-store me-1"></i>Estabelecimentos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="client-bookings.html">
+              <i class="fas fa-calendar me-1"></i>Agendamentos
+            </a>
+          </li>
+        </ul>
+        <div class="navbar-nav">
+          <a href="client-profile.html" class="btn btn-outline-light me-2">
+            <i class="fas fa-user me-1"></i>Perfil
+          </a>
+          <a href="client-login.html" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="client-main-content">
+    <div class="client-container">
+      <!-- Page Header -->
+      <div class="client-page-header">
+        <h1>
+          <span class="page-icon">
+            <i class="fas fa-store"></i>
+          </span>
+          Estabelecimentos Disponíveis
+        </h1>
+        <p class="client-page-subtitle">Encontre o estabelecimento perfeito para você</p>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fas fa-search"></i>
+            </span>
+            <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nome do estabelecimento...">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" id="categoryFilter">
+            <option value="">Todas as categorias</option>
+            <option value="Barbearia">Barbearia</option>
+            <option value="Salão de Beleza">Salão de Beleza</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-3">Carregando estabelecimentos...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="alert alert-danger" style="display: none;">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span id="errorMessage">Erro ao carregar estabelecimentos</span>
+      </div>
+
+      <!-- Establishments Grid -->
+      <div id="establishmentsGrid" class="row" style="display: none;">
+        <!-- Establishments will be dynamically loaded here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="text-center py-5" style="display: none;">
+        <i class="fas fa-store fa-4x text-muted mb-3"></i>
+        <h3>Nenhum estabelecimento encontrado</h3>
+        <p class="text-muted">Tente ajustar os filtros de busca</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Establishment Detail Modal -->
+  <div class="modal fade" id="establishmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEstablishmentName">Detalhes do Estabelecimento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="modalContent">
+            <!-- Content will be loaded dynamically -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary" id="viewServicesBtn">
+            Ver Serviços <i class="fas fa-arrow-right ms-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/api-config.js"></script>
+  <script src="../../assets/js/client-session.js"></script>
+  <script>
+    // Client Establishments Manager
+    class ClientEstablishments {
+      constructor() {
+        this.establishments = [];
+        this.filteredEstablishments = [];
+        this.selectedEstablishment = null;
+      }
+
+      async init() {
+        // Check if user is logged in
+        const session = ClientSession.getSession();
+        if (!session) {
+          window.location.href = 'client-login.html';
+          return;
+        }
+
+        this.setupEventListeners();
+        await this.loadEstablishments();
+      }
+
+      setupEventListeners() {
+        // Search input
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+          this.filterEstablishments();
+        });
+
+        // Category filter
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+          this.filterEstablishments();
+        });
+
+        // View services button
+        document.getElementById('viewServicesBtn').addEventListener('click', () => {
+          if (this.selectedEstablishment) {
+            // Store establishment ID and navigate to services page
+            sessionStorage.setItem('selectedEstablishmentId', this.selectedEstablishment.id);
+            window.location.href = `client-services.html?establishmentId=${this.selectedEstablishment.id}`;
+          }
+        });
+      }
+
+      async loadEstablishments() {
+        try {
+          document.getElementById('loadingState').style.display = 'block';
+          document.getElementById('establishmentsGrid').style.display = 'none';
+          document.getElementById('errorState').style.display = 'none';
+
+          const response = await apiClient.get(API_CONFIG.endpoints.client.establishments.list);
+          
+          if (response.success) {
+            this.establishments = response.data || [];
+            this.filteredEstablishments = [...this.establishments];
+            this.renderEstablishments();
+          } else {
+            throw new Error(response.message || 'Erro ao carregar estabelecimentos');
+          }
+        } catch (error) {
+          console.error('Error loading establishments:', error);
+          document.getElementById('loadingState').style.display = 'none';
+          document.getElementById('errorState').style.display = 'block';
+          document.getElementById('errorMessage').textContent = error.message;
+        }
+      }
+
+      filterEstablishments() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const category = document.getElementById('categoryFilter').value;
+
+        this.filteredEstablishments = this.establishments.filter(est => {
+          const matchesSearch = !searchTerm || 
+            est.name.toLowerCase().includes(searchTerm) ||
+            (est.description && est.description.toLowerCase().includes(searchTerm));
+          
+          const matchesCategory = !category || est.category === category;
+
+          return matchesSearch && matchesCategory;
+        });
+
+        this.renderEstablishments();
+      }
+
+      renderEstablishments() {
+        document.getElementById('loadingState').style.display = 'none';
+        
+        const grid = document.getElementById('establishmentsGrid');
+        const emptyState = document.getElementById('emptyState');
+
+        if (this.filteredEstablishments.length === 0) {
+          grid.style.display = 'none';
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        grid.style.display = 'flex';
+        emptyState.style.display = 'none';
+
+        grid.innerHTML = this.filteredEstablishments.map(est => `
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="client-card h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-start mb-3">
+                  <div class="establishment-icon me-3">
+                    <i class="fas fa-store"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">${est.name}</h5>
+                    ${est.category ? `<span class="badge bg-primary">${est.category}</span>` : ''}
+                  </div>
+                </div>
+                
+                ${est.description ? `
+                  <p class="text-muted small mb-3">${est.description.substring(0, 100)}${est.description.length > 100 ? '...' : ''}</p>
+                ` : ''}
+                
+                ${est.address ? `
+                  <p class="small mb-2">
+                    <i class="fas fa-map-marker-alt me-2"></i>${est.address}
+                  </p>
+                ` : ''}
+                
+                <div class="d-grid gap-2 mt-3">
+                  <button class="client-btn" onclick="clientEstablishments.showDetails(${est.id})">
+                    <i class="fas fa-info-circle me-2"></i>Ver Detalhes
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="clientEstablishments.viewServices(${est.id})">
+                    <i class="fas fa-scissors me-2"></i>Ver Serviços
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async showDetails(establishmentId) {
+        try {
+          const endpoint = apiClient.replacePathParams(
+            API_CONFIG.endpoints.client.establishments.details,
+            { id: establishmentId }
+          );
+          
+          const response = await apiClient.get(endpoint);
+          
+          if (response.success) {
+            this.selectedEstablishment = response.data;
+            this.renderEstablishmentDetails(response.data);
+            
+            const modal = new bootstrap.Modal(document.getElementById('establishmentModal'));
+            modal.show();
+          }
+        } catch (error) {
+          console.error('Error loading establishment details:', error);
+          alert('Erro ao carregar detalhes do estabelecimento');
+        }
+      }
+
+      renderEstablishmentDetails(est) {
+        document.getElementById('modalEstablishmentName').textContent = est.name;
+        
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+          <div class="establishment-details">
+            ${est.imageUrl ? `
+              <img src="${est.imageUrl}" class="img-fluid rounded mb-3" alt="${est.name}">
+            ` : ''}
+            
+            <h6>Informações</h6>
+            <ul class="list-unstyled">
+              ${est.category ? `<li><strong>Categoria:</strong> ${est.category}</li>` : ''}
+              ${est.email ? `<li><strong>Email:</strong> ${est.email}</li>` : ''}
+              ${est.phone ? `<li><strong>Telefone:</strong> ${est.phone}</li>` : ''}
+              ${est.address ? `<li><strong>Endereço:</strong> ${est.address}</li>` : ''}
+              ${est.workingHours ? `<li><strong>Horário:</strong> ${est.workingHours}</li>` : ''}
+            </ul>
+            
+            ${est.description ? `
+              <h6>Sobre</h6>
+              <p>${est.description}</p>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      viewServices(establishmentId) {
+        sessionStorage.setItem('selectedEstablishmentId', establishmentId);
+        window.location.href = `client-services.html?establishmentId=${establishmentId}`;
+      }
+    }
+
+    // Initialize when DOM is ready
+    const clientEstablishments = new ClientEstablishments();
+    document.addEventListener('DOMContentLoaded', () => {
+      clientEstablishments.init();
+    });
+  </script>
+</body>
+</html>

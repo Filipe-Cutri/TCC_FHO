@@ -252,9 +252,21 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/api-config.js"></script>
+  <script src="../../assets/js/client-session.js"></script>
   <script>
     // Enhanced client page interactions
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Check if user is logged in
+      const session = ClientSession.getSession();
+      if (!session) {
+        window.location.href = 'client-login.html';
+        return;
+      }
+
+      // Load appointments
+      await loadAppointments(session.id);
+
       // Navbar scroll effects
       window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.client-navbar');
@@ -265,18 +277,171 @@
           navbar.style.background = 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%)';
         }
       });
-
-      // Filter functionality
-      document.querySelector('.client-btn').addEventListener('click', function() {
-        // Add loading state
-        this.innerHTML = '<span class="client-loading">Filtrando...</span>';
-        
-        // Simulate filter operation
-        setTimeout(() => {
-          this.innerHTML = '<i class="fas fa-search me-2"></i>Filtrar';
-        }, 1000);
-      });
     });
+
+    async function loadAppointments(clientId) {
+      try {
+        const response = await apiClient.get(API_CONFIG.endpoints.client.appointments.list, { clientId });
+        
+        if (response.success && response.data && response.data.length > 0) {
+          const appointments = response.data;
+          
+          // Separate upcoming and past appointments
+          const now = new Date();
+          const upcoming = appointments.filter(apt => new Date(apt.appointmentDateTime) >= now && apt.status !== 'CANCELLED');
+          const completed = appointments.filter(apt => apt.status === 'COMPLETED');
+          
+          // Update stats
+          updateStats(upcoming.length, completed.length, appointments);
+          
+          // Render upcoming appointments
+          renderUpcomingAppointments(upcoming);
+          
+          // Render recent history
+          renderRecentHistory(appointments.slice(0, 5));
+        } else {
+          // Show empty state (default HTML)
+        }
+      } catch (error) {
+        console.error('Error loading appointments:', error);
+      }
+    }
+
+    function updateStats(upcomingCount, completedCount, allAppointments) {
+      const pending = allAppointments.filter(apt => apt.status === 'SCHEDULED').length;
+      const totalValue = allAppointments.reduce((sum, apt) => sum + (apt.servicePrice || 0), 0);
+      
+      const statsHtml = `
+        <div class="col-6 mb-3">
+          <div class="client-stats-number" style="color: var(--color-primary-600);">${upcomingCount}</div>
+          <div class="client-stats-label">Próximos</div>
+        </div>
+        <div class="col-6 mb-3">
+          <div class="client-stats-number" style="color: var(--color-accent-success);">${completedCount}</div>
+          <div class="client-stats-label">Concluídos</div>
+        </div>
+        <div class="col-6">
+          <div class="client-stats-number" style="color: var(--color-accent-warning);">${pending}</div>
+          <div class="client-stats-label">Pendentes</div>
+        </div>
+        <div class="col-6">
+          <div class="client-stats-number" style="color: var(--color-accent-info);">R$ ${totalValue.toFixed(2)}</div>
+          <div class="client-stats-label">Total Agendado</div>
+        </div>
+      `;
+      
+      document.getElementById('bookingStats').innerHTML = statsHtml;
+    }
+
+    function renderUpcomingAppointments(appointments) {
+      const container = document.getElementById('upcomingAppointmentsList');
+      
+      if (appointments.length === 0) {
+        return; // Keep default empty state
+      }
+      
+      const html = appointments.map(apt => `
+        <div class="appointment-item mb-3 p-3 border rounded">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="mb-1">${apt.serviceName || 'Serviço'}</h6>
+              <p class="text-muted small mb-1">
+                <i class="fas fa-calendar me-1"></i>${formatDate(apt.appointmentDateTime)}
+                <i class="fas fa-clock ms-2 me-1"></i>${formatTime(apt.appointmentDateTime)}
+              </p>
+              <p class="text-muted small mb-1">
+                <i class="fas fa-user me-1"></i>${apt.professionalName || 'Profissional'}
+              </p>
+              <span class="badge bg-${getStatusColor(apt.status)}">${getStatusLabel(apt.status)}</span>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(${apt.id})">
+                <i class="fas fa-times"></i> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      container.innerHTML = html;
+    }
+
+    function renderRecentHistory(appointments) {
+      const container = document.getElementById('recentHistoryList');
+      
+      if (appointments.length === 0) {
+        return; // Keep default empty state
+      }
+      
+      const html = appointments.map(apt => `
+        <div class="history-item mb-2 pb-2 border-bottom">
+          <p class="mb-1 small"><strong>${apt.serviceName || 'Serviço'}</strong></p>
+          <p class="text-muted small mb-0">${formatDate(apt.appointmentDateTime)}</p>
+        </div>
+      `).join('');
+      
+      container.innerHTML = html;
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    function formatTime(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function getStatusColor(status) {
+      const colors = {
+        'SCHEDULED': 'warning',
+        'CONFIRMED': 'info',
+        'IN_PROGRESS': 'primary',
+        'COMPLETED': 'success',
+        'CANCELLED': 'danger',
+        'NO_SHOW': 'secondary'
+      };
+      return colors[status] || 'secondary';
+    }
+
+    function getStatusLabel(status) {
+      const labels = {
+        'SCHEDULED': 'Agendado',
+        'CONFIRMED': 'Confirmado',
+        'IN_PROGRESS': 'Em Andamento',
+        'COMPLETED': 'Concluído',
+        'CANCELLED': 'Cancelado',
+        'NO_SHOW': 'Não Compareceu'
+      };
+      return labels[status] || status;
+    }
+
+    async function cancelAppointment(appointmentId) {
+      if (!confirm('Tem certeza que deseja cancelar este agendamento?')) {
+        return;
+      }
+      
+      try {
+        const session = ClientSession.getSession();
+        const endpoint = apiClient.replacePathParams(
+          API_CONFIG.endpoints.client.appointments.cancel,
+          { id: appointmentId }
+        );
+        
+        const response = await apiClient.put(endpoint, { clientId: session.id });
+        
+        if (response.success) {
+          alert('Agendamento cancelado com sucesso!');
+          location.reload();
+        } else {
+          alert('Erro ao cancelar agendamento: ' + (response.message || 'Tente novamente'));
+        }
+      } catch (error) {
+        console.error('Error cancelling appointment:', error);
+        alert('Erro ao cancelar agendamento');
+      }
+    }
   </script>
 </body>
 </html>

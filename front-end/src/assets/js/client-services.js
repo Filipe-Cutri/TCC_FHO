@@ -344,17 +344,19 @@ class ClientServices {
             const professionalSelect = document.getElementById('professionalSelect');
             professionalSelect.innerHTML = '<option value="">Carregando...</option>';
             
-            // Fetch professionals from the selected establishment
-            const response = await window.apiClient.get('/api/establishment/professionals/active', {
-                establishmentId: this.establishmentId
-            });
+            // Fetch professionals using new client endpoint
+            const professionalsEndpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.professionals,
+                { id: this.establishmentId }
+            );
+            const response = await window.apiClient.get(professionalsEndpoint);
             
             if (response.success && response.data && response.data.length > 0) {
                 professionalSelect.innerHTML = '<option value="">Selecione um profissional</option>';
                 response.data.forEach(prof => {
                     const option = document.createElement('option');
                     option.value = prof.id;
-                    option.textContent = `${prof.name} - ${prof.specialty || 'Especialista'}`;
+                    option.textContent = `${prof.name} - ${prof.specialties || 'Especialista'}`;
                     professionalSelect.appendChild(option);
                 });
             } else {
@@ -488,33 +490,42 @@ class ClientServices {
      */
     async loadServices() {
         try {
-            // Get user session to find selected establishment
-            const session = this.getUserSession();
+            // Check for establishment ID from URL parameter or session
+            const urlParams = new URLSearchParams(window.location.search);
+            const establishmentIdFromUrl = urlParams.get('establishmentId');
             
-            if (!session || !session.selectedEstablishmentId) {
+            // Try URL first, then session, then sessionStorage
+            const session = this.getUserSession();
+            const establishmentIdFromSession = session ? session.selectedEstablishmentId : null;
+            const establishmentIdFromStorage = sessionStorage.getItem('selectedEstablishmentId');
+            
+            this.establishmentId = establishmentIdFromUrl || establishmentIdFromSession || establishmentIdFromStorage;
+            
+            if (!this.establishmentId) {
                 this.showEmptyState('Por favor, selecione um estabelecimento primeiro.');
                 return;
             }
 
-            this.establishmentId = session.selectedEstablishmentId;
-            
             // Show loading state
             this.showLoading();
 
-            // Fetch establishment details to get category
-            const establishmentResponse = await window.apiClient.get('/api/establishment/list');
+            // Fetch establishment details using new client endpoint
+            const establishmentEndpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.details,
+                { id: this.establishmentId }
+            );
+            const establishmentResponse = await window.apiClient.get(establishmentEndpoint);
             
-            if (establishmentResponse.success) {
-                const establishment = establishmentResponse.data.find(e => e.id === this.establishmentId);
-                if (establishment) {
-                    this.establishmentCategory = establishment.category;
-                }
+            if (establishmentResponse.success && establishmentResponse.data) {
+                this.establishmentCategory = establishmentResponse.data.category;
             }
 
-            // Fetch services for this establishment
-            const response = await window.apiClient.get('/api/establishment/services/active', {
-                establishmentId: this.establishmentId
-            });
+            // Fetch services using new client endpoint
+            const servicesEndpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.services,
+                { id: this.establishmentId }
+            );
+            const response = await window.apiClient.get(servicesEndpoint);
 
             if (response.success && response.data) {
                 this.services = response.data;
