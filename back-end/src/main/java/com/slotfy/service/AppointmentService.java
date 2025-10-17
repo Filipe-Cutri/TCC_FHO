@@ -397,4 +397,35 @@ public class AppointmentService extends BaseService<Appointment, Long> {
         
         return optionalAppointment;
     }
+
+    /**
+     * Cancel appointment from client side
+     * Validates that appointment belongs to the client
+     */
+    public Appointment cancelClientAppointment(Long appointmentId, Long clientId) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+        
+        if (optionalAppointment.isEmpty()) {
+            throw new IllegalArgumentException("Agendamento não encontrado");
+        }
+        
+        Appointment appointment = optionalAppointment.get();
+        
+        // Verify that this appointment belongs to the requesting client
+        if (!appointment.getClientId().equals(clientId)) {
+            throw new SecurityException("Você não tem permissão para cancelar este agendamento");
+        }
+        
+        // Check if appointment can be cancelled
+        if (appointment.isCancelled()) {
+            throw new IllegalArgumentException("Este agendamento já está cancelado");
+        }
+        
+        if (appointment.isCompleted()) {
+            throw new IllegalArgumentException("Não é possível cancelar um agendamento já finalizado");
+        }
+        
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        return appointmentRepository.save(appointment);
+    }
 }

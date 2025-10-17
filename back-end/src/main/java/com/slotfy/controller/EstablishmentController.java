@@ -1,7 +1,10 @@
 package com.slotfy.controller;
 
+import com.slotfy.model.Client;
 import com.slotfy.model.Establishment;
 import com.slotfy.model.EstablishmentStatus;
+import com.slotfy.service.AppointmentService;
+import com.slotfy.service.ClientService;
 import com.slotfy.service.EstablishmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Controller for Establishment management
@@ -21,6 +25,12 @@ public class EstablishmentController {
     
     @Autowired
     private EstablishmentService establishmentService;
+
+    @Autowired
+    private AppointmentService appointmentService;
+
+    @Autowired
+    private ClientService clientService;
     
     /**
      * Get all active establishments for client selection
@@ -517,6 +527,59 @@ public class EstablishmentController {
                     "success", false,
                     "message", "Erro interno do servidor"
                 ));
+        }
+    }
+
+    /**
+     * Get clients who have booked with this establishment
+     */
+    @GetMapping("/clients")
+    public ResponseEntity<Map<String, Object>> getEstablishmentClients(@RequestParam Long establishmentId) {
+        try {
+            // Get all appointments for this establishment
+            var appointments = appointmentService.getByEstablishmentId(establishmentId);
+            
+            // Extract unique client IDs
+            var clientIds = appointments.stream()
+                    .map(appointment -> appointment.getClientId())
+                    .distinct()
+                    .collect(Collectors.toList());
+            
+            // Get client details
+            List<Map<String, Object>> clientsWithStats = new java.util.ArrayList<>();
+            for (Long clientId : clientIds) {
+                Optional<Client> clientOpt = clientService.findById(clientId);
+                if (clientOpt.isPresent()) {
+                    Client client = clientOpt.get();
+                    
+                    // Count appointments for this client
+                    long appointmentCount = appointments.stream()
+                            .filter(a -> a.getClientId().equals(clientId))
+                            .count();
+                    
+                    Map<String, Object> clientData = new java.util.HashMap<>();
+                    clientData.put("id", client.getId());
+                    clientData.put("name", client.getName());
+                    clientData.put("email", client.getEmail());
+                    clientData.put("phone", client.getPhone());
+                    clientData.put("totalAppointments", appointmentCount);
+                    
+                    clientsWithStats.add(clientData);
+                }
+            }
+            
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "success", true,
+                            "data", clientsWithStats,
+                            "count", clientsWithStats.size()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Erro ao listar clientes"
+                    ));
         }
     }
 }
