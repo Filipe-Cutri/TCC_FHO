@@ -51,7 +51,7 @@
             "establishmentId": "number",
             "title": "string",
             "message": "string",
-            "type": "string (APPOINTMENT_REMINDER|APPOINTMENT_CONFIRMATION|etc)"
+            "type": "string (APPOINTMENT_REMINDER|APPOINTMENT_CONFIRMATION|APPOINTMENT_CANCELLED|APPOINTMENT_RESCHEDULED|APPOINTMENT_COMPLETED|PROMOTIONAL|SYSTEM|GENERAL)"
           },
           "response": {
             "success": "boolean",
