@@ -1,0 +1,323 @@
+{
+  "apiEndpoints": {
+    "notifications": {
+      "baseUrl": "/api/notifications",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/client/{clientId}",
+          "description": "Get all notifications for a client",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Notification[]",
+            "count": "number"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/client/{clientId}/unread",
+          "description": "Get unread notifications for a client",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Notification[]",
+            "count": "number",
+            "unreadCount": "number"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/client/{clientId}/unread/count",
+          "description": "Get count of unread notifications",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "count": "number"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/",
+          "description": "Create a notification",
+          "body": {
+            "clientId": "number",
+            "establishmentId": "number",
+            "title": "string",
+            "message": "string",
+            "type": "string (APPOINTMENT_REMINDER|APPOINTMENT_CONFIRMATION|APPOINTMENT_CANCELLED|APPOINTMENT_RESCHEDULED|APPOINTMENT_COMPLETED|PROMOTIONAL|SYSTEM|GENERAL)"
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string",
+            "data": "Notification"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/{id}/read",
+          "description": "Mark notification as read",
+          "parameters": {
+            "path": ["id: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string",
+            "data": "Notification"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/client/{clientId}/read-all",
+          "description": "Mark all notifications as read",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/{id}",
+          "description": "Delete a notification",
+          "parameters": {
+            "path": ["id: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string"
+          }
+        }
+      ]
+    },
+    "payments": {
+      "baseUrl": "/api/payments",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/client/{clientId}",
+          "description": "Get all payments for a client",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Payment[]",
+            "count": "number"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/establishment/{establishmentId}",
+          "description": "Get all payments for an establishment",
+          "parameters": {
+            "path": ["establishmentId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Payment[]",
+            "count": "number"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/establishment/{establishmentId}/statistics",
+          "description": "Get payment statistics",
+          "parameters": {
+            "path": ["establishmentId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": {
+              "totalRevenue": "number",
+              "completedPayments": "number",
+              "pendingPayments": "number"
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "description": "Get payment details",
+          "parameters": {
+            "path": ["id: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Payment"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/",
+          "description": "Create a payment",
+          "body": {
+            "clientId": "number",
+            "establishmentId": "number",
+            "appointmentId": "number (optional)",
+            "amount": "number",
+            "paymentMethod": "string (CASH|CREDIT_CARD|DEBIT_CARD|PIX|BANK_TRANSFER|OTHER)",
+            "clientName": "string (optional)",
+            "establishmentName": "string (optional)",
+            "serviceName": "string (optional)",
+            "notes": "string (optional)"
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string",
+            "data": "Payment"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/{id}/complete",
+          "description": "Complete a payment",
+          "parameters": {
+            "path": ["id: Long"]
+          },
+          "body": {
+            "transactionId": "string (optional)"
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string",
+            "data": "Payment"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/{id}/cancel",
+          "description": "Cancel a payment",
+          "parameters": {
+            "path": ["id: Long"]
+          },
+          "body": {
+            "reason": "string (optional)"
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string",
+            "data": "Payment"
+          }
+        }
+      ]
+    },
+    "appointments": {
+      "newEndpoints": [
+        {
+          "method": "PUT",
+          "path": "/api/appointment/{id}/confirm",
+          "description": "Confirm an appointment",
+          "parameters": {
+            "path": ["id: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "message": "string",
+            "data": "Appointment"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/appointment/client/{clientId}/history",
+          "description": "Get client appointment history",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Appointment[]",
+            "count": "number"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/appointment/client/{clientId}/upcoming",
+          "description": "Get client upcoming appointments",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Appointment[]",
+            "count": "number"
+          }
+        }
+      ]
+    },
+    "client": {
+      "newEndpoints": [
+        {
+          "method": "GET",
+          "path": "/api/client/profile/{clientId}",
+          "description": "Get client profile with service history",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": {
+              "profile": "Client",
+              "serviceHistory": "Appointment[]",
+              "upcomingAppointments": "Appointment[]",
+              "totalServices": "number"
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/client/service-history/{clientId}",
+          "description": "Get client service history",
+          "parameters": {
+            "path": ["clientId: Long"]
+          },
+          "response": {
+            "success": "boolean",
+            "data": "Appointment[]",
+            "count": "number"
+          }
+        }
+      ]
+    }
+  },
+  "dataModels": {
+    "Notification": {
+      "id": "number",
+      "clientId": "number",
+      "establishmentId": "number",
+      "appointmentId": "number (nullable)",
+      "title": "string",
+      "message": "string",
+      "type": "string",
+      "read": "boolean",
+      "sent": "boolean",
+      "scheduledFor": "datetime (nullable)",
+      "sentAt": "datetime (nullable)",
+      "createdAt": "datetime"
+    },
+    "Payment": {
+      "id": "number",
+      "clientId": "number",
+      "establishmentId": "number",
+      "appointmentId": "number (nullable)",
+      "amount": "number",
+      "paymentMethod": "string",
+      "status": "string",
+      "paymentDate": "datetime (nullable)",
+      "transactionId": "string (nullable)",
+      "notes": "string (nullable)",
+      "clientName": "string (nullable)",
+      "establishmentName": "string (nullable)",
+      "serviceName": "string (nullable)",
+      "createdAt": "datetime"
+    }
+  }
+}
