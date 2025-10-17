@@ -89,14 +89,7 @@
           </a>
         </div>
         <div class="col-md-6 text-md-end">
-          <div class="btn-group" role="group">
-            <button type="button" class="establishment-btn establishment-btn-secondary">
-              <i class="fas fa-filter me-1"></i>Filtrar
-            </button>
-            <button type="button" class="establishment-btn establishment-btn-secondary">
-              <i class="fas fa-download me-1"></i>Exportar
-            </button>
-          </div>
+          <!-- Filtrar and Exportar buttons removed as per requirement -->
         </div>
       </div>
 
@@ -120,117 +113,12 @@
                   <th>Ações</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="servicesTableBody">
+                <!-- Services will be loaded from backend -->
                 <tr>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="establishment-list-icon me-3">
-                        <i class="fas fa-cut"></i>
-                      </div>
-                      <div>
-                        <div class="establishment-list-title">Corte Masculino</div>
-                        <div class="establishment-list-subtitle">Corte moderno e profissional</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>30 min</td>
-                  <td><strong>R$ 40,00</strong></td>
-                  <td>
-                    <span class="establishment-status-badge establishment-status-success">Ativo</span>
-                  </td>
-                  <td>
-                    <div class="d-flex gap-2">
-                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-edit me-1"></i>Editar
-                      </button>
-                      <button class="establishment-btn establishment-btn-warning" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-trash me-1"></i>Remover
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="establishment-list-icon me-3">
-                        <i class="fas fa-beard"></i>
-                      </div>
-                      <div>
-                        <div class="establishment-list-title">Barba Completa</div>
-                        <div class="establishment-list-subtitle">Aparar e modelar barba</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>20 min</td>
-                  <td><strong>R$ 25,00</strong></td>
-                  <td>
-                    <span class="establishment-status-badge establishment-status-success">Ativo</span>
-                  </td>
-                  <td>
-                    <div class="d-flex gap-2">
-                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-edit me-1"></i>Editar
-                      </button>
-                      <button class="establishment-btn establishment-btn-warning" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-trash me-1"></i>Remover
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="establishment-list-icon me-3">
-                        <i class="fas fa-star"></i>
-                      </div>
-                      <div>
-                        <div class="establishment-list-title">Corte + Barba</div>
-                        <div class="establishment-list-subtitle">Combo completo com desconto</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>50 min</td>
-                  <td><strong>R$ 60,00</strong></td>
-                  <td>
-                    <span class="establishment-status-badge establishment-status-success">Ativo</span>
-                  </td>
-                  <td>
-                    <div class="d-flex gap-2">
-                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-edit me-1"></i>Editar
-                      </button>
-                      <button class="establishment-btn establishment-btn-warning" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-trash me-1"></i>Remover
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="establishment-list-icon me-3">
-                        <i class="fas fa-scissors"></i>
-                      </div>
-                      <div>
-                        <div class="establishment-list-title">Corte Feminino</div>
-                        <div class="establishment-list-subtitle">Corte e modelagem feminina</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>45 min</td>
-                  <td><strong>R$ 50,00</strong></td>
-                  <td>
-                    <span class="establishment-status-badge establishment-status-pending">Inativo</span>
-                  </td>
-                  <td>
-                    <div class="d-flex gap-2">
-                      <button class="establishment-btn establishment-btn-secondary" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-edit me-1"></i>Editar
-                      </button>
-                      <button class="establishment-btn establishment-btn-success" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">
-                        <i class="fas fa-play me-1"></i>Ativar
-                      </button>
-                    </div>
+                  <td colspan="5" class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                    <p class="mt-2 text-muted">Carregando serviços...</p>
                   </td>
                 </tr>
               </tbody>
@@ -239,33 +127,7 @@
         </div>
       </div>
 
-      <!-- Service Statistics Cards -->
-      <div class="row mt-4">
-        <div class="col-lg-4 mb-4">
-          <div class="establishment-card">
-            <div class="card-body establishment-stats-card">
-              <div class="establishment-stats-number">4</div>
-              <div class="establishment-stats-label">Serviços Ativos</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 mb-4">
-          <div class="establishment-card">
-            <div class="card-body establishment-stats-card">
-              <div class="establishment-stats-number">R$ 175</div>
-              <div class="establishment-stats-label">Ticket Médio</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 mb-4">
-          <div class="establishment-card">
-            <div class="card-body establishment-stats-card">
-              <div class="establishment-stats-number">85%</div>
-              <div class="establishment-stats-label">Taxa de Conversão</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Service Statistics - Removed as per requirement to remove mocked content -->
     </div>
 
     <!-- Add Service Modal -->
