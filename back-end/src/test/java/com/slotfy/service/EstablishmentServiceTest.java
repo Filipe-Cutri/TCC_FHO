@@ -24,6 +24,7 @@ public class EstablishmentServiceTest {
     private EstablishmentRepository establishmentRepository;
 
     private EstablishmentService establishmentService;
+    
 
     @BeforeEach
     void setUp() {
