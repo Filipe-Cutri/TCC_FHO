@@ -134,17 +134,19 @@ class ClientServices {
      */
     async getAIRecommendationsFromAPI() {
         try {
-            // Get client preferences from localStorage
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const clientId = user.id;
-            const establishmentId = user.selectedEstablishmentId || this.establishmentId;
+            // Get client session using ClientSessionManager
+            const session = this.getUserSession();
+            const clientId = session ? session.id : null;
+            const establishmentId = (session ? session.selectedEstablishmentId : null) || 
+                                    this.establishmentId || 
+                                    sessionStorage.getItem('selectedEstablishmentId');
             
             if (!clientId) {
-                throw new Error('Sessão expirada');
+                throw new Error('Sessão expirada. Por favor, faça login novamente.');
             }
             
             if (!establishmentId) {
-                throw new Error('Nenhum estabelecimento selecionado');
+                throw new Error('Nenhum estabelecimento selecionado. Por favor, selecione um estabelecimento.');
             }
 
             // Get client preferences

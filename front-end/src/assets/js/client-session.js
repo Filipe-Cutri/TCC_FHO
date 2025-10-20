@@ -18,6 +18,11 @@ class ClientSessionManager {
             expires: new Date().getTime() + (24 * 60 * 60 * 1000) // 24 hours
         };
         localStorage.setItem(this.sessionKey, JSON.stringify(sessionData));
+        
+        // Also store in sessionStorage for consistency
+        if (userData.selectedEstablishmentId) {
+            sessionStorage.setItem('selectedEstablishmentId', userData.selectedEstablishmentId);
+        }
     }
 
     /**
@@ -104,6 +109,13 @@ class ClientSessionManager {
         if (session) {
             session.selectedEstablishmentId = establishmentId;
             this.setSession(session);
+        }
+        
+        // Always update sessionStorage for immediate access
+        if (establishmentId) {
+            sessionStorage.setItem('selectedEstablishmentId', establishmentId);
+        } else {
+            sessionStorage.removeItem('selectedEstablishmentId');
         }
     }
 
