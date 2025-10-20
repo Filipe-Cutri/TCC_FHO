@@ -89,6 +89,25 @@ class ClientSessionManager {
     }
 
     /**
+     * Get selected establishment ID
+     */
+    getSelectedEstablishmentId() {
+        const session = this.getSession();
+        return session ? session.selectedEstablishmentId : null;
+    }
+
+    /**
+     * Set selected establishment ID
+     */
+    setSelectedEstablishmentId(establishmentId) {
+        const session = this.getSession();
+        if (session) {
+            session.selectedEstablishmentId = establishmentId;
+            this.setSession(session);
+        }
+    }
+
+    /**
      * Redirect to login if not authenticated
      */
     requireAuth() {
