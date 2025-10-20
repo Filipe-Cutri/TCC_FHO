@@ -1,0 +1,306 @@
+class EstablishmentProfessionalsManager {
+    constructor() {
+        this.apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
+        this.professionals = [];
+        this.establishmentId = null;
+        this.init();
+    }
+
+    init() {
+        this.establishmentId = this.getEstablishmentId();
+        if (!this.establishmentId) {
+            this.showError('ID do estabelecimento não encontrado na sessão');
+            return;
+        }
+        
+        this.loadProfessionals();
+        this.setupEventListeners();
+    }
+
+    getEstablishmentId() {
+        const session = window.establishmentSession?.getSession();
+        return session?.establishmentId || session?.id;
+    }
+
+    setupEventListeners() {
+        const saveBtn = document.querySelector('#newProfessionalModal .establishment-btn-success');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => this.saveProfessional());
+        }
+
+        const modal = document.getElementById('newProfessionalModal');
+        if (modal) {
+            modal.addEventListener('hidden.bs.modal', () => this.clearForm());
+        }
+    }
+
+    async loadProfessionals() {
+        const grid = document.getElementById('professionalsGrid');
+        if (!grid) return;
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals?establishmentId=${this.establishmentId}`);
+            const data = await response.json();
+
+            if (data.success && data.data) {
+                this.professionals = data.data;
+                this.renderProfessionals();
+            } else {
+                this.showError(data.message || 'Erro ao carregar profissionais');
+            }
+        } catch (error) {
+            console.error('Error loading professionals:', error);
+            this.showError('Erro ao conectar com o servidor');
+        }
+    }
+
+    renderProfessionals() {
+        const grid = document.getElementById('professionalsGrid');
+        if (!grid) return;
+
+        if (this.professionals.length === 0) {
+            grid.innerHTML = `
+                <div class="col-12">
+                    <div class="establishment-card">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5>Nenhum profissional cadastrado</h5>
+                            <p class="text-muted">Clique em "Novo Profissional" para adicionar o primeiro profissional</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = this.professionals.map(professional => this.createProfessionalCard(professional)).join('');
+        this.attachCardEventListeners();
+    }
+
+    createProfessionalCard(professional) {
+        const statusBadge = professional.status === 'ACTIVE' ? 
+            '<span class="badge bg-success">Ativo</span>' : 
+            '<span class="badge bg-secondary">Inativo</span>';
+
+        const rating = professional.rating || 0;
+        const stars = this.renderStars(rating);
+
+        return `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="establishment-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-user-tie text-primary me-2"></i>
+                                ${this.escapeHtml(professional.name)}
+                            </h5>
+                            ${statusBadge}
+                        </div>
+                        
+                        ${professional.email ? `
+                        <p class="mb-2">
+                            <i class="fas fa-envelope text-muted me-2"></i>
+                            <small>${this.escapeHtml(professional.email)}</small>
+                        </p>
+                        ` : ''}
+                        
+                        ${professional.phone ? `
+                        <p class="mb-2">
+                            <i class="fas fa-phone text-muted me-2"></i>
+                            <small>${this.escapeHtml(professional.phone)}</small>
+                        </p>
+                        ` : ''}
+                        
+                        ${professional.specialties ? `
+                        <p class="mb-3">
+                            <i class="fas fa-star text-muted me-2"></i>
+                            <small>${this.escapeHtml(professional.specialties)}</small>
+                        </p>
+                        ` : ''}
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <div>
+                                ${stars}
+                                <small class="text-muted ms-2">(${professional.totalAppointments || 0} agendamentos)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-outline-primary flex-fill edit-professional" data-id="${professional.id}">
+                                <i class="fas fa-edit me-1"></i>Editar
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-professional" data-id="${professional.id}">
+                                <i class="fas fa-trash me-1"></i>Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderStars(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        
+        let stars = '';
+        for (let i = 0; i < fullStars; i++) {
+            stars += '<i class="fas fa-star text-warning"></i>';
+        }
+        if (hasHalfStar) {
+            stars += '<i class="fas fa-star-half-alt text-warning"></i>';
+        }
+        for (let i = 0; i < emptyStars; i++) {
+            stars += '<i class="far fa-star text-warning"></i>';
+        }
+        
+        return stars;
+    }
+
+    attachCardEventListeners() {
+        document.querySelectorAll('.edit-professional').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.currentTarget.getAttribute('data-id');
+                this.editProfessional(id);
+            });
+        });
+
+        document.querySelectorAll('.delete-professional').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.currentTarget.getAttribute('data-id');
+                this.deleteProfessional(id);
+            });
+        });
+    }
+
+    async saveProfessional() {
+        const name = document.getElementById('professionalName')?.value?.trim();
+        const email = document.getElementById('professionalEmail')?.value?.trim();
+        const phone = document.getElementById('professionalPhone')?.value?.trim();
+        const specialties = document.getElementById('professionalSpecialties')?.value?.trim();
+
+        if (!name) {
+            this.showError('Nome é obrigatório');
+            return;
+        }
+
+        const professional = {
+            name,
+            email: email || null,
+            phone: phone || null,
+            specialties: specialties || null,
+            establishmentId: this.establishmentId
+        };
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(professional)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showSuccess('Profissional cadastrado com sucesso!');
+                this.closeModal();
+                await this.loadProfessionals();
+            } else {
+                this.showError(data.message || 'Erro ao salvar profissional');
+            }
+        } catch (error) {
+            console.error('Error saving professional:', error);
+            this.showError('Erro ao conectar com o servidor');
+        }
+    }
+
+    async editProfessional(id) {
+        this.showError('Funcionalidade de edição em desenvolvimento');
+    }
+
+    async deleteProfessional(id) {
+        if (!confirm('Tem certeza que deseja excluir este profissional?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals/${id}?establishmentId=${this.establishmentId}`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showSuccess('Profissional excluído com sucesso!');
+                await this.loadProfessionals();
+            } else {
+                this.showError(data.message || 'Erro ao excluir profissional');
+            }
+        } catch (error) {
+            console.error('Error deleting professional:', error);
+            this.showError('Erro ao conectar com o servidor');
+        }
+    }
+
+    clearForm() {
+        const fields = ['professionalName', 'professionalEmail', 'professionalPhone', 'professionalSpecialties'];
+        fields.forEach(id => {
+            const field = document.getElementById(id);
+            if (field) field.value = '';
+        });
+    }
+
+    closeModal() {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('newProfessionalModal'));
+        if (modal) {
+            modal.hide();
+        }
+    }
+
+    showSuccess(message) {
+        this.showNotification(message, 'success');
+    }
+
+    showError(message) {
+        this.showNotification(message, 'danger');
+    }
+
+    showNotification(message, type) {
+        const container = document.querySelector('.establishment-container');
+        if (!container) {
+            alert(message);
+            return;
+        }
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        container.insertBefore(alertDiv, container.firstChild);
+
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+
+    escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    window.professionalsManager = new EstablishmentProfessionalsManager();
+});
