@@ -2,6 +2,7 @@ package com.slotfy.service;
 
 import com.slotfy.model.Appointment;
 import com.slotfy.model.AppointmentStatus;
+import com.slotfy.model.Professional;
 import com.slotfy.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,17 @@ import java.util.stream.Collectors;
 public class AppointmentService extends BaseService<Appointment, Long> {
     
     private final AppointmentRepository appointmentRepository;
+    private final ServiceService serviceService;
+    private final ProfessionalService professionalService;
     
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, 
+                            ServiceService serviceService,
+                            ProfessionalService professionalService) {
         super(appointmentRepository);
         this.appointmentRepository = appointmentRepository;
+        this.serviceService = serviceService;
+        this.professionalService = professionalService;
     }
     
     /**
@@ -102,6 +109,24 @@ public class AppointmentService extends BaseService<Appointment, Long> {
         }
         if (appointmentDateTime.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Não é possível agendar para uma data passada");
+        }
+        
+        // Validate that professional belongs to establishment
+        Optional<Professional> professional = professionalService.findById(professionalId);
+        if (professional.isEmpty()) {
+            throw new IllegalArgumentException("Profissional não encontrado");
+        }
+        if (!professional.get().getEstablishmentId().equals(establishmentId)) {
+            throw new IllegalArgumentException("Profissional não pertence ao estabelecimento selecionado");
+        }
+        
+        // Validate that service belongs to establishment
+        Optional<com.slotfy.model.Service> service = serviceService.findById(serviceId);
+        if (service.isEmpty()) {
+            throw new IllegalArgumentException("Serviço não encontrado");
+        }
+        if (!service.get().getEstablishmentId().equals(establishmentId)) {
+            throw new IllegalArgumentException("Serviço não pertence ao estabelecimento selecionado");
         }
         
         // Check for conflicts
