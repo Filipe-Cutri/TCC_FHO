@@ -29,6 +29,9 @@ class ClientDashboard {
                 userNameElement.textContent = session.name;
             }
 
+            // Display selected establishment if available
+            this.displaySelectedEstablishment(session);
+
             // Fetch dashboard data from API
             const response = await fetch(`/api/client/dashboard?clientId=${session.id}`);
             const result = await response.json();
@@ -43,6 +46,84 @@ class ClientDashboard {
         } catch (error) {
             console.error('Error loading dashboard data:', error);
         }
+    }
+
+    /**
+     * Display selected establishment information
+     */
+    static async displaySelectedEstablishment(session) {
+        const establishmentId = session.selectedEstablishmentId || 
+                                sessionStorage.getItem('selectedEstablishmentId');
+        
+        if (!establishmentId) {
+            this.showEstablishmentPrompt();
+            return;
+        }
+
+        try {
+            // Fetch establishment details
+            const endpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.details,
+                { id: establishmentId }
+            );
+            const response = await window.apiClient.get(endpoint);
+            
+            if (response.success && response.data) {
+                this.renderEstablishmentInfo(response.data);
+            }
+        } catch (error) {
+            console.error('Error loading establishment info:', error);
+        }
+    }
+
+    /**
+     * Render establishment information banner
+     */
+    static renderEstablishmentInfo(establishment) {
+        const welcomeSection = document.querySelector('.client-welcome-section');
+        if (!welcomeSection) return;
+
+        // Create establishment info banner
+        const banner = document.createElement('div');
+        banner.className = 'alert alert-info mt-3';
+        banner.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-store me-2"></i>
+                    <strong>Estabelecimento Selecionado:</strong> ${establishment.name}
+                    ${establishment.category ? `<span class="badge bg-primary ms-2">${establishment.category}</span>` : ''}
+                </div>
+                <a href="client-establishments.html" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-exchange-alt me-1"></i>Trocar
+                </a>
+            </div>
+        `;
+        
+        welcomeSection.appendChild(banner);
+    }
+
+    /**
+     * Show prompt to select establishment
+     */
+    static showEstablishmentPrompt() {
+        const welcomeSection = document.querySelector('.client-welcome-section');
+        if (!welcomeSection) return;
+
+        const prompt = document.createElement('div');
+        prompt.className = 'alert alert-warning mt-3';
+        prompt.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Atenção:</strong> Selecione um estabelecimento para ver serviços e profissionais disponíveis.
+                </div>
+                <a href="client-establishments.html" class="btn btn-sm btn-primary">
+                    <i class="fas fa-store me-1"></i>Selecionar Estabelecimento
+                </a>
+            </div>
+        `;
+        
+        welcomeSection.appendChild(prompt);
     }
 
     /**
