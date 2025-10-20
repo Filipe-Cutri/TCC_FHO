@@ -503,7 +503,16 @@ class ClientServices {
             
             if (!this.establishmentId) {
                 this.showEmptyState('Por favor, selecione um estabelecimento primeiro.');
+                this.promptEstablishmentSelection();
                 return;
+            }
+            
+            // Save establishment ID to session storage for consistency
+            if (this.establishmentId) {
+                sessionStorage.setItem('selectedEstablishmentId', this.establishmentId);
+                if (window.clientSession && session && session.id) {
+                    window.clientSession.setSelectedEstablishmentId(this.establishmentId);
+                }
             }
 
             // Show loading state
@@ -685,6 +694,17 @@ class ClientServices {
             "'": '&#039;'
         };
         return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
+    }
+
+    /**
+     * Prompt user to select an establishment
+     */
+    promptEstablishmentSelection() {
+        setTimeout(() => {
+            if (confirm('Você precisa selecionar um estabelecimento primeiro. Gostaria de ir para a página de estabelecimentos?')) {
+                window.location.href = 'client-establishments.html';
+            }
+        }, 500);
     }
 }
 
