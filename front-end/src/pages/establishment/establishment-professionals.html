@@ -124,25 +124,25 @@
             <form>
               <div class="establishment-form-group">
                 <label class="establishment-form-label">Nome Completo</label>
-                <input type="text" class="establishment-form-control" placeholder="Ex: João Pedro Silva">
+                <input type="text" id="professionalName" class="establishment-form-control" placeholder="Ex: João Pedro Silva" required>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <div class="establishment-form-group">
                     <label class="establishment-form-label">Email</label>
-                    <input type="email" class="establishment-form-control" placeholder="joao@exemplo.com">
+                    <input type="email" id="professionalEmail" class="establishment-form-control" placeholder="joao@exemplo.com">
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="establishment-form-group">
                     <label class="establishment-form-label">Telefone</label>
-                    <input type="tel" class="establishment-form-control" placeholder="(11) 99999-9999">
+                    <input type="tel" id="professionalPhone" class="establishment-form-control" placeholder="(11) 99999-9999">
                   </div>
                 </div>
               </div>
               <div class="establishment-form-group">
                 <label class="establishment-form-label">Especialidades</label>
-                <textarea class="establishment-form-control" rows="2" placeholder="Ex: Cortes masculinos, Barba, etc."></textarea>
+                <textarea id="professionalSpecialties" class="establishment-form-control" rows="2" placeholder="Ex: Cortes masculinos, Barba, etc."></textarea>
               </div>
             </form>
           </div>
@@ -161,6 +161,9 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/api-config.js"></script>
+  <script src="../../assets/js/establishment-session.js"></script>
+  <script src="../../assets/js/establishment-professionals.js"></script>
   <script>
     // Navbar scroll effects
     window.addEventListener('scroll', function() {
@@ -199,6 +202,5 @@
       });
     });
   </script>
-  <script src="../assets/js/establishment-session.js"></script>
 </body>
 </html>

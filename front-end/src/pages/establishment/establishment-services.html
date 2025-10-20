@@ -147,25 +147,25 @@
             <form>
               <div class="establishment-form-group">
                 <label class="establishment-form-label">Nome do Serviço</label>
-                <input type="text" class="establishment-form-control" placeholder="Ex: Corte Masculino">
+                <input type="text" id="serviceName" class="establishment-form-control" placeholder="Ex: Corte Masculino" required>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <div class="establishment-form-group">
                     <label class="establishment-form-label">Duração (minutos)</label>
-                    <input type="number" class="establishment-form-control" placeholder="Ex: 30">
+                    <input type="number" id="serviceDuration" class="establishment-form-control" placeholder="Ex: 30" min="1" required>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="establishment-form-group">
                     <label class="establishment-form-label">Valor (R$)</label>
-                    <input type="number" class="establishment-form-control" placeholder="Ex: 40.00" step="0.01">
+                    <input type="number" id="servicePrice" class="establishment-form-control" placeholder="Ex: 40.00" step="0.01" min="0" required>
                   </div>
                 </div>
               </div>
               <div class="establishment-form-group">
                 <label class="establishment-form-label">Descrição</label>
-                <textarea class="establishment-form-control" rows="3" placeholder="Descreva o serviço oferecido"></textarea>
+                <textarea id="serviceDescription" class="establishment-form-control" rows="3" placeholder="Descreva o serviço oferecido"></textarea>
               </div>
             </form>
           </div>
@@ -185,6 +185,9 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/api-config.js"></script>
+  <script src="../../assets/js/establishment-session.js"></script>
+  <script src="../../assets/js/establishment-services.js"></script>
   <script>
     // Navbar scroll effects
     window.addEventListener('scroll', function() {
@@ -208,9 +211,6 @@
         this.style.transform = 'translateY(0)';
       });
     });
-  </script>
-</body>
-</html>
     
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
