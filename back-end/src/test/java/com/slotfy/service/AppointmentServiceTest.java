@@ -2,6 +2,7 @@ package com.slotfy.service;
 
 import com.slotfy.model.Appointment;
 import com.slotfy.model.AppointmentStatus;
+import com.slotfy.model.Professional;
 import com.slotfy.repository.AppointmentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,12 +26,18 @@ public class AppointmentServiceTest {
     @Mock
     private AppointmentRepository repository;
 
+    @Mock
+    private ServiceService serviceService;
+
+    @Mock
+    private ProfessionalService professionalService;
+
     private AppointmentService service;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new AppointmentService(repository);
+        service = new AppointmentService(repository, serviceService, professionalService);
     }
 
     @Test
@@ -138,6 +145,18 @@ public class AppointmentServiceTest {
         Integer serviceDurationMinutes = 60;
         BigDecimal servicePrice = new BigDecimal("50.00");
         
+        // Mock professional lookup
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(professionalId);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(professionalId)).thenReturn(Optional.of(mockProfessional));
+        
+        // Mock service lookup
+        com.slotfy.model.Service mockService = new com.slotfy.model.Service();
+        mockService.setId(serviceId);
+        mockService.setEstablishmentId(establishmentId);
+        when(serviceService.findById(serviceId)).thenReturn(Optional.of(mockService));
+        
         // Mock no conflicts
         when(repository.findPotentialConflictingAppointments(any(), any(), any()))
             .thenReturn(Collections.emptyList());
@@ -210,6 +229,19 @@ public class AppointmentServiceTest {
     @Test
     void testCreateAppointment_WithConflicts() {
         LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        Long establishmentId = 4L;
+        
+        // Mock professional lookup
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(2L);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(2L)).thenReturn(Optional.of(mockProfessional));
+        
+        // Mock service lookup
+        com.slotfy.model.Service mockService = new com.slotfy.model.Service();
+        mockService.setId(3L);
+        mockService.setEstablishmentId(establishmentId);
+        when(serviceService.findById(3L)).thenReturn(Optional.of(mockService));
         
         // Mock conflicting appointment
         Appointment conflictingAppointment = new Appointment();
@@ -220,7 +252,7 @@ public class AppointmentServiceTest {
             .thenReturn(Arrays.asList(conflictingAppointment));
         
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            service.createAppointment(1L, 2L, 3L, 4L, appointmentDateTime, 
+            service.createAppointment(1L, 2L, 3L, establishmentId, appointmentDateTime, 
                     "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
         });
         assertEquals("Já existe um agendamento para este profissional neste horário", exception.getMessage());
@@ -640,6 +672,18 @@ public class AppointmentServiceTest {
         LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
         String notes = "Client appointment notes";
         
+        // Mock professional lookup
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(professionalId);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(professionalId)).thenReturn(Optional.of(mockProfessional));
+        
+        // Mock service lookup
+        com.slotfy.model.Service mockService = new com.slotfy.model.Service();
+        mockService.setId(serviceId);
+        mockService.setEstablishmentId(establishmentId);
+        when(serviceService.findById(serviceId)).thenReturn(Optional.of(mockService));
+        
         // Mock no conflicts
         when(repository.findPotentialConflictingAppointments(any(), any(), any()))
             .thenReturn(Collections.emptyList());
@@ -662,6 +706,18 @@ public class AppointmentServiceTest {
         Long serviceId = 3L;
         Long establishmentId = 4L;
         LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        
+        // Mock professional lookup
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(professionalId);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(professionalId)).thenReturn(Optional.of(mockProfessional));
+        
+        // Mock service lookup
+        com.slotfy.model.Service mockService = new com.slotfy.model.Service();
+        mockService.setId(serviceId);
+        mockService.setEstablishmentId(establishmentId);
+        when(serviceService.findById(serviceId)).thenReturn(Optional.of(mockService));
         
         // Mock no conflicts
         when(repository.findPotentialConflictingAppointments(any(), any(), any()))
@@ -771,6 +827,19 @@ public class AppointmentServiceTest {
     @Test
     void testCreateAppointment_DefaultDurationUsed() {
         LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        Long establishmentId = 4L;
+        
+        // Mock professional lookup
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(2L);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(2L)).thenReturn(Optional.of(mockProfessional));
+        
+        // Mock service lookup
+        com.slotfy.model.Service mockService = new com.slotfy.model.Service();
+        mockService.setId(3L);
+        mockService.setEstablishmentId(establishmentId);
+        when(serviceService.findById(3L)).thenReturn(Optional.of(mockService));
         
         // Mock an appointment that would conflict if default duration (60 min) is used
         Appointment existingAppointment = new Appointment();
@@ -781,7 +850,7 @@ public class AppointmentServiceTest {
             .thenReturn(Arrays.asList(existingAppointment));
         
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            service.createAppointment(1L, 2L, 3L, 4L, appointmentDateTime, 
+            service.createAppointment(1L, 2L, 3L, establishmentId, appointmentDateTime, 
                     "notes", "client", "professional", "service", null, new BigDecimal("50.00"));
         });
         assertEquals("Já existe um agendamento para este profissional neste horário", exception.getMessage());
