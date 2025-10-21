@@ -610,35 +610,6 @@ public class AppointmentController {
     }
 
     /**
-     * Confirm an appointment
-     */
-    @PutMapping("/{id}/confirm")
-    public ResponseEntity<Map<String, Object>> confirmAppointment(@PathVariable Long id) {
-        try {
-            Appointment appointment = appointmentService.confirmAppointment(id);
-            
-            return ResponseEntity.ok()
-                .body(Map.of(
-                    "success", true,
-                    "message", "Agendamento confirmado com sucesso",
-                    "data", appointment
-                ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                .body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-                ));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                .body(Map.of(
-                    "success", false,
-                    "message", "Erro ao confirmar agendamento"
-                ));
-        }
-    }
-
-    /**
      * Get client's appointment history
      */
     @GetMapping("/client/{clientId}/history")
