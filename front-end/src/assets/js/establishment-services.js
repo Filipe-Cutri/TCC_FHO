@@ -145,10 +145,12 @@ class EstablishmentServicesManager {
     }
 
     async saveService() {
+        const id = document.getElementById('serviceId')?.value?.trim();
         const name = document.getElementById('serviceName')?.value?.trim();
         const description = document.getElementById('serviceDescription')?.value?.trim();
         const durationMinutes = document.getElementById('serviceDuration')?.value;
         const price = document.getElementById('servicePrice')?.value;
+        const imageUrl = document.getElementById('serviceImageUrl')?.value?.trim();
 
         if (!name) {
             this.showError('Nome do serviço é obrigatório');
@@ -174,18 +176,36 @@ class EstablishmentServicesManager {
         };
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(service)
-            });
+            let response;
+            if (id) {
+                // Update existing service
+                response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}?establishmentId=${this.establishmentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(service)
+                });
+            } else {
+                // Create new service
+                response = await fetch(`${this.apiBaseUrl}/api/establishment/services`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(service)
+                });
+            }
 
             const data = await response.json();
 
             if (data.success) {
-                this.showSuccess('Serviço cadastrado com sucesso!');
+                // If image URL is provided, update it
+                if (imageUrl && data.data?.id) {
+                    await this.updateServiceImage(data.data.id, imageUrl);
+                }
+                
+                this.showSuccess(id ? 'Serviço atualizado com sucesso!' : 'Serviço cadastrado com sucesso!');
                 this.closeModal();
                 await this.loadServices();
             } else {
@@ -197,8 +217,46 @@ class EstablishmentServicesManager {
         }
     }
 
+    async updateServiceImage(id, imageUrl) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}/image?establishmentId=${this.establishmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ imageUrl })
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                console.error('Failed to update image:', data.message);
+            }
+        } catch (error) {
+            console.error('Error updating service image:', error);
+        }
+    }
+
     async editService(id) {
-        this.showError('Funcionalidade de edição em desenvolvimento');
+        const service = this.services.find(s => s.id == id);
+        if (!service) {
+            this.showError('Serviço não encontrado');
+            return;
+        }
+
+        // Populate form with service data
+        document.getElementById('serviceId').value = service.id;
+        document.getElementById('serviceName').value = service.name || '';
+        document.getElementById('serviceDescription').value = service.description || '';
+        document.getElementById('serviceDuration').value = service.durationMinutes || '';
+        document.getElementById('servicePrice').value = service.price || '';
+        document.getElementById('serviceImageUrl').value = service.imageUrl || '';
+
+        // Update modal title
+        document.getElementById('serviceModalTitle').textContent = 'Editar Serviço';
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('newServiceModal'));
+        modal.show();
     }
 
     async deleteService(id) {
@@ -226,11 +284,17 @@ class EstablishmentServicesManager {
     }
 
     clearForm() {
-        const fields = ['serviceName', 'serviceDescription', 'serviceDuration', 'servicePrice'];
+        const fields = ['serviceId', 'serviceName', 'serviceDescription', 'serviceDuration', 'servicePrice', 'serviceImageUrl'];
         fields.forEach(id => {
             const field = document.getElementById(id);
             if (field) field.value = '';
         });
+        
+        // Reset modal title
+        const modalTitle = document.getElementById('serviceModalTitle');
+        if (modalTitle) {
+            modalTitle.textContent = 'Adicionar Novo Serviço';
+        }
     }
 
     closeModal() {

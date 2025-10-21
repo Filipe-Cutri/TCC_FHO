@@ -139,12 +139,13 @@
               <span class="card-icon me-2">
                 <i class="fas fa-plus"></i>
               </span>
-              Adicionar Novo Serviço
+              <span id="serviceModalTitle">Adicionar Novo Serviço</span>
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form>
+              <input type="hidden" id="serviceId" value="">
               <div class="establishment-form-group">
                 <label class="establishment-form-label">Nome do Serviço</label>
                 <input type="text" id="serviceName" class="establishment-form-control" placeholder="Ex: Corte Masculino" required>
@@ -166,6 +167,11 @@
               <div class="establishment-form-group">
                 <label class="establishment-form-label">Descrição</label>
                 <textarea id="serviceDescription" class="establishment-form-control" rows="3" placeholder="Descreva o serviço oferecido"></textarea>
+              </div>
+              <div class="establishment-form-group">
+                <label class="establishment-form-label">Imagem do Serviço (URL)</label>
+                <input type="url" id="serviceImageUrl" class="establishment-form-control" placeholder="https://exemplo.com/servico.jpg">
+                <small class="text-muted">Insira a URL de uma imagem hospedada</small>
               </div>
             </form>
           </div>

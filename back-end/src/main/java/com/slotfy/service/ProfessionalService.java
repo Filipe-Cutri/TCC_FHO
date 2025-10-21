@@ -243,4 +243,22 @@ public class ProfessionalService extends BaseService<Professional, Long> {
         validateProfessionalBelongsToEstablishment(professionalId, establishmentId);
         deleteProfessional(professionalId);
     }
+    
+    /**
+     * Update professional image with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Professional updateImage(Long professionalId, String imageUrl, Long establishmentId) {
+        validateProfessionalBelongsToEstablishment(professionalId, establishmentId);
+        
+        Optional<Professional> optionalProfessional = professionalRepository.findById(professionalId);
+        if (optionalProfessional.isEmpty()) {
+            throw new IllegalArgumentException("Profissional não encontrado");
+        }
+        
+        Professional professional = optionalProfessional.get();
+        professional.setImageUrl(imageUrl);
+        
+        return professionalRepository.save(professional);
+    }
 }

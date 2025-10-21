@@ -239,6 +239,11 @@
           <div class="col-md-6 col-lg-4 mb-4">
             <div class="client-card h-100">
               <div class="card-body">
+                ${est.imageUrl ? `
+                  <div class="text-center mb-3">
+                    <img src="${est.imageUrl}" alt="${est.name}" class="img-fluid rounded" style="max-height: 150px; width: auto; object-fit: contain;">
+                  </div>
+                ` : ''}
                 <div class="d-flex align-items-start mb-3">
                   <div class="establishment-icon me-3">
                     <i class="fas fa-store"></i>
