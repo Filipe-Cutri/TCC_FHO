@@ -373,6 +373,48 @@ public class ProfessionalController {
     }
     
     /**
+     * Update professional image
+     * SECURITY: Validates establishment ownership to ensure multi-establishment data isolation
+     */
+    @PutMapping("/{id}/image")
+    public ResponseEntity<Map<String, Object>> updateImage(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request,
+            @RequestParam Long establishmentId) {
+        try {
+            String imageUrl = request.get("imageUrl");
+            
+            Professional professional = professionalService.updateImage(id, imageUrl, establishmentId);
+            
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "message", "Imagem atualizada com sucesso",
+                    "data", professional
+                ));
+                
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403)
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro interno do servidor"
+                ));
+        }
+    }
+    
+    /**
      * Get professional statistics
      */
     @GetMapping("/statistics")
