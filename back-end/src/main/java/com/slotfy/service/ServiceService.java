@@ -238,4 +238,22 @@ public class ServiceService extends BaseService<Service, Long> {
         validateServiceBelongsToEstablishment(serviceId, establishmentId);
         deleteService(serviceId);
     }
+    
+    /**
+     * Update service image with establishment validation
+     * Ensures multi-establishment data isolation
+     */
+    public Service updateImage(Long serviceId, String imageUrl, Long establishmentId) {
+        validateServiceBelongsToEstablishment(serviceId, establishmentId);
+        
+        Optional<Service> optionalService = serviceRepository.findById(serviceId);
+        if (optionalService.isEmpty()) {
+            throw new IllegalArgumentException("Serviço não encontrado");
+        }
+        
+        Service service = optionalService.get();
+        service.setImageUrl(imageUrl);
+        
+        return serviceRepository.save(service);
+    }
 }
