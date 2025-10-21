@@ -390,13 +390,22 @@
     }
     
     function updateLogoPreview() {
-      const url = document.getElementById('establishmentImageUrl').value;
+      const urlInput = document.getElementById('establishmentImageUrl');
+      const url = urlInput.value;
       const preview = document.getElementById('logoPreview');
       const image = document.getElementById('logoPreviewImage');
       
       if (url && url.trim()) {
-        image.src = url;
-        preview.style.display = 'block';
+        try {
+          // Validate URL format
+          new URL(url);
+          // Set src using setAttribute to be explicit
+          image.setAttribute('src', url);
+          preview.style.display = 'block';
+        } catch (e) {
+          // Invalid URL, hide preview
+          preview.style.display = 'none';
+        }
       } else {
         preview.style.display = 'none';
       }
