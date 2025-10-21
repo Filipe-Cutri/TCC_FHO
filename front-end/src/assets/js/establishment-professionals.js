@@ -85,10 +85,17 @@ class EstablishmentProfessionalsManager {
         const rating = professional.rating || 0;
         const stars = this.renderStars(rating);
 
+        const imageUrl = professional.imageUrl || 'https://via.placeholder.com/150';
+        
         return `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="establishment-card h-100">
                     <div class="card-body">
+                        <div class="text-center mb-3">
+                            <img src="${this.escapeHtml(imageUrl)}" alt="${this.escapeHtml(professional.name)}" 
+                                 class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;"
+                                 onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h5 class="card-title mb-0">
                                 <i class="fas fa-user-tie text-primary me-2"></i>
@@ -175,10 +182,12 @@ class EstablishmentProfessionalsManager {
     }
 
     async saveProfessional() {
+        const id = document.getElementById('professionalId')?.value?.trim();
         const name = document.getElementById('professionalName')?.value?.trim();
         const email = document.getElementById('professionalEmail')?.value?.trim();
         const phone = document.getElementById('professionalPhone')?.value?.trim();
         const specialties = document.getElementById('professionalSpecialties')?.value?.trim();
+        const imageUrl = document.getElementById('professionalImageUrl')?.value?.trim();
 
         if (!name) {
             this.showError('Nome é obrigatório');
@@ -194,18 +203,36 @@ class EstablishmentProfessionalsManager {
         };
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(professional)
-            });
+            let response;
+            if (id) {
+                // Update existing professional
+                response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals/${id}?establishmentId=${this.establishmentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(professional)
+                });
+            } else {
+                // Create new professional
+                response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(professional)
+                });
+            }
 
             const data = await response.json();
 
             if (data.success) {
-                this.showSuccess('Profissional cadastrado com sucesso!');
+                // If image URL is provided, update it
+                if (imageUrl && data.data?.id) {
+                    await this.updateProfessionalImage(data.data.id, imageUrl);
+                }
+                
+                this.showSuccess(id ? 'Profissional atualizado com sucesso!' : 'Profissional cadastrado com sucesso!');
                 this.closeModal();
                 await this.loadProfessionals();
             } else {
@@ -217,8 +244,46 @@ class EstablishmentProfessionalsManager {
         }
     }
 
+    async updateProfessionalImage(id, imageUrl) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals/${id}/image?establishmentId=${this.establishmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ imageUrl })
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                console.error('Failed to update image:', data.message);
+            }
+        } catch (error) {
+            console.error('Error updating professional image:', error);
+        }
+    }
+
     async editProfessional(id) {
-        this.showError('Funcionalidade de edição em desenvolvimento');
+        const professional = this.professionals.find(p => p.id == id);
+        if (!professional) {
+            this.showError('Profissional não encontrado');
+            return;
+        }
+
+        // Populate form with professional data
+        document.getElementById('professionalId').value = professional.id;
+        document.getElementById('professionalName').value = professional.name || '';
+        document.getElementById('professionalEmail').value = professional.email || '';
+        document.getElementById('professionalPhone').value = professional.phone || '';
+        document.getElementById('professionalSpecialties').value = professional.specialties || '';
+        document.getElementById('professionalImageUrl').value = professional.imageUrl || '';
+
+        // Update modal title
+        document.getElementById('modalTitle').textContent = 'Editar Profissional';
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('newProfessionalModal'));
+        modal.show();
     }
 
     async deleteProfessional(id) {
@@ -246,11 +311,17 @@ class EstablishmentProfessionalsManager {
     }
 
     clearForm() {
-        const fields = ['professionalName', 'professionalEmail', 'professionalPhone', 'professionalSpecialties'];
+        const fields = ['professionalId', 'professionalName', 'professionalEmail', 'professionalPhone', 'professionalSpecialties', 'professionalImageUrl'];
         fields.forEach(id => {
             const field = document.getElementById(id);
             if (field) field.value = '';
         });
+        
+        // Reset modal title
+        const modalTitle = document.getElementById('modalTitle');
+        if (modalTitle) {
+            modalTitle.textContent = 'Adicionar Novo Profissional';
+        }
     }
 
     closeModal() {
