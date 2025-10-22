@@ -637,8 +637,21 @@ class ClientServices {
         // Get icon based on category or use default
         const icon = this.getServiceIcon(service.category || service.name);
 
+        // Build image HTML - show image if available, otherwise show icon
+        let imageHtml;
+        if (service.imageUrl) {
+            imageHtml = `<img src="${this.escapeHtml(service.imageUrl)}" alt="${this.escapeHtml(service.name)}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">`;
+        } else {
+            imageHtml = `
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, ${color.gradient}); display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                    <i class="${icon}" style="font-size: 4rem; color: white;"></i>
+                </div>
+            `;
+        }
+
         col.innerHTML = `
             <div class="client-card" style="border-left: 4px solid ${color.border};">
+                ${imageHtml}
                 <div class="card-body">
                     <h5 class="card-title">
                         <span class="card-icon" style="background: linear-gradient(135deg, ${color.gradient}); color: white;">

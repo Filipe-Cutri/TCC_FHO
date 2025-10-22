@@ -32,6 +32,23 @@ class EstablishmentServicesManager {
         if (modal) {
             modal.addEventListener('hidden.bs.modal', () => this.clearForm());
         }
+
+        // File upload preview
+        const fileInput = document.getElementById('serviceImageFile');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        }
+
+        const removeBtn = document.getElementById('removeServiceImage');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => this.removeImagePreview());
+        }
+
+        // Image URL input preview
+        const urlInput = document.getElementById('serviceImageUrl');
+        if (urlInput) {
+            urlInput.addEventListener('blur', (e) => this.handleImageUrlChange(e));
+        }
     }
 
     async loadServices() {
@@ -83,22 +100,37 @@ class EstablishmentServicesManager {
         const duration = this.formatDuration(service.durationMinutes);
         const price = this.formatPrice(service.price);
 
+        // Build image HTML - show image if available, otherwise show icon
+        let imageHtml;
+        if (service.imageUrl) {
+            imageHtml = `<img src="${this.escapeHtml(service.imageUrl)}" alt="${this.escapeHtml(service.name)}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-right: 10px;">`;
+        } else {
+            imageHtml = `<i class="fas fa-cut text-muted" style="font-size: 1.5rem; margin-right: 10px; width: 50px; text-align: center;"></i>`;
+        }
+
         return `
             <tr>
                 <td>
-                    <strong>${this.escapeHtml(service.name)}</strong>
-                    ${service.description ? `<br><small class="text-muted">${this.escapeHtml(service.description)}</small>` : ''}
+                    <div class="d-flex align-items-center">
+                        ${imageHtml}
+                        <div>
+                            <strong>${this.escapeHtml(service.name)}</strong>
+                            ${service.description ? `<br><small class="text-muted">${this.escapeHtml(service.description)}</small>` : ''}
+                        </div>
+                    </div>
                 </td>
                 <td>${duration}</td>
                 <td><strong>${price}</strong></td>
                 <td>${statusBadge}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-sm btn-primary edit-service" data-id="${service.id}" title="Editar serviço">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-service" data-id="${service.id}" title="Excluir serviço">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -145,10 +177,13 @@ class EstablishmentServicesManager {
     }
 
     async saveService() {
+        const id = document.getElementById('serviceId')?.value?.trim();
         const name = document.getElementById('serviceName')?.value?.trim();
         const description = document.getElementById('serviceDescription')?.value?.trim();
         const durationMinutes = document.getElementById('serviceDuration')?.value;
         const price = document.getElementById('servicePrice')?.value;
+        const imageUrl = document.getElementById('serviceImageUrl')?.value?.trim();
+        const imageFile = document.getElementById('serviceImageFile')?.files[0];
 
         if (!name) {
             this.showError('Nome do serviço é obrigatório');
@@ -174,18 +209,42 @@ class EstablishmentServicesManager {
         };
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(service)
-            });
+            let response;
+            if (id) {
+                // Update existing service
+                response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}?establishmentId=${this.establishmentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(service)
+                });
+            } else {
+                // Create new service
+                response = await fetch(`${this.apiBaseUrl}/api/establishment/services`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(service)
+                });
+            }
 
             const data = await response.json();
 
             if (data.success) {
-                this.showSuccess('Serviço cadastrado com sucesso!');
+                const serviceId = data.data?.id;
+                
+                // Upload image file if provided
+                if (imageFile && serviceId) {
+                    await this.uploadServiceImageFile(serviceId, imageFile);
+                }
+                // Or update with URL if provided and no file
+                else if (imageUrl && serviceId && !imageFile) {
+                    await this.updateServiceImage(serviceId, imageUrl);
+                }
+                
+                this.showSuccess(id ? 'Serviço atualizado com sucesso!' : 'Serviço cadastrado com sucesso!');
                 this.closeModal();
                 await this.loadServices();
             } else {
@@ -197,8 +256,77 @@ class EstablishmentServicesManager {
         }
     }
 
+    async uploadServiceImageFile(serviceId, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('establishmentId', this.establishmentId);
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/files/service/${serviceId}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                this.showError('Erro ao enviar imagem: ' + (data.message || 'Erro desconhecido'));
+            }
+        } catch (error) {
+            console.error('Error uploading service image:', error);
+            this.showError('Erro ao enviar imagem');
+        }
+    }
+
+    async updateServiceImage(id, imageUrl) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}/image?establishmentId=${this.establishmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ imageUrl })
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                console.error('Failed to update image:', data.message);
+            }
+        } catch (error) {
+            console.error('Error updating service image:', error);
+        }
+    }
+
     async editService(id) {
-        this.showError('Funcionalidade de edição em desenvolvimento');
+        const service = this.services.find(s => s.id == id);
+        if (!service) {
+            this.showError('Serviço não encontrado');
+            return;
+        }
+
+        // Populate form with service data
+        document.getElementById('serviceId').value = service.id;
+        document.getElementById('serviceName').value = service.name || '';
+        document.getElementById('serviceDescription').value = service.description || '';
+        document.getElementById('serviceDuration').value = service.durationMinutes || '';
+        document.getElementById('servicePrice').value = service.price || '';
+        document.getElementById('serviceImageUrl').value = service.imageUrl || '';
+
+        // Show image preview if service has an image URL
+        if (service.imageUrl) {
+            const preview = document.getElementById('serviceImagePreview');
+            const img = document.getElementById('servicePreviewImg');
+            if (preview && img) {
+                img.src = service.imageUrl;
+                preview.style.display = 'block';
+            }
+        }
+
+        // Update modal title
+        document.getElementById('serviceModalTitle').textContent = 'Editar Serviço';
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('newServiceModal'));
+        modal.show();
     }
 
     async deleteService(id) {
@@ -226,11 +354,87 @@ class EstablishmentServicesManager {
     }
 
     clearForm() {
-        const fields = ['serviceName', 'serviceDescription', 'serviceDuration', 'servicePrice'];
+        const fields = ['serviceId', 'serviceName', 'serviceDescription', 'serviceDuration', 'servicePrice', 'serviceImageUrl'];
         fields.forEach(id => {
             const field = document.getElementById(id);
             if (field) field.value = '';
         });
+        
+        // Clear file input
+        const fileInput = document.getElementById('serviceImageFile');
+        if (fileInput) fileInput.value = '';
+        
+        // Hide preview
+        this.removeImagePreview();
+        
+        // Reset modal title
+        const modalTitle = document.getElementById('serviceModalTitle');
+        if (modalTitle) {
+            modalTitle.textContent = 'Adicionar Novo Serviço';
+        }
+    }
+
+    handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                this.showError('Apenas arquivos JPG e PNG são permitidos');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                this.showError('Arquivo muito grande. Tamanho máximo: 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('serviceImagePreview');
+                const img = document.getElementById('servicePreviewImg');
+                if (preview && img) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Clear URL input when file is selected
+            const urlInput = document.getElementById('serviceImageUrl');
+            if (urlInput) urlInput.value = '';
+        }
+    }
+
+    removeImagePreview() {
+        const preview = document.getElementById('serviceImagePreview');
+        const img = document.getElementById('servicePreviewImg');
+        const fileInput = document.getElementById('serviceImageFile');
+        
+        if (preview) preview.style.display = 'none';
+        if (img) img.src = '';
+        if (fileInput) fileInput.value = '';
+    }
+
+    handleImageUrlChange(event) {
+        const url = event.target.value.trim();
+        if (url) {
+            // Show preview for URL
+            const preview = document.getElementById('serviceImagePreview');
+            const img = document.getElementById('servicePreviewImg');
+            if (preview && img) {
+                img.src = url;
+                preview.style.display = 'block';
+            }
+
+            // Clear file input when URL is entered
+            const fileInput = document.getElementById('serviceImageFile');
+            if (fileInput) fileInput.value = '';
+        }
     }
 
     closeModal() {
