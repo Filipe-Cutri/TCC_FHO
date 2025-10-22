@@ -423,17 +423,30 @@ class EstablishmentServicesManager {
     handleImageUrlChange(event) {
         const url = event.target.value.trim();
         if (url) {
-            // Show preview for URL
-            const preview = document.getElementById('serviceImagePreview');
-            const img = document.getElementById('servicePreviewImg');
-            if (preview && img) {
-                img.src = url;
-                preview.style.display = 'block';
-            }
+            // Validate URL format and protocol
+            try {
+                const urlObj = new URL(url);
+                // Only allow http and https protocols
+                if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+                    this.showError('Apenas URLs HTTP e HTTPS são permitidas');
+                    return;
+                }
+                
+                // Show preview for URL
+                const preview = document.getElementById('serviceImagePreview');
+                const img = document.getElementById('servicePreviewImg');
+                if (preview && img) {
+                    // Setting src on img element is safe as browsers handle this properly
+                    img.src = url;
+                    preview.style.display = 'block';
+                }
 
-            // Clear file input when URL is entered
-            const fileInput = document.getElementById('serviceImageFile');
-            if (fileInput) fileInput.value = '';
+                // Clear file input when URL is entered
+                const fileInput = document.getElementById('serviceImageFile');
+                if (fileInput) fileInput.value = '';
+            } catch (e) {
+                this.showError('URL inválida. Por favor, insira uma URL válida.');
+            }
         }
     }
 
