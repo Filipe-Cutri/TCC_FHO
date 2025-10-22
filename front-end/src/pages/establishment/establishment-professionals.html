@@ -146,9 +146,21 @@
                 <textarea id="professionalSpecialties" class="establishment-form-control" rows="2" placeholder="Ex: Cortes masculinos, Barba, etc."></textarea>
               </div>
               <div class="establishment-form-group">
-                <label class="establishment-form-label">Foto do Profissional (URL)</label>
-                <input type="url" id="professionalImageUrl" class="establishment-form-control" placeholder="https://exemplo.com/foto.jpg">
-                <small class="text-muted">Insira a URL de uma imagem hospedada</small>
+                <label class="establishment-form-label">Foto do Profissional</label>
+                <div class="mb-3">
+                  <input type="file" id="professionalImageFile" class="form-control" accept="image/jpeg,image/jpg,image/png">
+                  <small class="text-muted">Selecione uma imagem do seu dispositivo (JPG ou PNG, máx 5MB)</small>
+                </div>
+                <div id="professionalImagePreview" class="mt-2" style="display: none;">
+                  <img id="professionalPreviewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                  <button type="button" class="btn btn-sm btn-danger mt-2" id="removeProfessionalImage">
+                    <i class="fas fa-times"></i> Remover imagem
+                  </button>
+                </div>
+                <div class="mt-2">
+                  <small class="text-muted">Ou insira uma URL:</small>
+                  <input type="url" id="professionalImageUrl" class="establishment-form-control mt-1" placeholder="https://exemplo.com/foto.jpg">
+                </div>
               </div>
             </form>
           </div>

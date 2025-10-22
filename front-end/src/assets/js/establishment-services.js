@@ -32,6 +32,17 @@ class EstablishmentServicesManager {
         if (modal) {
             modal.addEventListener('hidden.bs.modal', () => this.clearForm());
         }
+
+        // File upload preview
+        const fileInput = document.getElementById('serviceImageFile');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        }
+
+        const removeBtn = document.getElementById('removeServiceImage');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => this.removeImagePreview());
+        }
     }
 
     async loadServices() {
@@ -151,6 +162,7 @@ class EstablishmentServicesManager {
         const durationMinutes = document.getElementById('serviceDuration')?.value;
         const price = document.getElementById('servicePrice')?.value;
         const imageUrl = document.getElementById('serviceImageUrl')?.value?.trim();
+        const imageFile = document.getElementById('serviceImageFile')?.files[0];
 
         if (!name) {
             this.showError('Nome do serviço é obrigatório');
@@ -200,9 +212,15 @@ class EstablishmentServicesManager {
             const data = await response.json();
 
             if (data.success) {
-                // If image URL is provided, update it
-                if (imageUrl && data.data?.id) {
-                    await this.updateServiceImage(data.data.id, imageUrl);
+                const serviceId = data.data?.id;
+                
+                // Upload image file if provided
+                if (imageFile && serviceId) {
+                    await this.uploadServiceImageFile(serviceId, imageFile);
+                }
+                // Or update with URL if provided and no file
+                else if (imageUrl && serviceId && !imageFile) {
+                    await this.updateServiceImage(serviceId, imageUrl);
                 }
                 
                 this.showSuccess(id ? 'Serviço atualizado com sucesso!' : 'Serviço cadastrado com sucesso!');
@@ -214,6 +232,27 @@ class EstablishmentServicesManager {
         } catch (error) {
             console.error('Error saving service:', error);
             this.showError('Erro ao conectar com o servidor');
+        }
+    }
+
+    async uploadServiceImageFile(serviceId, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('establishmentId', this.establishmentId);
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/files/service/${serviceId}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                this.showError('Erro ao enviar imagem: ' + (data.message || 'Erro desconhecido'));
+            }
+        } catch (error) {
+            console.error('Error uploading service image:', error);
+            this.showError('Erro ao enviar imagem');
         }
     }
 
@@ -290,11 +329,64 @@ class EstablishmentServicesManager {
             if (field) field.value = '';
         });
         
+        // Clear file input
+        const fileInput = document.getElementById('serviceImageFile');
+        if (fileInput) fileInput.value = '';
+        
+        // Hide preview
+        this.removeImagePreview();
+        
         // Reset modal title
         const modalTitle = document.getElementById('serviceModalTitle');
         if (modalTitle) {
             modalTitle.textContent = 'Adicionar Novo Serviço';
         }
+    }
+
+    handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                this.showError('Apenas arquivos JPG e PNG são permitidos');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                this.showError('Arquivo muito grande. Tamanho máximo: 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('serviceImagePreview');
+                const img = document.getElementById('servicePreviewImg');
+                if (preview && img) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Clear URL input when file is selected
+            const urlInput = document.getElementById('serviceImageUrl');
+            if (urlInput) urlInput.value = '';
+        }
+    }
+
+    removeImagePreview() {
+        const preview = document.getElementById('serviceImagePreview');
+        const img = document.getElementById('servicePreviewImg');
+        const fileInput = document.getElementById('serviceImageFile');
+        
+        if (preview) preview.style.display = 'none';
+        if (img) img.src = '';
+        if (fileInput) fileInput.value = '';
     }
 
     closeModal() {
