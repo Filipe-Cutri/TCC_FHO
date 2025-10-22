@@ -1,0 +1,205 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    SISTEMA DE UPLOAD DE IMAGENS - SLOTFY                   ║
+║                           Diagrama de Arquitetura                           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                               FRONTEND (Cliente)                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  establishment-professionals.html / establishment-services.html       │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  ┌──────────────────┐     ┌──────────────────┐                       │  │
+│  │  │  File Input      │     │  Image Preview   │                       │  │
+│  │  │  (jpg, png)      │────▶│  (FileReader)    │                       │  │
+│  │  │  max 5MB         │     │                  │                       │  │
+│  │  └──────────────────┘     └──────────────────┘                       │  │
+│  │           │                                                           │  │
+│  │           │ Validação Client-Side                                    │  │
+│  │           ▼                                                           │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  establishment-professionals.js / establishment-services.js           │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  • handleFileSelect() ────▶ Validação de tipo e tamanho              │  │
+│  │  • uploadImageFile()  ────▶ FormData + Fetch API                     │  │
+│  │  • showPreview()      ────▶ FileReader para preview                  │  │
+│  │                                                                        │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+└────────────────────┬────────────────────────────────────────────────────────┘
+                     │
+                     │ HTTPS POST (multipart/form-data)
+                     ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           BACKEND (Spring Boot)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  FileUploadController                                                 │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  POST /api/files/professional/{id}/upload                             │  │
+│  │  POST /api/files/service/{id}/upload                                  │  │
+│  │                                                                        │  │
+│  │  Parameters:                                                          │  │
+│  │  • file (MultipartFile)                                               │  │
+│  │  • establishmentId (Long)                                             │  │
+│  │                                                                        │  │
+│  └────────────────────┬──────────────────────────────────────────────────┘  │
+│                       │                                                      │
+│                       │ Chama serviços                                       │
+│                       ▼                                                      │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  FileStorageService                                                   │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  1. Validações:                                                       │  │
+│  │     • Arquivo não vazio                                               │  │
+│  │     • Extensão válida (jpg, png)                                      │  │
+│  │     • Tamanho <= 5MB                                                  │  │
+│  │     • Sanitização de folder name                                      │  │
+│  │                                                                        │  │
+│  │  2. Segurança:                                                        │  │
+│  │     • Prevenir path traversal                                         │  │
+│  │     • Validar limites de diretório                                    │  │
+│  │     • Gerar UUID único                                                │  │
+│  │                                                                        │  │
+│  │  3. Armazenamento:                                                    │  │
+│  │     • Criar pasta se necessário                                       │  │
+│  │     • Salvar arquivo com nome UUID                                    │  │
+│  │     • Retornar path relativo                                          │  │
+│  │                                                                        │  │
+│  └────────────────────┬──────────────────────────────────────────────────┘  │
+│                       │                                                      │
+│                       │ Salva em                                             │
+│                       ▼                                                      │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  Sistema de Arquivos                                                  │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  /uploads/                                                            │  │
+│  │    ├── professionals/                                                 │  │
+│  │    │   ├── uuid1.jpg                                                  │  │
+│  │    │   ├── uuid2.png                                                  │  │
+│  │    │   └── ...                                                        │  │
+│  │    └── services/                                                      │  │
+│  │        ├── uuid3.jpg                                                  │  │
+│  │        ├── uuid4.png                                                  │  │
+│  │        └── ...                                                        │  │
+│  │                                                                        │  │
+│  └────────────────────┬──────────────────────────────────────────────────┘  │
+│                       │                                                      │
+│                       │ Atualiza                                             │
+│                       ▼                                                      │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  ProfessionalService / ServiceService                                 │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  updateImage(id, imageUrl, establishmentId)                           │  │
+│  │                                                                        │  │
+│  │  • Valida ownership (establishmentId)                                 │  │
+│  │  • Atualiza imageUrl no banco                                         │  │
+│  │                                                                        │  │
+│  └────────────────────┬──────────────────────────────────────────────────┘  │
+│                       │                                                      │
+│                       │ Persiste                                             │
+│                       ▼                                                      │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  Banco de Dados (PostgreSQL)                                          │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  professionals table:                services table:                  │  │
+│  │  ├── id                              ├── id                           │  │
+│  │  ├── name                            ├── name                         │  │
+│  │  ├── imageUrl ──────────────────────┼── imageUrl                     │  │
+│  │  └── ...                             └── ...                          │  │
+│  │                                                                        │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │  FileUploadConfig                                                     │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                        │  │
+│  │  Serve arquivos estáticos:                                            │  │
+│  │  GET /uploads/** ───▶ /uploads/ (file system)                         │  │
+│  │                                                                        │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          FLUXO DE DADOS                                     ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+ 1. Usuário seleciona arquivo ─────▶ Input file
+ 2. Validação client-side ──────────▶ JavaScript
+ 3. Preview da imagem ──────────────▶ FileReader API
+ 4. Usuário salva formulário ───────▶ Submit
+ 5. Criar registro (Professional/Service) ─▶ POST /api/establishment/.../
+ 6. Upload do arquivo ──────────────▶ POST /api/files/.../upload
+ 7. Validação e sanitização ────────▶ FileStorageService
+ 8. Salvar arquivo no disco ────────▶ /uploads/...
+ 9. Atualizar imageUrl ─────────────▶ Database
+10. Retornar sucesso ──────────────▶ Frontend
+11. Recarregar lista ──────────────▶ Display com nova imagem
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          CAMADAS DE SEGURANÇA                               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+ Layer 1: Frontend
+  ├─ Validação de extensão (accept attribute)
+  ├─ Validação de tamanho (5MB)
+  └─ Validação de tipo MIME
+
+ Layer 2: Backend (FileStorageService)
+  ├─ Validação de arquivo vazio
+  ├─ Whitelist de extensões (jpg, jpeg, png)
+  ├─ Validação de tamanho (5MB)
+  ├─ Sanitização de folder name
+  ├─ Proteção contra path traversal
+  ├─ Validação de limites de diretório
+  └─ Geração de UUID único
+
+ Layer 3: Application Layer
+  ├─ Validação de establishmentId
+  ├─ Verificação de ownership
+  └─ Isolamento de dados
+
+ Layer 4: Infrastructure
+  ├─ Spring Security
+  ├─ Limite de tamanho no Tomcat
+  └─ Permissões de sistema de arquivos
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                              TESTES                                         ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+ FileStorageServiceTest (13 tests)
+  ├─ testStoreValidJpgFile ✓
+  ├─ testStoreValidPngFile ✓
+  ├─ testStoreEmptyFile ✓
+  ├─ testStoreInvalidFileExtension ✓
+  ├─ testStoreFileTooLarge ✓
+  ├─ testDeleteExistingFile ✓
+  ├─ testDeleteNonExistentFile ✓
+  ├─ testDeleteNullFilePath ✓
+  ├─ testStoreFileCreatesFolder ✓
+  ├─ testStoreFileGeneratesUniqueNames ✓
+  ├─ testStoreFileRejectsPathTraversal ✓
+  └─ testStoreFileRejectsInvalidFolderName ✓
+
+ FileUploadControllerTest (5 tests)
+  ├─ testUploadProfessionalImage_Success ✓
+  ├─ testUploadServiceImage_Success ✓
+  ├─ testUploadProfessionalImage_InvalidFile ✓
+  ├─ testUploadServiceImage_InvalidFile ✓
+  └─ testUploadProfessionalImage_Unauthorized ✓
+
+ Total: 18/18 tests passing ✓
+
