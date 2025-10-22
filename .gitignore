@@ -19,3 +19,7 @@ back-end/out/
 *.iws
 *.ipr
 application-local.properties
+
+# Uploaded files
+uploads/
+back-end/uploads/

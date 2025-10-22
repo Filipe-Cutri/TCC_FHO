@@ -32,6 +32,17 @@ class EstablishmentProfessionalsManager {
         if (modal) {
             modal.addEventListener('hidden.bs.modal', () => this.clearForm());
         }
+
+        // File upload preview
+        const fileInput = document.getElementById('professionalImageFile');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        }
+
+        const removeBtn = document.getElementById('removeProfessionalImage');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => this.removeImagePreview());
+        }
     }
 
     async loadProfessionals() {
@@ -188,6 +199,7 @@ class EstablishmentProfessionalsManager {
         const phone = document.getElementById('professionalPhone')?.value?.trim();
         const specialties = document.getElementById('professionalSpecialties')?.value?.trim();
         const imageUrl = document.getElementById('professionalImageUrl')?.value?.trim();
+        const imageFile = document.getElementById('professionalImageFile')?.files[0];
 
         if (!name) {
             this.showError('Nome é obrigatório');
@@ -227,9 +239,15 @@ class EstablishmentProfessionalsManager {
             const data = await response.json();
 
             if (data.success) {
-                // If image URL is provided, update it
-                if (imageUrl && data.data?.id) {
-                    await this.updateProfessionalImage(data.data.id, imageUrl);
+                const professionalId = data.data?.id;
+                
+                // Upload image file if provided
+                if (imageFile && professionalId) {
+                    await this.uploadProfessionalImageFile(professionalId, imageFile);
+                }
+                // Or update with URL if provided and no file
+                else if (imageUrl && professionalId && !imageFile) {
+                    await this.updateProfessionalImage(professionalId, imageUrl);
                 }
                 
                 this.showSuccess(id ? 'Profissional atualizado com sucesso!' : 'Profissional cadastrado com sucesso!');
@@ -241,6 +259,27 @@ class EstablishmentProfessionalsManager {
         } catch (error) {
             console.error('Error saving professional:', error);
             this.showError('Erro ao conectar com o servidor');
+        }
+    }
+
+    async uploadProfessionalImageFile(professionalId, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('establishmentId', this.establishmentId);
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/files/professional/${professionalId}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                this.showError('Erro ao enviar imagem: ' + (data.message || 'Erro desconhecido'));
+            }
+        } catch (error) {
+            console.error('Error uploading professional image:', error);
+            this.showError('Erro ao enviar imagem');
         }
     }
 
@@ -317,11 +356,64 @@ class EstablishmentProfessionalsManager {
             if (field) field.value = '';
         });
         
+        // Clear file input
+        const fileInput = document.getElementById('professionalImageFile');
+        if (fileInput) fileInput.value = '';
+        
+        // Hide preview
+        this.removeImagePreview();
+        
         // Reset modal title
         const modalTitle = document.getElementById('modalTitle');
         if (modalTitle) {
             modalTitle.textContent = 'Adicionar Novo Profissional';
         }
+    }
+
+    handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                this.showError('Apenas arquivos JPG e PNG são permitidos');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                this.showError('Arquivo muito grande. Tamanho máximo: 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('professionalImagePreview');
+                const img = document.getElementById('professionalPreviewImg');
+                if (preview && img) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Clear URL input when file is selected
+            const urlInput = document.getElementById('professionalImageUrl');
+            if (urlInput) urlInput.value = '';
+        }
+    }
+
+    removeImagePreview() {
+        const preview = document.getElementById('professionalImagePreview');
+        const img = document.getElementById('professionalPreviewImg');
+        const fileInput = document.getElementById('professionalImageFile');
+        
+        if (preview) preview.style.display = 'none';
+        if (img) img.src = '';
+        if (fileInput) fileInput.value = '';
     }
 
     closeModal() {
