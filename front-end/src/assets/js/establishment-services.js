@@ -43,6 +43,12 @@ class EstablishmentServicesManager {
         if (removeBtn) {
             removeBtn.addEventListener('click', () => this.removeImagePreview());
         }
+
+        // Image URL input preview
+        const urlInput = document.getElementById('serviceImageUrl');
+        if (urlInput) {
+            urlInput.addEventListener('blur', (e) => this.handleImageUrlChange(e));
+        }
     }
 
     async loadServices() {
@@ -94,22 +100,37 @@ class EstablishmentServicesManager {
         const duration = this.formatDuration(service.durationMinutes);
         const price = this.formatPrice(service.price);
 
+        // Build image HTML - show image if available, otherwise show icon
+        let imageHtml;
+        if (service.imageUrl) {
+            imageHtml = `<img src="${this.escapeHtml(service.imageUrl)}" alt="${this.escapeHtml(service.name)}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-right: 10px;">`;
+        } else {
+            imageHtml = `<i class="fas fa-cut text-muted" style="font-size: 1.5rem; margin-right: 10px; width: 50px; text-align: center;"></i>`;
+        }
+
         return `
             <tr>
                 <td>
-                    <strong>${this.escapeHtml(service.name)}</strong>
-                    ${service.description ? `<br><small class="text-muted">${this.escapeHtml(service.description)}</small>` : ''}
+                    <div class="d-flex align-items-center">
+                        ${imageHtml}
+                        <div>
+                            <strong>${this.escapeHtml(service.name)}</strong>
+                            ${service.description ? `<br><small class="text-muted">${this.escapeHtml(service.description)}</small>` : ''}
+                        </div>
+                    </div>
                 </td>
                 <td>${duration}</td>
                 <td><strong>${price}</strong></td>
                 <td>${statusBadge}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-sm btn-primary edit-service" data-id="${service.id}" title="Editar serviço">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-service" data-id="${service.id}" title="Excluir serviço">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -290,6 +311,16 @@ class EstablishmentServicesManager {
         document.getElementById('servicePrice').value = service.price || '';
         document.getElementById('serviceImageUrl').value = service.imageUrl || '';
 
+        // Show image preview if service has an image URL
+        if (service.imageUrl) {
+            const preview = document.getElementById('serviceImagePreview');
+            const img = document.getElementById('servicePreviewImg');
+            if (preview && img) {
+                img.src = service.imageUrl;
+                preview.style.display = 'block';
+            }
+        }
+
         // Update modal title
         document.getElementById('serviceModalTitle').textContent = 'Editar Serviço';
         
@@ -387,6 +418,23 @@ class EstablishmentServicesManager {
         if (preview) preview.style.display = 'none';
         if (img) img.src = '';
         if (fileInput) fileInput.value = '';
+    }
+
+    handleImageUrlChange(event) {
+        const url = event.target.value.trim();
+        if (url) {
+            // Show preview for URL
+            const preview = document.getElementById('serviceImagePreview');
+            const img = document.getElementById('servicePreviewImg');
+            if (preview && img) {
+                img.src = url;
+                preview.style.display = 'block';
+            }
+
+            // Clear file input when URL is entered
+            const fileInput = document.getElementById('serviceImageFile');
+            if (fileInput) fileInput.value = '';
+        }
     }
 
     closeModal() {
