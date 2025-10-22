@@ -34,7 +34,7 @@ public class ForgotPasswordService {
             String token = generateResetToken();
             storeResetToken(token, email, "CLIENT");
             
-            String resetLink = "http://localhost:8080/reset-password?token=" + token;
+            String resetLink = "https://localhost:8443/pages/reset-password.html?token=" + token;
             String emailBody = buildPasswordResetEmailBody(resetLink, "cliente");
             
             return emailService.sendEmail(email, "Redefinição de Senha - Slotfy", emailBody);
@@ -49,7 +49,7 @@ public class ForgotPasswordService {
             String token = generateResetToken();
             storeResetToken(token, email, "ESTABLISHMENT");
             
-            String resetLink = "http://localhost:8080/reset-password?token=" + token;
+            String resetLink = "https://localhost:8443/pages/reset-password.html?token=" + token;
             String emailBody = buildPasswordResetEmailBody(resetLink, "estabelecimento");
             
             return emailService.sendEmail(email, "Redefinição de Senha - Slotfy", emailBody);
@@ -103,18 +103,11 @@ public class ForgotPasswordService {
 
     private boolean updateUserPassword(String email, String userType, String newPassword) {
         try {
-
-            if ("ESTABLISHMENT".equals(userType)) {
-                establishmentUserService.updatePassword(email, newPassword);
-                return true;
-            }
-            // TODO: Add client password update when ClientService is available
-
             if ("CLIENT".equals(userType)) {
                 clientService.updatePassword(email, newPassword);
                 return true;
             } else if ("ESTABLISHMENT".equals(userType)) {
-                // TODO: Update establishment user password when EstablishmentUserService supports it
+                establishmentUserService.updatePassword(email, newPassword);
                 return true;
             }
 
