@@ -39,6 +39,17 @@ public class FileStorageService {
             throw new IllegalArgumentException("Arquivo vazio não pode ser enviado");
         }
         
+        // Validate and sanitize folder name to prevent path traversal
+        if (folder == null || folder.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome da pasta é obrigatório");
+        }
+        
+        // Remove any path traversal attempts and normalize
+        String sanitizedFolder = folder.replaceAll("[^a-zA-Z0-9_-]", "");
+        if (sanitizedFolder.isEmpty()) {
+            throw new IllegalArgumentException("Nome da pasta inválido");
+        }
+        
         // Get original filename and validate extension
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
         String fileExtension = getFileExtension(originalFilename);
@@ -57,15 +68,27 @@ public class FileStorageService {
             String filename = UUID.randomUUID().toString() + "." + fileExtension;
             
             // Create folder if it doesn't exist
-            Path folderPath = this.fileStorageLocation.resolve(folder);
+            Path folderPath = this.fileStorageLocation.resolve(sanitizedFolder).normalize();
+            
+            // Ensure the resolved path is still within our storage location
+            if (!folderPath.startsWith(this.fileStorageLocation)) {
+                throw new SecurityException("Tentativa de acesso fora do diretório permitido");
+            }
+            
             Files.createDirectories(folderPath);
             
             // Store file
-            Path targetLocation = folderPath.resolve(filename);
+            Path targetLocation = folderPath.resolve(filename).normalize();
+            
+            // Double-check the target is still within allowed directory
+            if (!targetLocation.startsWith(this.fileStorageLocation)) {
+                throw new SecurityException("Tentativa de acesso fora do diretório permitido");
+            }
+            
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             
             // Return relative path
-            return folder + "/" + filename;
+            return sanitizedFolder + "/" + filename;
         } catch (IOException ex) {
             throw new RuntimeException("Não foi possível armazenar o arquivo. Tente novamente!", ex);
         }

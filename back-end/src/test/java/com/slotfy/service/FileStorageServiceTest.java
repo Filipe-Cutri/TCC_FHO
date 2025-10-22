@@ -196,4 +196,52 @@ class FileStorageServiceTest {
         // Then
         assertNotEquals(storedPath1, storedPath2);
     }
+    
+    @Test
+    void testStoreFileRejectsPathTraversal() {
+        // Given
+        byte[] content = "fake image content".getBytes();
+        MultipartFile file = new MockMultipartFile(
+            "file",
+            "test.jpg",
+            "image/jpeg",
+            content
+        );
+        
+        // When & Then - path traversal attempts result in sanitized folder names
+        // The sanitization removes path traversal characters and creates safe folder names
+        String result1 = fileStorageService.storeFile(file, "../../../etc");
+        assertNotNull(result1);
+        assertTrue(result1.startsWith("etc/")); // "../../../" is removed, only "etc" remains
+        
+        String result2 = fileStorageService.storeFile(file, "../../uploads");
+        assertNotNull(result2);
+        assertTrue(result2.startsWith("uploads/")); // "../../" is removed, only "uploads" remains
+    }
+    
+    @Test
+    void testStoreFileRejectsInvalidFolderName() {
+        // Given
+        byte[] content = "fake image content".getBytes();
+        MultipartFile file = new MockMultipartFile(
+            "file",
+            "test.jpg",
+            "image/jpeg",
+            content
+        );
+        
+        // When & Then - completely invalid folder names are rejected
+        assertThrows(IllegalArgumentException.class, () -> {
+            fileStorageService.storeFile(file, "");
+        });
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            fileStorageService.storeFile(file, null);
+        });
+        
+        // Folder name with only special characters becomes empty after sanitization
+        assertThrows(IllegalArgumentException.class, () -> {
+            fileStorageService.storeFile(file, "../../../");
+        });
+    }
 }
