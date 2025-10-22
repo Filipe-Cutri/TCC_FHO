@@ -169,9 +169,21 @@
                 <textarea id="serviceDescription" class="establishment-form-control" rows="3" placeholder="Descreva o serviço oferecido"></textarea>
               </div>
               <div class="establishment-form-group">
-                <label class="establishment-form-label">Imagem do Serviço (URL)</label>
-                <input type="url" id="serviceImageUrl" class="establishment-form-control" placeholder="https://exemplo.com/servico.jpg">
-                <small class="text-muted">Insira a URL de uma imagem hospedada</small>
+                <label class="establishment-form-label">Imagem do Serviço</label>
+                <div class="mb-3">
+                  <input type="file" id="serviceImageFile" class="form-control" accept="image/jpeg,image/jpg,image/png">
+                  <small class="text-muted">Selecione uma imagem do seu dispositivo (JPG ou PNG, máx 5MB)</small>
+                </div>
+                <div id="serviceImagePreview" class="mt-2" style="display: none;">
+                  <img id="servicePreviewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                  <button type="button" class="btn btn-sm btn-danger mt-2" id="removeServiceImage">
+                    <i class="fas fa-times"></i> Remover imagem
+                  </button>
+                </div>
+                <div class="mt-2">
+                  <small class="text-muted">Ou insira uma URL:</small>
+                  <input type="url" id="serviceImageUrl" class="establishment-form-control mt-1" placeholder="https://exemplo.com/servico.jpg">
+                </div>
               </div>
             </form>
           </div>
