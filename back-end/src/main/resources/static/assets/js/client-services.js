@@ -134,17 +134,19 @@ class ClientServices {
      */
     async getAIRecommendationsFromAPI() {
         try {
-            // Get client preferences from localStorage
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const clientId = user.id;
-            const establishmentId = user.selectedEstablishmentId || this.establishmentId;
+            // Get client session using ClientSessionManager
+            const session = this.getUserSession();
+            const clientId = session ? session.id : null;
+            const establishmentId = (session ? session.selectedEstablishmentId : null) || 
+                                    this.establishmentId || 
+                                    sessionStorage.getItem('selectedEstablishmentId');
             
             if (!clientId) {
-                throw new Error('Sessão expirada');
+                throw new Error('Sessão expirada. Por favor, faça login novamente.');
             }
             
             if (!establishmentId) {
-                throw new Error('Nenhum estabelecimento selecionado');
+                throw new Error('Nenhum estabelecimento selecionado. Por favor, selecione um estabelecimento.');
             }
 
             // Get client preferences
@@ -344,17 +346,19 @@ class ClientServices {
             const professionalSelect = document.getElementById('professionalSelect');
             professionalSelect.innerHTML = '<option value="">Carregando...</option>';
             
-            // Fetch professionals from the selected establishment
-            const response = await window.apiClient.get('/api/establishment/professionals/active', {
-                establishmentId: this.establishmentId
-            });
+            // Fetch professionals using new client endpoint
+            const professionalsEndpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.professionals,
+                { id: this.establishmentId }
+            );
+            const response = await window.apiClient.get(professionalsEndpoint);
             
             if (response.success && response.data && response.data.length > 0) {
                 professionalSelect.innerHTML = '<option value="">Selecione um profissional</option>';
                 response.data.forEach(prof => {
                     const option = document.createElement('option');
                     option.value = prof.id;
-                    option.textContent = `${prof.name} - ${prof.specialty || 'Especialista'}`;
+                    option.textContent = `${prof.name} - ${prof.specialties || 'Especialista'}`;
                     professionalSelect.appendChild(option);
                 });
             } else {
@@ -488,33 +492,51 @@ class ClientServices {
      */
     async loadServices() {
         try {
-            // Get user session to find selected establishment
-            const session = this.getUserSession();
+            // Check for establishment ID from URL parameter or session
+            const urlParams = new URLSearchParams(window.location.search);
+            const establishmentIdFromUrl = urlParams.get('establishmentId');
             
-            if (!session || !session.selectedEstablishmentId) {
+            // Try URL first, then session, then sessionStorage
+            const session = this.getUserSession();
+            const establishmentIdFromSession = session ? session.selectedEstablishmentId : null;
+            const establishmentIdFromStorage = sessionStorage.getItem('selectedEstablishmentId');
+            
+            this.establishmentId = establishmentIdFromUrl || establishmentIdFromSession || establishmentIdFromStorage;
+            
+            if (!this.establishmentId) {
                 this.showEmptyState('Por favor, selecione um estabelecimento primeiro.');
+                this.promptEstablishmentSelection();
                 return;
             }
-
-            this.establishmentId = session.selectedEstablishmentId;
             
-            // Show loading state
-            this.showLoading();
-
-            // Fetch establishment details to get category
-            const establishmentResponse = await window.apiClient.get('/api/establishment/list');
-            
-            if (establishmentResponse.success) {
-                const establishment = establishmentResponse.data.find(e => e.id === this.establishmentId);
-                if (establishment) {
-                    this.establishmentCategory = establishment.category;
+            // Save establishment ID to session storage for consistency
+            if (this.establishmentId) {
+                sessionStorage.setItem('selectedEstablishmentId', this.establishmentId);
+                if (window.clientSession && session && session.id) {
+                    window.clientSession.setSelectedEstablishmentId(this.establishmentId);
                 }
             }
 
-            // Fetch services for this establishment
-            const response = await window.apiClient.get('/api/establishment/services/active', {
-                establishmentId: this.establishmentId
-            });
+            // Show loading state
+            this.showLoading();
+
+            // Fetch establishment details using new client endpoint
+            const establishmentEndpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.details,
+                { id: this.establishmentId }
+            );
+            const establishmentResponse = await window.apiClient.get(establishmentEndpoint);
+            
+            if (establishmentResponse.success && establishmentResponse.data) {
+                this.establishmentCategory = establishmentResponse.data.category;
+            }
+
+            // Fetch services using new client endpoint
+            const servicesEndpoint = window.apiClient.replacePathParams(
+                API_CONFIG.endpoints.client.establishments.services,
+                { id: this.establishmentId }
+            );
+            const response = await window.apiClient.get(servicesEndpoint);
 
             if (response.success && response.data) {
                 this.services = response.data;
@@ -615,8 +637,21 @@ class ClientServices {
         // Get icon based on category or use default
         const icon = this.getServiceIcon(service.category || service.name);
 
+        // Build image HTML - show image if available, otherwise show icon
+        let imageHtml;
+        if (service.imageUrl) {
+            imageHtml = `<img src="${this.escapeHtml(service.imageUrl)}" alt="${this.escapeHtml(service.name)}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">`;
+        } else {
+            imageHtml = `
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, ${color.gradient}); display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                    <i class="${icon}" style="font-size: 4rem; color: white;"></i>
+                </div>
+            `;
+        }
+
         col.innerHTML = `
             <div class="client-card" style="border-left: 4px solid ${color.border};">
+                ${imageHtml}
                 <div class="card-body">
                     <h5 class="card-title">
                         <span class="card-icon" style="background: linear-gradient(135deg, ${color.gradient}); color: white;">
@@ -674,6 +709,17 @@ class ClientServices {
             "'": '&#039;'
         };
         return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
+    }
+
+    /**
+     * Prompt user to select an establishment
+     */
+    promptEstablishmentSelection() {
+        setTimeout(() => {
+            if (confirm('Você precisa selecionar um estabelecimento primeiro. Gostaria de ir para a página de estabelecimentos?')) {
+                window.location.href = 'client-establishments.html';
+            }
+        }, 500);
     }
 }
 
