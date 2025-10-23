@@ -240,7 +240,7 @@ class ClientAIManager {
             serviceName,
             appointmentDate: formattedDate,
             time: '14:30',
-            professional: 'João Silva',
+            professional: '',
             interval: intervalTexts[userInterval] || 'mensalmente',
             advanceNotice: advanceTexts[userAdvanceNotice] || '1 semana',
             scheduleDate

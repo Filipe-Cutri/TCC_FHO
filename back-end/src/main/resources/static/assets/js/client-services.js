@@ -78,15 +78,7 @@ class ClientServices {
      */
     loadUserPreferences() {
         const stored = localStorage.getItem('clientPreferences');
-        return stored ? JSON.parse(stored) : {
-            preferredTimes: ['afternoon'],
-            serviceHistory: [{
-                serviceName: 'Corte Masculino',
-                category: 'corte',
-                date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-            }],
-            budget: 'medium'
-        };
+        return stored ? JSON.parse(stored) : {};
     }
 
     /**
@@ -172,38 +164,13 @@ class ClientServices {
     }
 
     /**
-     * Generate AI recommendations
+     * Generate AI recommendations - removed mock data, now relies on backend API
      */
     generateAIRecommendations() {
-        const baseDate = new Date();
-        
-        const recommendations = [
-            {
-                id: 1,
-                service: 'Corte + Barba',
-                professional: 'João Silva',
-                establishment: 'Barbearia Premium - Centro',
-                date: new Date(baseDate.getTime() + 2 * 24 * 60 * 60 * 1000),
-                time: '14:00',
-                price: 65,
-                confidence: 95,
-                reason: 'Baseado no seu histórico de cortes, você prefere combos completos nos horários da tarde'
-            },
-            {
-                id: 2,
-                service: 'Corte Masculino',
-                professional: 'Carlos Santos',
-                establishment: 'Salão Modern',
-                date: new Date(baseDate.getTime() + 4 * 24 * 60 * 60 * 1000),
-                time: '15:30',
-                price: 35,
-                confidence: 88,
-                reason: 'Opção econômica com profissional bem avaliado'
-            }
-        ];
-
-        this.aiRecommendations = recommendations;
-        return recommendations;
+        // This method is deprecated - AI recommendations should come from the backend API
+        // via getAIRecommendationsFromAPI()
+        console.warn('generateAIRecommendations is deprecated. Use getAIRecommendationsFromAPI() instead.');
+        return [];
     }
 
     /**

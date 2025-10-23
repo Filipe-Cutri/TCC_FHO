@@ -96,16 +96,19 @@ class EstablishmentProfessionalsManager {
         const rating = professional.rating || 0;
         const stars = this.renderStars(rating);
 
-        const imageUrl = professional.imageUrl || 'https://via.placeholder.com/150';
+        const imageHtml = professional.imageUrl 
+            ? `<img src="${this.escapeHtml(professional.imageUrl)}" alt="${this.escapeHtml(professional.name)}" 
+                    class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">` 
+            : `<div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="fas fa-user-tie text-white" style="font-size: 2rem;"></i>
+               </div>`;
         
         return `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="establishment-card h-100">
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <img src="${this.escapeHtml(imageUrl)}" alt="${this.escapeHtml(professional.name)}" 
-                                 class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;"
-                                 onerror="this.src='https://via.placeholder.com/150'">
+                            ${imageHtml}
                         </div>
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h5 class="card-title mb-0">
