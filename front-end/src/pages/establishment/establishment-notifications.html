@@ -148,93 +148,17 @@
             Notificações Recentes
           </h5>
           
-          <!-- Notification Item 1 -->
-          <div class="establishment-list-item" style="background: var(--color-primary-50); border-left: 4px solid var(--color-accent-success);">
-            <div class="establishment-list-icon">
-              <i class="fas fa-calendar-check text-success"></i>
-            </div>
-            <div class="establishment-list-content">
-              <div class="establishment-list-title">Novo agendamento confirmado</div>
-              <div class="establishment-list-subtitle">Maria da Silva agendou Corte + Coloração para 15/08 às 14:00 com Ana Costa</div>
-            </div>
-            <div class="text-end">
-              <small class="text-muted">2 min atrás</small>
-              <div>
-                <span class="establishment-status-badge establishment-status-success">Nova</span>
-              </div>
+          <!-- Notifications will be loaded dynamically from the backend -->
+          <div id="notificationsList">
+            <div class="text-center py-5">
+              <i class="fas fa-bell-slash text-muted mb-3" style="font-size: 3rem;"></i>
+              <h5 class="text-muted">Nenhuma notificação</h5>
+              <p class="text-muted">Você não tem notificações no momento</p>
             </div>
           </div>
 
-          <!-- Notification Item 2 -->
-          <div class="establishment-list-item" style="border-left: 4px solid var(--color-accent-warning);">
-            <div class="establishment-list-icon">
-              <i class="fas fa-calendar-times text-warning"></i>
-            </div>
-            <div class="establishment-list-content">
-              <div class="establishment-list-title">Agendamento cancelado</div>
-              <div class="establishment-list-subtitle">João Santos cancelou o agendamento de Barba + Bigode das 15:00</div>
-            </div>
-            <div class="text-end">
-              <small class="text-muted">15 min atrás</small>
-              <div>
-                <span class="establishment-status-badge establishment-status-warning">Cancelamento</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notification Item 3 -->
-          <div class="establishment-list-item" style="border-left: 4px solid var(--color-accent-info);">
-            <div class="establishment-list-icon">
-              <i class="fas fa-star text-warning"></i>
-            </div>
-            <div class="establishment-list-content">
-              <div class="establishment-list-title">Nova avaliação recebida</div>
-              <div class="establishment-list-subtitle">Patricia Lima avaliou João Pedro com 5 estrelas: "Excelente profissional!"</div>
-            </div>
-            <div class="text-end">
-              <small class="text-muted">1h atrás</small>
-              <div>
-                <span class="establishment-status-badge establishment-status-success">5★</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notification Item 4 -->
-          <div class="establishment-list-item" style="border-left: 4px solid var(--color-secondary-500);">
-            <div class="establishment-list-icon">
-              <i class="fas fa-users text-info"></i>
-            </div>
-            <div class="establishment-list-content">
-              <div class="establishment-list-title">Novo cliente cadastrado</div>
-              <div class="establishment-list-subtitle">Carlos Eduardo criou uma conta e está navegando pelos serviços</div>
-            </div>
-            <div class="text-end">
-              <small class="text-muted">2h atrás</small>
-              <div>
-                <span class="establishment-status-badge establishment-status-pending">Novo Cliente</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notification Item 5 -->
-          <div class="establishment-list-item" style="border-left: 4px solid var(--color-accent-success);">
-            <div class="establishment-list-icon">
-              <i class="fas fa-money-bill-wave text-success"></i>
-            </div>
-            <div class="establishment-list-content">
-              <div class="establishment-list-title">Pagamento confirmado</div>
-              <div class="establishment-list-subtitle">Pagamento de R$ 85,00 de Maria da Silva foi processado com sucesso</div>
-            </div>
-            <div class="text-end">
-              <small class="text-muted">3h atrás</small>
-              <div>
-                <span class="establishment-status-badge establishment-status-success">R$ 85,00</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notification Item 6 -->
-          <div class="establishment-list-item" style="border-left: 4px solid var(--color-neutral-300);">
+          <!-- Placeholder for future dynamic content -->
+          <div class="establishment-list-item d-none" style="border-left: 4px solid var(--color-neutral-300);">
             <div class="establishment-list-icon">
               <i class="fas fa-clock text-muted"></i>
             </div>
