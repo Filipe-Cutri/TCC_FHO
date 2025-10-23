@@ -38,7 +38,7 @@ async function loadProfileData() {
         }
         
         // Populate form fields with session data
-        const nameInput = document.querySelector('input[value="Maria da Silva"]');
+        const nameInput = document.querySelector('input[name="name"], input[id="name"]');
         if (nameInput && session.name) {
             nameInput.value = session.name;
         }
@@ -48,7 +48,7 @@ async function loadProfileData() {
             emailInput.value = session.email;
         }
         
-        const phoneInput = document.querySelector('input[value="(11) 99999-9999"]');
+        const phoneInput = document.querySelector('input[name="phone"], input[id="phone"]');
         if (phoneInput && session.phone) {
             phoneInput.value = session.phone;
         }
