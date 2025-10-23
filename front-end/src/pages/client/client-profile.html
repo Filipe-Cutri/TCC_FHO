@@ -81,13 +81,13 @@
                   <div class="col-md-6">
                     <div class="client-form-group">
                       <label class="client-form-label">Nome Completo</label>
-                      <input type="text" class="form-control client-form-control" value="Maria da Silva">
+                      <input type="text" name="name" id="name" class="form-control client-form-control" value="">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="client-form-group">
                       <label class="client-form-label">E-mail</label>
-                      <input type="email" class="form-control client-form-control" value="maria@email.com">
+                      <input type="email" name="email" class="form-control client-form-control" value="" readonly>
                     </div>
                   </div>
                 </div>
@@ -96,13 +96,13 @@
                   <div class="col-md-6">
                     <div class="client-form-group">
                       <label class="client-form-label">Telefone</label>
-                      <input type="text" class="form-control client-form-control" value="(11) 99999-9999">
+                      <input type="text" name="phone" id="phone" class="form-control client-form-control" value="">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="client-form-group">
                       <label class="client-form-label">Data de Nascimento</label>
-                      <input type="date" class="form-control client-form-control" value="1990-05-15">
+                      <input type="date" name="birthdate" class="form-control client-form-control" value="">
                     </div>
                   </div>
                 </div>
@@ -212,35 +212,11 @@
                 </span>
                 Histórico Recente
               </h5>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-cut text-primary"></i>
+              <div id="recentHistory">
+                <div class="text-center py-4">
+                  <i class="fas fa-history text-muted mb-3" style="font-size: 2rem;"></i>
+                  <p class="text-muted">Nenhum histórico disponível</p>
                 </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Corte + Barba</div>
-                  <div class="client-list-subtitle">05/07/2025 - João Silva</div>
-                </div>
-                <span class="client-status-badge client-status-success">Concluído</span>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-beard text-secondary"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Barba Completa</div>
-                  <div class="client-list-subtitle">21/06/2025 - Lucas Santos</div>
-                </div>
-                <span class="client-status-badge client-status-success">Concluído</span>
-              </div>
-              <div class="client-list-item">
-                <div class="client-list-icon">
-                  <i class="fas fa-scissors text-info"></i>
-                </div>
-                <div class="client-list-content">
-                  <div class="client-list-title">Corte Social</div>
-                  <div class="client-list-subtitle">10/06/2025 - Carlos Lima</div>
-                </div>
-                <span class="client-status-badge client-status-success">Concluído</span>
               </div>
               <div class="text-center mt-3">
                 <a href="client-bookings.html" class="client-btn client-btn-secondary">

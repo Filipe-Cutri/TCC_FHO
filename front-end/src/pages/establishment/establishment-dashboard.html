@@ -291,11 +291,11 @@
             ? `R$ ${overview.monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` 
             : 'R$ 0,00';
         } catch (error) {
-          console.warn('Failed to load overview stats from API, using fallback data');
-          // Show fallback data with a subtle indicator
-          document.getElementById('todayAppointments').textContent = '5';
-          document.getElementById('activeProfessionals').textContent = '3';
-          document.getElementById('monthlyRevenue').textContent = 'R$ 1.250,00';
+          console.error('Failed to load overview stats from API:', error);
+          // Show zero values on error
+          document.getElementById('todayAppointments').textContent = '0';
+          document.getElementById('activeProfessionals').textContent = '0';
+          document.getElementById('monthlyRevenue').textContent = 'R$ 0,00';
         }
       }
 
@@ -319,30 +319,14 @@
             `;
           }
         } catch (error) {
-          console.warn('Failed to load appointments from API, using fallback data');
-          // Show example appointments
-          const exampleAppointments = [
-            {
-              id: 1,
-              clientName: 'Maria Silva',
-              serviceName: 'Corte + Coloração',
-              professionalName: 'Ana Costa',
-              startTime: '09:00',
-              endTime: '11:00',
-              status: 'confirmed'
-            },
-            {
-              id: 2,
-              clientName: 'João Santos',
-              serviceName: 'Barba + Bigode',
-              professionalName: 'Carlos Pereira',
-              startTime: '14:30',
-              endTime: '15:30',
-              status: 'pending'
-            }
-          ];
-          
-          container.innerHTML = exampleAppointments.map(appointment => this.renderAppointmentItem(appointment)).join('');
+          console.error('Failed to load appointments from API:', error);
+          container.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 3rem;"></i>
+              <h5 class="text-muted">Erro ao carregar agendamentos</h5>
+              <p class="text-muted">Não foi possível carregar os agendamentos. Tente novamente mais tarde.</p>
+            </div>
+          `;
           
           // Add a subtle indicator that this is example data
           const indicator = document.createElement('div');
@@ -402,10 +386,8 @@
       }
 
       loadFallbackData() {
-        // This method provides fallback data when API is not available
-        document.getElementById('todayAppointments').textContent = '5';
-        document.getElementById('activeProfessionals').textContent = '3';
-        document.getElementById('monthlyRevenue').textContent = 'R$ 1.250,00';
+        // This method is deprecated - no longer using fallback data
+        console.warn('loadFallbackData is deprecated. All data should come from the API.');
       }
 
       showErrorMessage(message) {
