@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Necessário para análise SonarQube ter contexto completo do histórico
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
