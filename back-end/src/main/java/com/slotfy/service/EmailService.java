@@ -1,9 +1,25 @@
 package com.slotfy.service;
 
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class EmailService {
+
+    @Value("${sendgrid.api.key}")
+    private String sendGridApiKey;
+
+    @Value("${sendgrid.from.email}")
+    private String fromEmail;
+
+    @Value("${sendgrid.from.name}")
+    private String fromName;
 
     public EmailService() {
         super(); // Call the default constructor
@@ -11,20 +27,38 @@ public class EmailService {
 
     public boolean sendEmail(String to, String subject, String body) {
         try {
-            // TODO: Implement actual email sending using JavaMailSender
-            // For now, we'll simulate email sending
+            Email from = new Email(fromEmail, fromName);
+            Email toEmail = new Email(to);
+            Content content = new Content("text/html", body);
+            Mail mail = new Mail(from, subject, toEmail, content);
+
+            SendGrid sg = new SendGrid(sendGridApiKey);
+            Request request = new Request();
             
-            System.out.println("=== EMAIL SIMULADO ===");
-            System.out.println("Para: " + to);
-            System.out.println("Assunto: " + subject);
-            System.out.println("Corpo: " + body);
-            System.out.println("=== FIM EMAIL ===");
-            
-            // Simulate successful email sending
-            return true;
+            try {
+                request.setMethod(Method.POST);
+                request.setEndpoint("mail/send");
+                request.setBody(mail.build());
+                Response response = sg.api(request);
+                
+                // SendGrid returns 202 for successful acceptance
+                if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+                    System.out.println("Email enviado com sucesso para: " + to);
+                    return true;
+                } else {
+                    System.err.println("Erro ao enviar email. Status: " + response.getStatusCode());
+                    System.err.println("Resposta: " + response.getBody());
+                    return false;
+                }
+            } catch (IOException ex) {
+                System.err.println("Erro de IO ao enviar email: " + ex.getMessage());
+                ex.printStackTrace();
+                return false;
+            }
             
         } catch (Exception e) {
             System.err.println("Erro ao enviar email: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
