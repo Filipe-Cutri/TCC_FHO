@@ -1,7 +1,9 @@
 # TCC_FHO - Slotfy
 
 [![CI](https://github.com/Filipe-Cutri/TCC_FHO/actions/workflows/ci.yml/badge.svg)](https://github.com/Filipe-Cutri/TCC_FHO/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Filipe-Cutri_TCC_FHO&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Filipe-Cutri_TCC_FHO)
 [![codecov](https://codecov.io/gh/Filipe-Cutri/TCC_FHO/branch/main/graph/badge.svg)](https://codecov.io/gh/Filipe-Cutri/TCC_FHO)
+
 
 Sistema de agendamento inteligente para barbearias e salões de beleza.
 
