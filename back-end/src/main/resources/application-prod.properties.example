@@ -1,4 +1,4 @@
-# Application Configuration
+# Application Configuration for PRODUCTION
 spring.application.name=slotify-backend
 server.port=8443
 
@@ -12,7 +12,7 @@ server.ssl.key-alias=slotfy
 # Database Configuration
 spring.datasource.url=jdbc:postgresql://localhost:5432/slotify
 spring.datasource.username=postgres
-spring.datasource.password=postgres
+spring.datasource.password=${DB_PASSWORD}
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA/Hibernate Configuration
@@ -32,13 +32,14 @@ spring.servlet.multipart.max-file-size=5MB
 spring.servlet.multipart.max-request-size=5MB
 file.upload-dir=uploads
 
-# SendGrid Email Configuration
-# WARNING: This API key should be moved to environment variables in production
-# Use: sendgrid.api.key=${SENDGRID_API_KEY:default_value}
-# Set environment variable: export SENDGRID_API_KEY=your_key_here
-sendgrid.api.key=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
-sendgrid.from.email=noreply@slotfy.com
-sendgrid.from.name=Slotfy - Sistema de Agendamento
+# SendGrid Email Configuration - USE ENVIRONMENT VARIABLES
+# Set these environment variables before starting the application:
+# export SENDGRID_API_KEY=your_sendgrid_api_key_here
+# export SENDGRID_FROM_EMAIL=noreply@slotfy.com
+# export SENDGRID_FROM_NAME="Slotfy - Sistema de Agendamento"
+sendgrid.api.key=${SENDGRID_API_KEY}
+sendgrid.from.email=${SENDGRID_FROM_EMAIL:noreply@slotfy.com}
+sendgrid.from.name=${SENDGRID_FROM_NAME:Slotfy - Sistema de Agendamento}
 
 # Profile-specific configurations
-spring.profiles.active=dev
+spring.profiles.active=prod
