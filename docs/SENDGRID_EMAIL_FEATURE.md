@@ -123,8 +123,61 @@ Os emails são enviados automaticamente através dos serviços:
 
 ## Segurança
 
-- A chave da API SendGrid está configurada no `application.properties`
-- **Importante**: Em produção, mova a chave para variáveis de ambiente
+### ⚠️ IMPORTANTE: Proteção da API Key
+
+A chave da API SendGrid é sensível e **NUNCA** deve ser commitada diretamente no código em produção. 
+
+#### Configuração Atual (Desenvolvimento)
+No arquivo `application.properties`, a chave está presente para facilitar o desenvolvimento inicial:
+```properties
+sendgrid.api.key=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
+```
+
+#### Configuração Recomendada (Produção)
+
+**Método 1: Variáveis de Ambiente**
+```bash
+# Definir variável de ambiente
+export SENDGRID_API_KEY=SG.your_real_api_key_here
+export SENDGRID_FROM_EMAIL=noreply@slotfy.com
+export SENDGRID_FROM_NAME="Slotfy - Sistema de Agendamento"
+```
+
+```properties
+# application-prod.properties
+sendgrid.api.key=${SENDGRID_API_KEY}
+sendgrid.from.email=${SENDGRID_FROM_EMAIL:noreply@slotfy.com}
+sendgrid.from.name=${SENDGRID_FROM_NAME:Slotfy - Sistema de Agendamento}
+```
+
+**Método 2: Arquivo .env (não commitar)**
+1. Criar arquivo `.env` (adicionar ao `.gitignore`)
+2. Usar bibliotecas como `dotenv` para carregar variáveis
+
+**Método 3: Secrets Manager**
+- AWS Secrets Manager
+- Azure Key Vault
+- Google Cloud Secret Manager
+- HashiCorp Vault
+
+### Arquivo de Exemplo para Produção
+Um arquivo `application-prod.properties.example` foi criado mostrando a configuração segura usando variáveis de ambiente.
+
+### Checklist de Segurança
+- [ ] Remover chave da API do código antes de deploy em produção
+- [ ] Configurar variáveis de ambiente no servidor
+- [ ] Adicionar `.env` ao `.gitignore` se usado
+- [ ] Rodar git secret scan para detectar chaves expostas
+- [ ] Rotar a chave da API se ela foi exposta publicamente
+
+### Rotação de Chave
+Se a chave foi exposta:
+1. Acesse o painel do SendGrid
+2. Revogue a chave comprometida imediatamente
+3. Gere uma nova chave
+4. Atualize a variável de ambiente
+5. Reinicie a aplicação
+
 - A dependência `sendgrid-java:4.10.2` foi verificada e não possui vulnerabilidades conhecidas
 
 ## Próximos Passos (Recomendações)
