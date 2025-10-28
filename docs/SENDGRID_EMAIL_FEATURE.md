@@ -20,10 +20,12 @@ As seguintes configurações foram adicionadas:
 
 ```properties
 # SendGrid Email Configuration
-sendgrid.api.key=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
+sendgrid.api.key=YOUR_SENDGRID_API_KEY_HERE
 sendgrid.from.email=noreply@slotfy.com
 sendgrid.from.name=Slotfy - Sistema de Agendamento
 ```
+
+**IMPORTANTE**: Nunca commite a chave da API real no código. Use variáveis de ambiente em produção.
 
 ## Funcionalidades Implementadas
 
@@ -127,7 +129,15 @@ Os emails são enviados automaticamente através dos serviços:
 
 ## Próximos Passos (Recomendações)
 
-1. Mover a chave da API para variável de ambiente (não commitar no código)
+1. **URGENTE - Segurança**: Mover a chave da API para variável de ambiente (não commitar no código)
+   ```bash
+   # Exemplo usando variável de ambiente
+   export SENDGRID_API_KEY=SG.your_api_key_here
+   ```
+   ```properties
+   # application.properties
+   sendgrid.api.key=${SENDGRID_API_KEY}
+   ```
 2. Adicionar templates de email mais elaborados
 3. Implementar filas para envio assíncrono em grande volume
 4. Adicionar monitoramento de taxa de entrega
