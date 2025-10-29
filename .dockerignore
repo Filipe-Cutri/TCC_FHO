@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+.github
+
+# Documentation
+*.md
+docs/
+
+# IDE
+.vscode
+.idea
+*.iml
+
+# Build artifacts
+back-end/build/
+back-end/.gradle/
+back-end/out/
+*.jar
+*.war
+*.ear
+*.class
+
+# Dependencies
+node_modules/
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Uploads
+uploads/
+back-end/uploads/
+
+# OS
+.DS_Store
+*.bak
+
+# Front-end (not needed for backend deployment)
+front-end/
+
+# Database scripts (should be run separately)
+*.sql
+
+# Railway
+.railway/

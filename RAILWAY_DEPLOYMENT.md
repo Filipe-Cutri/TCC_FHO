@@ -81,10 +81,29 @@ You can connect to the database using the credentials from Railway's PostgreSQL 
 
 ## Build Configuration
 
-The project uses Gradle for building. The build configuration is optimized for Railway:
+The project supports two deployment methods:
+
+### Method 1: Nixpacks (Recommended)
+
+Railway will automatically detect and build using Nixpacks:
 
 - **Build Command**: `cd back-end && ./gradlew clean build -x test`
 - **Start Command**: `cd back-end && java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar build/libs/*.jar`
+
+Configuration files:
+- `railway.json` - Railway-specific settings
+- `nixpacks.toml` - Nixpacks build configuration
+- `Procfile` - Process definition
+
+### Method 2: Docker
+
+Alternatively, you can use Docker for deployment:
+
+- **Dockerfile**: Multi-stage Docker build
+- Build: `docker build -t slotify-backend .`
+- Run: `docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod slotify-backend`
+
+Railway will automatically detect the Dockerfile if present and offer to use it.
 
 ## Profiles
 
