@@ -34,7 +34,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.sendgrid:sendgrid-java:4.10.2'
     runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'com.h2database:h2'
+
+    // H2 apenas para testes, não em runtime
+    testRuntimeOnly 'com.h2database:h2'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -46,15 +49,15 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport // report is always generated after tests run
-    ignoreFailures = true // Generate coverage even if tests fail
+    finalizedBy jacocoTestReport
+    ignoreFailures = true
 }
 
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+    dependsOn test
     reports {
-        xml.required = true  // Required for Codecov integration
-        html.required = true // For local viewing and CI artifacts
+        xml.required = true
+        html.required = true
         csv.required = false
     }
 
@@ -74,12 +77,12 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.05 // 5% minimum coverage - current baseline
+                minimum = 0.05
             }
         }
     }
+}
 
-    jar {
-        enabled = false
-    }
+jar {
+    enabled = false
 }
