@@ -1,26 +1,27 @@
 # Spring Boot Application Configuration (YAML format)
 # This file demonstrates YAML configuration alongside the existing .properties files
+# For Railway deployment, environment variables will override these values
 
 spring:
   application:
     name: slotify-backend
   
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/slotify
-    username: postgres
-    password: postgres
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/slotify}
+    username: ${PGUSER:postgres}
+    password: ${PGPASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   
   # JPA/Hibernate Configuration
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
-    show-sql: false
+      ddl-auto: ${JPA_DDL_AUTO:validate}
+    show-sql: ${JPA_SHOW_SQL:false}
     properties:
       hibernate:
         format_sql: true
@@ -28,18 +29,18 @@ spring:
           lob:
             non_contextual_creation: true
 
-# Server Configuration - HTTPS/SSL
+# Server Configuration
 server:
-  port: 8443
+  port: ${PORT:8080}
   ssl:
-    enabled: true
-    key-store: classpath:slotfy.p12
-    key-store-password: slotfypass
+    enabled: ${SSL_ENABLED:false}
+    key-store: ${SSL_KEYSTORE:classpath:slotfy.p12}
+    key-store-password: ${SSL_KEYSTORE_PASSWORD:slotfypass}
     key-store-type: PKCS12
     key-alias: slotfy
 
 # Logging Configuration
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.SQL: ${LOGGING_HIBERNATE_SQL:DEBUG}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${LOGGING_HIBERNATE_BINDER:TRACE}

@@ -3,6 +3,8 @@
 node_modules/
 dist/
 .env
+.env.local
+.env.*.local
 .vscode/
 
 # Backend specific
@@ -23,3 +25,6 @@ application-local.properties
 # Uploaded files
 uploads/
 back-end/uploads/
+
+# Railway
+.railway/
