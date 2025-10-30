@@ -1,191 +1,190 @@
 package com.slotfy.service;
 
 import com.slotfy.model.Client;
+import com.slotfy.model.EstablishmentUser;
+import com.slotfy.repository.ClientRepository;
+import com.slotfy.repository.EstablishmentUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Optional;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Service
 public class ForgotPasswordService {
 
-    public ForgotPasswordService() {
-        super(); // Call the default constructor
-    }
-
-    // In-memory storage for password reset tokens (in production, use database)
-    private Map<String, PasswordResetToken> passwordResetTokens = new HashMap<>();
+    private static final int TOKEN_BYTES = 32;
+    private static final long TOKEN_EXPIRY_HOURS = 1;
+    private static final long TOKEN_EXPIRY_MS = TOKEN_EXPIRY_HOURS * 60 * 60 * 1000;
     
     @Autowired
     private EmailService emailService;
     
     @Autowired
-    private EstablishmentUserService establishmentUserService;  
+    private EstablishmentUserService establishmentUserService;
+    
     @Autowired
     private ClientService clientService;
+    
+    @Autowired
+    private ClientRepository clientRepository;
+    
+    @Autowired
+    private EstablishmentUserRepository establishmentUserRepository;
+    
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
+    private final SecureRandom secureRandom = new SecureRandom();
+
+    public ForgotPasswordService() {
+        super();
+    }
+
+    /**
+     * Request password reset for client.
+     * Always returns true to avoid revealing if email exists.
+     */
     public boolean sendClientPasswordResetEmail(String email) {
-        // Check if client email exists in database
-        if (isValidClientEmail(email)) {
-            String token = generateResetToken();
-            storeResetToken(token, email, "CLIENT");
+        Optional<Client> clientOpt = clientRepository.findByEmail(email);
+        
+        if (clientOpt.isPresent()) {
+            Client client = clientOpt.get();
+            String rawToken = generateSecureToken();
+            String tokenHash = hashToken(rawToken);
+            long expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
             
-            String resetLink = "https://localhost:8443/pages/reset-password.html?token=" + token;
-            String emailBody = buildPasswordResetEmailBody(resetLink, "cliente");
+            client.setResetPasswordTokenHash(tokenHash);
+            client.setResetPasswordExpiry(expiry);
+            clientRepository.save(client);
             
-            return emailService.sendEmail(email, "Redefinição de Senha - Slotfy", emailBody);
+            String resetLink = frontendUrl + "/reset-password?token=" + rawToken;
+            emailService.sendPasswordResetEmail(email, resetLink);
         }
         
-        return false;
+        // Always return true for security (don't reveal if email exists)
+        return true;
     }
 
+    /**
+     * Request password reset for establishment user.
+     * Always returns true to avoid revealing if email exists.
+     */
     public boolean sendEstablishmentPasswordResetEmail(String email) {
-        // Check if establishment email exists in database
-        if (isValidEstablishmentEmail(email)) {
-            String token = generateResetToken();
-            storeResetToken(token, email, "ESTABLISHMENT");
+        Optional<EstablishmentUser> userOpt = establishmentUserRepository.findByEmail(email);
+        
+        if (userOpt.isPresent()) {
+            EstablishmentUser user = userOpt.get();
+            String rawToken = generateSecureToken();
+            String tokenHash = hashToken(rawToken);
+            long expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
             
-            String resetLink = "https://localhost:8443/pages/reset-password.html?token=" + token;
-            String emailBody = buildPasswordResetEmailBody(resetLink, "estabelecimento");
+            user.setResetPasswordTokenHash(tokenHash);
+            user.setResetPasswordExpiry(expiry);
+            establishmentUserRepository.save(user);
             
-            return emailService.sendEmail(email, "Redefinição de Senha - Slotfy", emailBody);
+            String resetLink = frontendUrl + "/reset-password?token=" + rawToken;
+            emailService.sendPasswordResetEmail(email, resetLink);
         }
         
-        return false;
+        // Always return true for security (don't reveal if email exists)
+        return true;
     }
 
-    public boolean resetPassword(String token, String newPassword) {
-        PasswordResetToken resetToken = passwordResetTokens.get(token);
+    /**
+     * Reset password using token and email.
+     * Returns false if token is invalid or expired.
+     */
+    public boolean resetPassword(String email, String rawToken, String newPassword) {
+        String tokenHash = hashToken(rawToken);
         
-        if (resetToken == null) {
-            return false; // Token not found
-        }
-        
-        if (resetToken.isExpired()) {
-            passwordResetTokens.remove(token); // Clean up expired token
-            return false; // Token expired
-        }
-        
-        // Update password in database based on user type and email
-        boolean passwordUpdated = updateUserPassword(resetToken.getEmail(), 
-                                                   resetToken.getUserType(), newPassword);
-        
-        if (passwordUpdated) {
-            passwordResetTokens.remove(token); // Remove used token
-            return true;
-        }
-        
-        return false;
-    }
-
-    private String generateResetToken() {
-        return UUID.randomUUID().toString();
-    }
-
-    private void storeResetToken(String token, String email, String userType) {
-        PasswordResetToken resetToken = new PasswordResetToken(token, email, userType);
-        passwordResetTokens.put(token, resetToken);
-    }
-
-    private boolean isValidClientEmail(String email) {
-        // Check if email exists in client table
-        return clientService.existsByEmail(email);
-    }
-
-    private boolean isValidEstablishmentEmail(String email) {
-        // Check if email exists in establishment table
-        return establishmentUserService.existsByEmail(email);
-    }
-
-    private boolean updateUserPassword(String email, String userType, String newPassword) {
-        try {
-            if ("CLIENT".equals(userType)) {
+        // Try to find client first
+        Optional<Client> clientOpt = clientRepository.findByResetPasswordTokenHash(tokenHash);
+        if (clientOpt.isPresent()) {
+            Client client = clientOpt.get();
+            
+            // Verify email matches and token is not expired
+            if (client.getEmail().equals(email) && !isTokenExpired(client.getResetPasswordExpiry())) {
                 clientService.updatePassword(email, newPassword);
-                return true;
-            } else if ("ESTABLISHMENT".equals(userType)) {
-                establishmentUserService.updatePassword(email, newPassword);
+                
+                // Invalidate token after use
+                client.setResetPasswordTokenHash(null);
+                client.setResetPasswordExpiry(null);
+                clientRepository.save(client);
+                
                 return true;
             }
+        }
+        
+        // Try to find establishment user
+        Optional<EstablishmentUser> userOpt = establishmentUserRepository.findByResetPasswordTokenHash(tokenHash);
+        if (userOpt.isPresent()) {
+            EstablishmentUser user = userOpt.get();
+            
+            // Verify email matches and token is not expired
+            if (user.getEmail().equals(email) && !isTokenExpired(user.getResetPasswordExpiry())) {
+                establishmentUserService.updatePassword(email, newPassword);
+                
+                // Invalidate token after use
+                user.setResetPasswordTokenHash(null);
+                user.setResetPasswordExpiry(null);
+                establishmentUserRepository.save(user);
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
-            return false;
-        } catch (Exception e) {
-            return false;
+    /**
+     * Generate a cryptographically secure random token (32 bytes as hex string)
+     */
+    private String generateSecureToken() {
+        byte[] randomBytes = new byte[TOKEN_BYTES];
+        secureRandom.nextBytes(randomBytes);
+        return bytesToHex(randomBytes);
+    }
+
+    /**
+     * Hash token using SHA-256
+     */
+    private String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not available", e);
         }
     }
 
-    private String buildPasswordResetEmailBody(String resetLink, String userType) {
-        return String.format("""
-            <html>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h2 style="color: #3b82f6;">Slotfy - Redefinição de Senha</h2>
-                    </div>
-                    
-                    <p>Olá,</p>
-                    
-                    <p>Você solicitou a redefinição de senha para sua conta de %s no Slotfy.</p>
-                    
-                    <p>Para criar uma nova senha, clique no botão abaixo:</p>
-                    
-                    <div style="text-align: center; margin: 30px 0;">
-                        <a href="%s" style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
-                            Redefinir Senha
-                        </a>
-                    </div>
-                    
-                    <p>Se o botão não funcionar, copie e cole o seguinte link no seu navegador:</p>
-                    <p style="word-break: break-all; background-color: #f3f4f6; padding: 10px; border-radius: 4px;">%s</p>
-                    
-                    <p style="color: #dc2626; font-weight: bold;">Este link é válido por 24 horas.</p>
-                    
-                    <p>Se você não solicitou esta redefinição de senha, ignore este e-mail. Sua senha permanecerá inalterada.</p>
-                    
-                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
-                    
-                    <p style="text-align: center; color: #6b7280; font-size: 14px;">
-                        © 2024 Slotfy - Sistema de Agendamento Inteligente<br>
-                        Este é um e-mail automático, não responda.
-                    </p>
-                </div>
-            </body>
-            </html>
-            """, userType, resetLink, resetLink);
+    /**
+     * Check if token is expired
+     */
+    private boolean isTokenExpired(Long expiryTimestamp) {
+        if (expiryTimestamp == null) {
+            return true;
+        }
+        return System.currentTimeMillis() > expiryTimestamp;
     }
 
-    // Inner class for password reset token
-    private static class PasswordResetToken {
-        private final String token;
-        private final String email;
-        private final String userType;
-        private final LocalDateTime createdAt;
-        private static final int EXPIRY_HOURS = 24;
-
-        public PasswordResetToken(String token, String email, String userType) {
-            this.token = token;
-            this.email = email;
-            this.userType = userType;
-            this.createdAt = LocalDateTime.now();
+    /**
+     * Convert byte array to hex string
+     */
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder hexString = new StringBuilder(2 * bytes.length);
+        for (byte b : bytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
         }
-
-        public String getToken() {
-            return token;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public String getUserType() {
-            return userType;
-        }
-
-        public boolean isExpired() {
-            return ChronoUnit.HOURS.between(createdAt, LocalDateTime.now()) >= EXPIRY_HOURS;
-        }
+        return hexString.toString();
     }
 }

@@ -42,4 +42,9 @@ public interface EstablishmentUserRepository extends BaseRepository<Establishmen
      * Check if email exists
      */
     boolean existsByEmail(String email);
+    
+    /**
+     * Find establishment user by reset password token hash
+     */
+    Optional<EstablishmentUser> findByResetPasswordTokenHash(String resetPasswordTokenHash);
 }

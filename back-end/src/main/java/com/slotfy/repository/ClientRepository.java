@@ -25,4 +25,9 @@ public interface ClientRepository extends BaseRepository<Client, Long> {
      * Check if email exists
      */
     boolean existsByEmail(String email);
+    
+    /**
+     * Find client by reset password token hash
+     */
+    Optional<Client> findByResetPasswordTokenHash(String resetPasswordTokenHash);
 }
