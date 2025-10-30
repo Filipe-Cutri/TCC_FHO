@@ -37,6 +37,12 @@ public class EstablishmentUser extends BaseEntity {
     @Column(name = "active")
     private Boolean active = true;
     
+    @Column(name = "reset_password_token_hash")
+    private String resetPasswordTokenHash;
+    
+    @Column(name = "reset_password_expiry")
+    private Long resetPasswordExpiry;
+    
     // Default constructor
     public EstablishmentUser() {}
     
@@ -106,5 +112,21 @@ public class EstablishmentUser extends BaseEntity {
     
     public boolean isStaff() {
         return UserRole.STAFF.equals(this.role);
+    }
+    
+    public String getResetPasswordTokenHash() {
+        return resetPasswordTokenHash;
+    }
+    
+    public void setResetPasswordTokenHash(String resetPasswordTokenHash) {
+        this.resetPasswordTokenHash = resetPasswordTokenHash;
+    }
+    
+    public Long getResetPasswordExpiry() {
+        return resetPasswordExpiry;
+    }
+    
+    public void setResetPasswordExpiry(Long resetPasswordExpiry) {
+        this.resetPasswordExpiry = resetPasswordExpiry;
     }
 }

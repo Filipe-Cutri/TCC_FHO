@@ -6,43 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.slotfy.service.ForgotPasswordService;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @CrossOrigin(originPatterns = "*")
 public class ForgotPasswordController {
 
     @Autowired
     private ForgotPasswordService forgotPasswordService;
 
-    @PostMapping("/client/forgot-password")
-    public ResponseEntity<Map<String, Object>> clientForgotPassword(@RequestBody Map<String, String> request) {
-        try {
-            String email = request.get("email");
-            
-            if (email == null || email.trim().isEmpty()) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "message", "E-mail é obrigatório"));
-            }
-            
-            boolean emailSent = forgotPasswordService.sendClientPasswordResetEmail(email);
-            
-            if (emailSent) {
-                return ResponseEntity.ok()
-                    .body(Map.of("success", true, "message", "Instruções enviadas para o e-mail"));
-            } else {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "message", "E-mail não encontrado"));
-            }
-            
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                .body(Map.of("success", false, "message", "Erro interno do servidor"));
-        }
-    }
+    // Simple rate limiting: track last request time per IP
+    private final ConcurrentHashMap<String, Long> rateLimitMap = new ConcurrentHashMap<>();
+    private static final long RATE_LIMIT_MS = 60000; // 1 minute between requests
 
-    @PostMapping("/establishment/forgot-password")
-    public ResponseEntity<Map<String, Object>> establishmentForgotPassword(@RequestBody Map<String, String> request) {
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, Object>> forgotPassword(
+            @RequestBody Map<String, String> request,
+            @RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor,
+            @RequestHeader(value = "X-Real-IP", required = false) String realIp) {
+        
         try {
             String email = request.get("email");
             
@@ -51,15 +34,20 @@ public class ForgotPasswordController {
                     .body(Map.of("success", false, "message", "E-mail é obrigatório"));
             }
             
-            boolean emailSent = forgotPasswordService.sendEstablishmentPasswordResetEmail(email);
-            
-            if (emailSent) {
-                return ResponseEntity.ok()
-                    .body(Map.of("success", true, "message", "Instruções enviadas para o e-mail"));
-            } else {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "message", "E-mail não encontrado"));
+            // Basic rate limiting
+            String clientIp = getClientIp(forwardedFor, realIp);
+            if (!checkRateLimit(clientIp)) {
+                return ResponseEntity.status(429)
+                    .body(Map.of("success", false, "message", "Muitas requisições. Tente novamente em 1 minuto."));
             }
+            
+            // Try client first, then establishment
+            forgotPasswordService.sendClientPasswordResetEmail(email);
+            forgotPasswordService.sendEstablishmentPasswordResetEmail(email);
+            
+            // Always return generic success message for security
+            return ResponseEntity.ok()
+                .body(Map.of("success", true, "message", "Se o e-mail existir, as instruções de redefinição foram enviadas"));
             
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
@@ -70,16 +58,17 @@ public class ForgotPasswordController {
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
         try {
+            String email = request.get("email");
             String token = request.get("token");
             String newPassword = request.get("newPassword");
             
-            if (token == null || newPassword == null || 
-                token.trim().isEmpty() || newPassword.trim().isEmpty()) {
+            if (email == null || token == null || newPassword == null || 
+                email.trim().isEmpty() || token.trim().isEmpty() || newPassword.trim().isEmpty()) {
                 return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "message", "Token e nova senha são obrigatórios"));
+                    .body(Map.of("success", false, "message", "E-mail, token e nova senha são obrigatórios"));
             }
             
-            boolean passwordReset = forgotPasswordService.resetPassword(token, newPassword);
+            boolean passwordReset = forgotPasswordService.resetPassword(email, token, newPassword);
             
             if (passwordReset) {
                 return ResponseEntity.ok()
@@ -93,5 +82,31 @@ public class ForgotPasswordController {
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Erro interno do servidor"));
         }
+    }
+
+    private String getClientIp(String forwardedFor, String realIp) {
+        if (forwardedFor != null && !forwardedFor.isEmpty()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+        if (realIp != null && !realIp.isEmpty()) {
+            return realIp;
+        }
+        return "unknown";
+    }
+
+    private boolean checkRateLimit(String clientIp) {
+        long now = System.currentTimeMillis();
+        Long lastRequest = rateLimitMap.get(clientIp);
+        
+        if (lastRequest != null && (now - lastRequest) < RATE_LIMIT_MS) {
+            return false;
+        }
+        
+        rateLimitMap.put(clientIp, now);
+        
+        // Cleanup old entries (older than 5 minutes)
+        rateLimitMap.entrySet().removeIf(entry -> (now - entry.getValue()) > 300000);
+        
+        return true;
     }
 }

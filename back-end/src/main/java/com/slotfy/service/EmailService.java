@@ -93,7 +93,7 @@ public class EmailService {
                     <p>Se o botão não funcionar, copie e cole o seguinte link no seu navegador:</p>
                     <p style="word-break: break-all; background-color: #f3f4f6; padding: 10px; border-radius: 4px;">%s</p>
                     
-                    <p style="color: #dc2626; font-weight: bold;">Este link é válido por 24 horas.</p>
+                    <p style="color: #dc2626; font-weight: bold;">Este link é válido por 1 hora.</p>
                     
                     <p>Se você não solicitou esta redefinição de senha, ignore este e-mail.</p>
                     
