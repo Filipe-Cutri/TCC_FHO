@@ -14,6 +14,8 @@ permissions:
 jobs:
   test-and-sonar:
     runs-on: ubuntu-latest
+    # Executa apenas se não for um PR draft ou se for um push
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
 
     steps:
       - name: Checkout code

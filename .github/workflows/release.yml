@@ -1,0 +1,204 @@
+name: Release
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  # Job que executa para PRs em draft
+  draft-pr-check:
+    name: Draft PR Check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == true
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Draft PR validation
+        run: |
+          echo "✓ This is a draft PR"
+          echo "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          echo "Author: ${{ github.event.pull_request.user.login }}"
+          echo "Draft PRs are validated with basic checks only"
+      
+      - name: Basic validation
+        run: |
+          echo "Running basic validations for draft PR..."
+          # Verifica se os arquivos principais existem
+          if [ ! -d "back-end" ]; then
+            echo "⚠️ Warning: back-end directory not found"
+          else
+            echo "✓ back-end directory exists"
+          fi
+          
+          if [ ! -d "front-end" ]; then
+            echo "⚠️ Warning: front-end directory not found"
+          else
+            echo "✓ front-end directory exists"
+          fi
+          
+          echo "✓ Basic validation completed for draft PR"
+
+  # Job que executa para PRs não-draft (ready for review)
+  ready-pr-check:
+    name: Ready PR Check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && github.event.pull_request.merged != true
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Ready PR validation
+        run: |
+          echo "✓ This is a ready-for-review PR"
+          echo "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          echo "Author: ${{ github.event.pull_request.user.login }}"
+          echo "Base branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Head branch: ${{ github.event.pull_request.head.ref }}"
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-home-cache-cleanup: true
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x back-end/gradlew
+      
+      - name: Build backend
+        run: |
+          cd back-end
+          ./gradlew build -x test --no-daemon
+      
+      - name: Run tests
+        run: |
+          cd back-end
+          ./gradlew test --no-daemon --continue
+      
+      - name: Validation complete
+        run: |
+          echo "✓ All validations passed for ready PR"
+
+  # Job que cria a release quando o PR é merged (não-draft)
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.base.ref == 'main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          # Busca a última tag semântica (formato v*.*.*)
+          LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n 1)
+          
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No existing tags found, starting with v0.0.0"
+            LATEST_TAG="v0.0.0"
+          fi
+          
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest tag: $LATEST_TAG"
+      
+      - name: Bump patch version
+        id: bump_version
+        run: |
+          LATEST_TAG="${{ steps.get_latest_tag.outputs.latest_tag }}"
+          
+          # Remove o 'v' prefix e separa os números
+          VERSION=${LATEST_TAG#v}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          
+          # Incrementa patch version
+          PATCH=$((PATCH + 1))
+          
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "New tag: $NEW_TAG"
+      
+      - name: Create and push tag
+        id: create_tag
+        run: |
+          NEW_TAG="${{ steps.bump_version.outputs.new_tag }}"
+          
+          # Cria a tag anotada
+          git tag -a "$NEW_TAG" -m "Release $NEW_TAG - PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          
+          # Push da tag
+          git push origin "$NEW_TAG"
+          
+          echo "✓ Tag $NEW_TAG created and pushed successfully"
+      
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          NEW_TAG="${{ steps.bump_version.outputs.new_tag }}"
+          LATEST_TAG="${{ steps.get_latest_tag.outputs.latest_tag }}"
+          
+          # Cria as notas de release
+          NOTES="## Release $NEW_TAG
+          
+          ### Changes
+          - Merged PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
+          - Author: @${{ github.event.pull_request.user.login }}
+          
+          ### Commits
+          "
+          
+          # Adiciona os commits do PR
+          if [ "$LATEST_TAG" != "v0.0.0" ]; then
+            COMMITS=$(git log --pretty=format:"- %s (%h)" $LATEST_TAG..HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"- %s (%h)" HEAD~10..HEAD)
+          fi
+          
+          NOTES="$NOTES
+          $COMMITS
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/$LATEST_TAG...$NEW_TAG"
+          
+          # Salva as notas em um arquivo
+          echo "$NOTES" > release_notes.md
+          cat release_notes.md
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          name: Release ${{ steps.bump_version.outputs.new_tag }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Release created
+        run: |
+          echo "✓ Release ${{ steps.bump_version.outputs.new_tag }} created successfully"
+          echo "View release at: https://github.com/${{ github.repository }}/releases/tag/${{ steps.bump_version.outputs.new_tag }}"
