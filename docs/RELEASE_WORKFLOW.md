@@ -75,7 +75,10 @@ As notas de release são geradas automaticamente e incluem:
 O workflow `ci.yml` foi atualizado para complementar o `release.yml`:
 
 ```yaml
-if: github.event_name == 'push' || github.event.pull_request.draft == false
+# .github/workflows/ci.yml
+jobs:
+  test-and-sonar:
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
 ```
 
 **Comportamento:**
