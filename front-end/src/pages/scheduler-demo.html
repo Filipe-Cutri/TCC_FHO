@@ -285,7 +285,8 @@
     </div>
 
     <script>
-        const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + ':8443/api/scheduler';
+        // Auto-detect API base URL based on current location
+        const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + ':' + (window.location.port || '8443') + '/api/scheduler';
         
         let selectedSuggestion = null;
 

@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Este módulo implementa um serviço de sugestões inteligentes de agendamento usando AWS Bedrock com modelos da Meta (Llama). O serviço analiza disponibilidades, bloqueios e preferências do usuário para gerar sugestões otimizadas de horários.
+Este módulo implementa um serviço de sugestões inteligentes de agendamento usando AWS Bedrock com modelos da Meta (Llama). O serviço analisa disponibilidades, bloqueios e preferências do usuário para gerar sugestões otimizadas de horários.
 
 ## Arquitetura
 
