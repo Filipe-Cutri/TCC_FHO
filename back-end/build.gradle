@@ -33,6 +33,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.sendgrid:sendgrid-java:4.10.2'
+    implementation platform('software.amazon.awssdk:bom:2.21.0')
+    implementation 'software.amazon.awssdk:bedrockruntime'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     runtimeOnly 'org.postgresql:postgresql'
 
     // H2 apenas para testes, não em runtime
