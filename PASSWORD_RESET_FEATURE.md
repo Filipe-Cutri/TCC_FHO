@@ -70,10 +70,10 @@ Redefine a senha usando o token recebido por e-mail.
 1. **Requisição de Reset:**
    - Usuário fornece e-mail no frontend
    - Backend gera token de 32 bytes usando `SecureRandom`
-   - Token é convertido para hexadecimal (64 caracteres)
-   - Hash SHA-256 do token é calculado e armazenado no banco
+   - Token de 32 bytes é convertido para hexadecimal (resultando em 64 caracteres hex)
+   - Hash SHA-256 do token hexadecimal é calculado e armazenado no banco
    - Timestamp de expiração (1 hora) é armazenado
-   - E-mail com link de reset é enviado (contém o token em texto plano)
+   - E-mail com link de reset é enviado (contém o token hexadecimal)
    - Retorna sempre sucesso (200 OK)
 
 2. **Reset de Senha:**
