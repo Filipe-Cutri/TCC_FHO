@@ -39,7 +39,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     // H2 apenas para testes, não em runtime
-    testRuntimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
