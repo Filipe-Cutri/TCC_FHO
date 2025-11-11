@@ -53,10 +53,9 @@ public class Establishment extends BaseEntity {
     @Size(max = 14)
     @Column(name = "cnpj")
     private String cnpj;
-    
-    @Lob
-    @Column(name = "settings")
-    private String settings; // JSON string for various settings
+
+    @Column(name = "settings", columnDefinition = "TEXT")
+    private String settings;
     
     // Constructors
     public Establishment() {}
