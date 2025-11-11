@@ -114,8 +114,21 @@ public class EstablishmentAuthController {
     @PostMapping("/register-complete")
     @Transactional
     public ResponseEntity<EstablishmentRegisterResponse> registerComplete(@Valid @RequestBody EstablishmentRegisterRequest request) {
+        logger.info("=== INÍCIO DO CADASTRO DE ESTABELECIMENTO ===");
+        logger.debug("Request recebido - Nome: {}, Email: {}, Categoria: {}", 
+                    request.getNomeEstabelecimento(), 
+                    request.getEmail(), 
+                    request.getCategory());
+        
         try {
             // First, create the establishment
+            logger.info("Etapa 1/2: Criando estabelecimento no banco de dados");
+            logger.debug("Dados do estabelecimento - Nome: {}, Email: {}, Telefone: {}, Categoria: {}",
+                        request.getNomeEstabelecimento(),
+                        request.getEmail(),
+                        request.getTelefone(),
+                        request.getCategory());
+            
             Establishment establishment = establishmentService.createEstablishment(
                     request.getNomeEstabelecimento(),
                     request.getEmail(),
@@ -125,8 +138,22 @@ public class EstablishmentAuthController {
                     request.getCategory(), // ✅ Usa o método que converte tipoEstabelecimento para categoria
                     null  // cnpj - not provided in frontend form
             );
+            
+            logger.info("✓ Estabelecimento criado com sucesso - ID: {}", establishment.getId());
+            logger.debug("Detalhes do estabelecimento criado - ID: {}, Nome: {}, Email: {}, Status: {}",
+                        establishment.getId(),
+                        establishment.getName(),
+                        establishment.getEmail(),
+                        establishment.getStatus());
 
             // Then, create the admin user for this establishment
+            logger.info("Etapa 2/2: Criando usuário administrador para o estabelecimento ID: {}", establishment.getId());
+            logger.debug("Dados do usuário admin - Nome: {}, Email: {}, Role: {}, EstablishmentId: {}",
+                        request.getNomeEstabelecimento(),
+                        request.getEmail(),
+                        UserRole.ADMIN,
+                        establishment.getId());
+            
             EstablishmentUser adminUser = establishmentUserService.createUser(
                     request.getNomeEstabelecimento(), // ✅ Usa o nome do estabelecimento como nome do admin
                     request.getEmail(),
@@ -134,6 +161,17 @@ public class EstablishmentAuthController {
                     UserRole.ADMIN,
                     establishment.getId()
             );
+            
+            logger.info("✓ Usuário administrador criado com sucesso - ID: {}", adminUser.getId());
+            logger.debug("Detalhes do usuário criado - ID: {}, Nome: {}, Email: {}, Role: {}, EstablishmentId: {}",
+                        adminUser.getId(),
+                        adminUser.getName(),
+                        adminUser.getEmail(),
+                        adminUser.getRole(),
+                        adminUser.getEstablishmentId());
+
+            logger.info("=== CADASTRO CONCLUÍDO COM SUCESSO - Estabelecimento ID: {}, Admin ID: {} ===",
+                       establishment.getId(), adminUser.getId());
 
             return ResponseEntity.ok(new EstablishmentRegisterResponse(
                     true,
@@ -146,11 +184,17 @@ public class EstablishmentAuthController {
             ));
 
         } catch (IllegalArgumentException e) {
-            logger.error("Validation error during establishment registration: {}", e.getMessage());
+            logger.error("❌ Erro de validação durante cadastro de estabelecimento: {}", e.getMessage());
+            logger.debug("Stack trace da validação:", e);
             return ResponseEntity.badRequest()
                     .body(new EstablishmentRegisterResponse(false, e.getMessage()));
         } catch (Exception e) {
-            logger.error("Unexpected error during establishment registration", e);
+            logger.error("❌ ERRO CRÍTICO durante cadastro de estabelecimento", e);
+            logger.error("Tipo da exceção: {}", e.getClass().getName());
+            logger.error("Mensagem: {}", e.getMessage());
+            if (e.getCause() != null) {
+                logger.error("Causa raiz: {} - {}", e.getCause().getClass().getName(), e.getCause().getMessage());
+            }
             return ResponseEntity.internalServerError()
                     .body(new EstablishmentRegisterResponse(false, "Erro interno do servidor: " + e.getMessage()));
         }
