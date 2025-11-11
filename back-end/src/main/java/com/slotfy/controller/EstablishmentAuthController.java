@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
@@ -111,6 +112,7 @@ public class EstablishmentAuthController {
     }
 
     @PostMapping("/register-complete")
+    @Transactional
     public ResponseEntity<EstablishmentRegisterResponse> registerComplete(@Valid @RequestBody EstablishmentRegisterRequest request) {
         try {
             // First, create the establishment
