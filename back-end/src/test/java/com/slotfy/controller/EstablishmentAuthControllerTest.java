@@ -110,4 +110,73 @@ public class EstablishmentAuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.success").value(false));
     }
+
+    @Test
+    @WithMockUser
+    public void testRegisterCompleteSuccess() throws Exception {
+        // Arrange - Mock establishment creation
+        com.slotfy.model.Establishment mockEstablishment = new com.slotfy.model.Establishment(
+                "Test Establishment", 
+                "establishment@example.com", 
+                "1234567890", 
+                "Test Address"
+        );
+        mockEstablishment.setId(1L);
+        mockEstablishment.setCategory("Barbearia");
+
+        // Mock establishment user creation
+        EstablishmentUser mockUser = new EstablishmentUser(
+                "Test Establishment", 
+                "establishment@example.com", 
+                "hashedPassword", 
+                UserRole.ADMIN, 
+                1L
+        );
+        mockUser.setId(1L);
+
+        when(establishmentService.createEstablishment(
+                anyString(), anyString(), anyString(), any(), any(), anyString(), any()))
+                .thenReturn(mockEstablishment);
+        
+        when(establishmentUserService.createUser(
+                anyString(), anyString(), anyString(), any(UserRole.class), anyLong()))
+                .thenReturn(mockUser);
+
+        Map<String, String> request = new HashMap<>();
+        request.put("tipoEstabelecimento", "barbearia");
+        request.put("nomeEstabelecimento", "Test Establishment");
+        request.put("email", "establishment@example.com");
+        request.put("telefone", "1234567890");
+        request.put("senha", "password123");
+
+        // Act & Assert
+        mockMvc.perform(post("/api/establishment/register-complete")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.message").value("Estabelecimento registrado com sucesso!"))
+                .andExpect(jsonPath("$.establishmentId").value(1))
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.establishmentName").value("Test Establishment"))
+                .andExpect(jsonPath("$.userEmail").value("establishment@example.com"));
+    }
+
+    @Test
+    @WithMockUser
+    public void testRegisterCompleteValidationError() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("tipoEstabelecimento", "");
+        request.put("nomeEstabelecimento", "");
+        request.put("email", "invalid-email");
+        request.put("telefone", "");
+        request.put("senha", "123"); // Too short
+
+        mockMvc.perform(post("/api/establishment/register-complete")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
 }
