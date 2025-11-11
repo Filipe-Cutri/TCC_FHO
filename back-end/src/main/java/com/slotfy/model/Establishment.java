@@ -54,7 +54,8 @@ public class Establishment extends BaseEntity {
     @Column(name = "cnpj")
     private String cnpj;
 
-    @Column(name = "settings", columnDefinition = "TEXT")
+    @Lob
+    @Column(name = "settings")
     private String settings;
     
     // Constructors

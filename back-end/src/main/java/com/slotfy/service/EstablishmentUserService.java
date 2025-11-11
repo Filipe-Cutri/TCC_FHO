@@ -3,6 +3,8 @@ package com.slotfy.service;
 import com.slotfy.model.EstablishmentUser;
 import com.slotfy.model.UserRole;
 import com.slotfy.repository.EstablishmentUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.Optional;
  */
 @Service
 public class EstablishmentUserService extends BaseAuthService<EstablishmentUser, EstablishmentUserRepository> {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EstablishmentUserService.class);
     
     @Autowired
     private EstablishmentUserRepository establishmentUserRepository;
@@ -79,21 +83,48 @@ public class EstablishmentUserService extends BaseAuthService<EstablishmentUser,
      * Create new user
      */
     public EstablishmentUser createUser(String name, String email, String password, UserRole role, Long establishmentId) {
+        logger.debug("Iniciando criação de usuário - Nome: {}, Email: {}, Role: {}, EstablishmentId: {}", 
+                    name, email, role, establishmentId);
+        
+        logger.debug("Verificando se email já existe: {}", email);
         if (existsByEmail(email)) {
+            logger.warn("Tentativa de criar usuário com email já existente: {}", email);
             throw new IllegalArgumentException("Email já está em uso");
         }
         
+        logger.debug("Validando formato do email: {}", email);
         if (!isValidEmail(email)) {
+            logger.error("Email inválido fornecido: {}", email);
             throw new IllegalArgumentException("Email inválido");
         }
         
+        logger.debug("Validando senha (comprimento mínimo)");
         if (!isValidPassword(password)) {
+            logger.error("Senha fornecida não atende aos requisitos mínimos");
             throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
         }
         
+        logger.info("Gerando hash da senha para o usuário: {}", email);
         String encodedPassword = hashPassword(password);
+        
+        logger.debug("Criando objeto EstablishmentUser - Nome: {}, Email: {}, Role: {}, EstablishmentId: {}", 
+                    name, email, role, establishmentId);
         EstablishmentUser user = new EstablishmentUser(name, email, encodedPassword, role, establishmentId);
-        return save(user);
+        
+        logger.info("Salvando usuário no banco de dados - Email: {}, Role: {}", email, role);
+        try {
+            EstablishmentUser saved = save(user);
+            logger.info("Usuário salvo com sucesso - ID: {}, Email: {}, Role: {}, EstablishmentId: {}", 
+                       saved.getId(), saved.getEmail(), saved.getRole(), saved.getEstablishmentId());
+            return saved;
+        } catch (Exception e) {
+            logger.error("Erro ao salvar usuário no banco de dados", e);
+            logger.error("Tipo de erro: {}, Mensagem: {}", e.getClass().getName(), e.getMessage());
+            if (e.getCause() != null) {
+                logger.error("Causa raiz: {} - {}", e.getCause().getClass().getName(), e.getCause().getMessage());
+            }
+            throw e;
+        }
     }
     
     /**

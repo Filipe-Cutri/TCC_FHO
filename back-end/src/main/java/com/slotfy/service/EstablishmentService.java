@@ -3,6 +3,8 @@ package com.slotfy.service;
 import com.slotfy.model.Establishment;
 import com.slotfy.model.EstablishmentStatus;
 import com.slotfy.repository.EstablishmentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Service
 public class EstablishmentService extends BaseService<Establishment, Long> {
     
+    private static final Logger logger = LoggerFactory.getLogger(EstablishmentService.class);
     private final EstablishmentRepository establishmentRepository;
     
     @Autowired
@@ -56,33 +59,56 @@ public class EstablishmentService extends BaseService<Establishment, Long> {
      */
     public Establishment createEstablishment(String name, String email, String phone, String address, 
                                            String description, String category, String cnpj) {
+        logger.debug("Iniciando criação de estabelecimento - Nome: {}, Email: {}, Categoria: {}", name, email, category);
+        
         // Validate input
         if (name == null || name.trim().isEmpty()) {
+            logger.error("Validação falhou: Nome é obrigatório");
             throw new IllegalArgumentException("Nome é obrigatório");
         }
         
+        logger.debug("Verificando duplicidade de email: {}", email);
         // Check if email already exists
         if (email != null && !email.trim().isEmpty()) {
             Optional<Establishment> existingByEmail = establishmentRepository.findByEmail(email);
             if (existingByEmail.isPresent()) {
+                logger.warn("Tentativa de cadastrar estabelecimento com email já existente: {} (ID existente: {})", 
+                           email, existingByEmail.get().getId());
                 throw new IllegalArgumentException("Já existe um estabelecimento com este email");
             }
         }
         
+        logger.debug("Verificando duplicidade de CNPJ: {}", cnpj);
         // Check if CNPJ already exists
         if (cnpj != null && !cnpj.trim().isEmpty()) {
             Optional<Establishment> existingByCnpj = establishmentRepository.findByCnpj(cnpj);
             if (existingByCnpj.isPresent()) {
+                logger.warn("Tentativa de cadastrar estabelecimento com CNPJ já existente: {} (ID existente: {})", 
+                           cnpj, existingByCnpj.get().getId());
                 throw new IllegalArgumentException("Já existe um estabelecimento com este CNPJ");
             }
         }
         
+        logger.debug("Criando objeto Establishment com os dados fornecidos");
         Establishment establishment = new Establishment(name.trim(), email, phone, address);
         establishment.setDescription(description);
         establishment.setCategory(category);
         establishment.setCnpj(cnpj);
         
-        return establishmentRepository.save(establishment);
+        logger.info("Salvando estabelecimento no banco de dados - Nome: {}", name.trim());
+        try {
+            Establishment saved = establishmentRepository.save(establishment);
+            logger.info("Estabelecimento salvo com sucesso - ID: {}, Nome: {}, Status: {}", 
+                       saved.getId(), saved.getName(), saved.getStatus());
+            return saved;
+        } catch (Exception e) {
+            logger.error("Erro ao salvar estabelecimento no banco de dados", e);
+            logger.error("Tipo de erro: {}, Mensagem: {}", e.getClass().getName(), e.getMessage());
+            if (e.getCause() != null) {
+                logger.error("Causa raiz: {} - {}", e.getCause().getClass().getName(), e.getCause().getMessage());
+            }
+            throw e;
+        }
     }
     
     /**
