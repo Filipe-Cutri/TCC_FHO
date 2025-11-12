@@ -66,8 +66,7 @@ public class Establishment extends BaseEntity {
         this.phone = phone;
         this.address = address;
     }
-    
-    // Getters and setters
+
     public String getName() {
         return name;
     }
