@@ -56,8 +56,7 @@ public class Establishment extends BaseEntity {
 
     @Column(name = "settings", columnDefinition = "TEXT")
     private String settings;
-    
-    // Constructors
+
     public Establishment() {}
     
     public Establishment(String name, String email, String phone, String address) {
