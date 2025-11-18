@@ -12,9 +12,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  test-and-sonar:
+  test-and-analyze:
     runs-on: ubuntu-latest
-    # Executa apenas se não for um PR draft ou se for um push
     if: github.event_name == 'push' || github.event.pull_request.draft == false
 
     steps:
@@ -49,7 +48,7 @@ jobs:
           cd back-end
           ./gradlew test jacocoTestReport --no-daemon --continue
 
-      - name: Upload coverage reports to Codecov
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           file: ./back-end/build/reports/jacoco/test/jacocoTestReport.xml
