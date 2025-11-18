@@ -35,6 +35,7 @@ const API_CONFIG = {
         establishment: {
             login: '/api/establishment/login',
             register: '/api/establishment/register',
+            registerComplete: '/api/establishment/register-complete',
             forgotPassword: '/api/establishment/forgot-password',
             list: '/api/establishment/list',
             createStaff: '/api/establishment/create-staff',
