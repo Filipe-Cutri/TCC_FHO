@@ -205,12 +205,21 @@
             senha: $('#senha').val()
         };
 
+        // Validação dos campos
         if (!formData.tipoEstabelecimento || !formData.nomeEstabelecimento ||
             !formData.email || !formData.telefone || !formData.senha) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
         }
 
+        // Validação de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            alert('Por favor, insira um e-mail válido.');
+            return;
+        }
+
+        // Validação de senha
         if (formData.senha.length < 6) {
             alert('A senha deve ter pelo menos 6 caracteres.');
             return;
@@ -227,18 +236,38 @@
             data: JSON.stringify(formData),
             success: function (response) {
                 if (response.success) {
-                    alert('Estabelecimento registrado com sucesso!');
-                    window.location.href = 'establishment-dashboard.html';
+                    alert('✅ Estabelecimento registrado com sucesso!\n\nRedirecionando para o dashboard...');
+                    // Save user info to session if needed
+                    if (response.userId && response.establishmentId) {
+                        sessionStorage.setItem('establishmentId', response.establishmentId);
+                        sessionStorage.setItem('userId', response.userId);
+                        sessionStorage.setItem('userEmail', response.userEmail);
+                    }
+                    // Redirect to login page instead of dashboard since they haven't logged in yet
+                    window.location.href = 'establishment-login.html';
                 } else {
-                    alert('Erro: ' + response.message);
+                    alert('❌ Erro no cadastro:\n' + response.message);
                 }
             },
             error: function (xhr) {
-                let errorMessage = 'Erro interno do servidor';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
+                console.error('Registration error:', xhr);
+                let errorMessage = 'Erro ao conectar com o servidor';
+                
+                if (xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.message) {
+                    // Validation error from backend
                     errorMessage = xhr.responseJSON.message;
+                    
+                    // Provide helpful hints for common errors
+                    if (errorMessage.includes('email já')) {
+                        errorMessage += '\n\n💡 Dica: Este e-mail já está cadastrado. Você pode fazer login ou usar um e-mail diferente.';
+                    }
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Erro interno do servidor. Por favor, tente novamente mais tarde.';
+                } else if (xhr.status === 0) {
+                    errorMessage = 'Não foi possível conectar ao servidor. Verifique sua conexão com a internet.';
                 }
-                alert('Erro: ' + errorMessage);
+                
+                alert('❌ Erro no cadastro:\n' + errorMessage);
             },
             complete: function () {
                 submitBtn.html(originalText).prop('disabled', false);
