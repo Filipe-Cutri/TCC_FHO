@@ -15,9 +15,9 @@
   z-index: 1000;
 }
 
-/* Establishment specific navbar - Blue theme */
+/* Establishment specific navbar */
 .establishment-auth .auth-navbar {
-  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
 .auth-navbar .navbar-brand {
@@ -99,11 +99,11 @@
 }
 
 .client-auth {
-  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .establishment-auth {
-  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #172554 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #92400e 100%);
   position: relative;
 }
 
@@ -115,8 +115,8 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(30, 64, 175, 0.2) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.2) 0%, transparent 50%);
   z-index: -1;
 }
 
@@ -131,7 +131,7 @@
 }
 
 .establishment-auth .auth-title {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -145,7 +145,7 @@
 
 /* Auth card improvements */
 .auth-card.establishment-card::before {
-  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 50%, #92400e 100%);
 }
 
 /* Standardized form input styles */
@@ -171,8 +171,8 @@
 }
 
 .establishment-auth .form-floating-custom .form-control:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
 }
 
 .form-floating-custom label {
@@ -198,7 +198,7 @@
 
 .establishment-auth .form-floating-custom .form-control:focus + label,
 .establishment-auth .form-floating-custom .form-control:not(:placeholder-shown) + label {
-  color: #3b82f6;
+  color: #f59e0b;
 }
 
 /* Unified button styles */
@@ -227,12 +227,12 @@
 }
 
 .establishment-auth .btn-auth-primary {
-  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
 .establishment-auth .btn-auth-primary:hover {
-  background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
-  box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+  background: linear-gradient(135deg, #d97706 0%, #92400e 100%);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
 }
 
 .btn-auth-secondary {
@@ -260,11 +260,11 @@
 }
 
 .establishment-auth .auth-link {
-  color: #3b82f6;
+  color: #f59e0b;
 }
 
 .establishment-auth .auth-link:hover {
-  color: #2563eb;
+  color: #d97706;
 }
 
 /* Responsive improvements */

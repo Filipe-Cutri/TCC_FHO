@@ -14,8 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -105,14 +104,10 @@ public class SchedulerControllerTest {
     @Test
     @WithMockUser
     public void testConfirmSuccess() throws Exception {
-        // Use future dates for the test
-        LocalDateTime futureStart = LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime futureEnd = futureStart.plusHours(1);
-        
         SchedulerConfirmRequest request = new SchedulerConfirmRequest(
             "user123",
-            futureStart.format(DateTimeFormatter.ISO_DATE_TIME),
-            futureEnd.format(DateTimeFormatter.ISO_DATE_TIME)
+            "2024-01-01T10:00:00Z",
+            "2024-01-01T11:00:00Z"
         );
 
         mockMvc.perform(post("/api/scheduler/confirm")
@@ -120,7 +115,7 @@ public class SchedulerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value("Time slot confirmed successfully"));
+            .andExpect(jsonPath("$.message").value("Appointment confirmed successfully"));
     }
 
     @Test
@@ -128,8 +123,8 @@ public class SchedulerControllerTest {
     public void testConfirmMissingUserId() throws Exception {
         SchedulerConfirmRequest request = new SchedulerConfirmRequest(
             null,
-            "2024-01-01T10:00:00",
-            "2024-01-01T11:00:00"
+            "2024-01-01T10:00:00Z",
+            "2024-01-01T11:00:00Z"
         );
 
         mockMvc.perform(post("/api/scheduler/confirm")
@@ -146,7 +141,7 @@ public class SchedulerControllerTest {
         SchedulerConfirmRequest request = new SchedulerConfirmRequest(
             "user123",
             null,
-            "2024-01-01T11:00:00"
+            "2024-01-01T11:00:00Z"
         );
 
         mockMvc.perform(post("/api/scheduler/confirm")
@@ -162,7 +157,7 @@ public class SchedulerControllerTest {
     public void testConfirmMissingEndTime() throws Exception {
         SchedulerConfirmRequest request = new SchedulerConfirmRequest(
             "user123",
-            "2024-01-01T10:00:00",
+            "2024-01-01T10:00:00Z",
             null
         );
 
