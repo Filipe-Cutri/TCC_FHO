@@ -4,7 +4,6 @@ import com.slotfy.dto.ApiResponse;
 import com.slotfy.dto.SchedulerConfirmRequest;
 import com.slotfy.dto.SchedulerSuggestRequest;
 import com.slotfy.dto.SchedulerSuggestResponse;
-import com.slotfy.service.AppointmentService;
 import com.slotfy.service.SuggestionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +28,6 @@ public class SchedulerController {
     
     @Autowired
     private SuggestionService suggestionService;
-    
-    @Autowired
-    private AppointmentService appointmentService;
     
     /**
      * Generate scheduling suggestions

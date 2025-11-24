@@ -3,7 +3,6 @@ package com.slotfy.controller;
 import com.slotfy.dto.SchedulerConfirmRequest;
 import com.slotfy.dto.SchedulerSuggestRequest;
 import com.slotfy.dto.SchedulerSuggestResponse;
-import com.slotfy.service.AppointmentService;
 import com.slotfy.service.SuggestionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -34,9 +33,6 @@ public class SchedulerControllerTest {
 
     @MockBean
     private SuggestionService suggestionService;
-
-    @MockBean
-    private AppointmentService appointmentService;
 
     @Autowired
     private ObjectMapper objectMapper;
