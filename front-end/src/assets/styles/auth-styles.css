@@ -9,12 +9,12 @@
 }
 
 .auth-page.client-auth {
-  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .auth-page.establishment-auth {
   background: 
-    linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #172554 100%),
+    linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #92400e 100%),
     url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="business-grid" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M 12 0 L 0 0 0 12" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23business-grid)"/></svg>');
   position: relative;
   overflow-x: hidden;
@@ -28,9 +28,9 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(30, 64, 175, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 50% 100%, rgba(30, 58, 138, 0.2) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(146, 64, 14, 0.2) 0%, transparent 50%);
   z-index: -1;
   animation: businessFloat 25s ease-in-out infinite;
 }
@@ -111,7 +111,7 @@
 /* Login Visual Section */
 .login-visual {
   background: 
-    linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%),
+    linear-gradient(135deg, #f59e0b 0%, #d97706 100%),
     url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="establishment-pattern" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="2" fill="rgba(255,255,255,0.15)"/><rect x="8" y="8" width="9" height="9" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23establishment-pattern)"/></svg>');
   position: relative;
   overflow: hidden;
@@ -148,7 +148,7 @@
 }
 
 .visual-features i {
-  color: #60a5fa;
+  color: #fbbf24;
   margin-right: 1rem;
   font-size: 1.125rem !important;
   background: rgba(255, 255, 255, 0.3);
@@ -178,7 +178,7 @@
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1e40af 100%);
+  background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 50%, #8b5cf6 100%);
 }
 
 /* Fixed navbar body padding */
@@ -234,7 +234,7 @@
 }
 
 .login-form.establishment-form h1 {
-  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #92400e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -279,7 +279,7 @@
 }
 
 .form-control.establishment-focus:focus {
-  border-color: #3b82f6;
+  border-color: #f59e0b;
 }
 
 .form-control:hover {
@@ -310,14 +310,14 @@
 }
 
 .btn-login.btn-establishment {
-  background: linear-gradient(135deg, #1e40af, #1e3a8a);
-  box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.4);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4);
 }
 
 .btn-login.btn-establishment:hover {
-  background: linear-gradient(135deg, #1e3a8a, #172554);
+  background: linear-gradient(135deg, #d97706, #92400e);
   transform: translateY(-2px);
-  box-shadow: 0 15px 25px -5px rgba(30, 64, 175, 0.5);
+  box-shadow: 0 15px 25px -5px rgba(245, 158, 11, 0.5);
   color: var(--color-neutral-0);
 }
 
@@ -349,11 +349,11 @@
 }
 
 .forgot-password.establishment-link {
-  color: #3b82f6;
+  color: #f59e0b;
 }
 
 .forgot-password.establishment-link:hover {
-  color: #2563eb;
+  color: #d97706;
   text-decoration: underline;
 }
 
@@ -386,10 +386,10 @@
 }
 
 .register-link a.establishment-register-link {
-  color: #3b82f6;
+  color: #f59e0b;
 }
 
 .register-link a.establishment-register-link:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
 }
