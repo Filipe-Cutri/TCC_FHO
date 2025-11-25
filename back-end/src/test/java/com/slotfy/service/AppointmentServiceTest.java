@@ -893,4 +893,421 @@ public class AppointmentServiceTest {
         
         assertFalse(result); // Should detect exact overlap
     }
+    
+    // Test multi-establishment data isolation methods
+    @Test
+    void testValidateAppointmentBelongsToEstablishment_Success() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(establishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        // Should not throw exception
+        assertDoesNotThrow(() -> {
+            service.validateAppointmentBelongsToEstablishment(appointmentId, establishmentId);
+        });
+        
+        verify(repository).findById(appointmentId);
+    }
+    
+    @Test
+    void testValidateAppointmentBelongsToEstablishment_NotFound() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.validateAppointmentBelongsToEstablishment(appointmentId, establishmentId);
+        });
+        assertEquals("Agendamento não encontrado", exception.getMessage());
+    }
+    
+    @Test
+    void testValidateAppointmentBelongsToEstablishment_WrongEstablishment() {
+        Long appointmentId = 1L;
+        Long requestedEstablishmentId = 4L;
+        Long actualEstablishmentId = 5L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(actualEstablishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            service.validateAppointmentBelongsToEstablishment(appointmentId, requestedEstablishmentId);
+        });
+        assertEquals("Acesso negado: agendamento não pertence ao estabelecimento", exception.getMessage());
+    }
+    
+    @Test
+    void testFindByIdAndEstablishment_Success() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(establishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Optional<Appointment> result = service.findByIdAndEstablishment(appointmentId, establishmentId);
+        
+        assertTrue(result.isPresent());
+        assertEquals(appointmentId, result.get().getId());
+    }
+    
+    @Test
+    void testFindByIdAndEstablishment_NotFound() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.empty());
+        
+        Optional<Appointment> result = service.findByIdAndEstablishment(appointmentId, establishmentId);
+        
+        assertFalse(result.isPresent());
+    }
+    
+    @Test
+    void testFindByIdAndEstablishment_WrongEstablishment() {
+        Long appointmentId = 1L;
+        Long requestedEstablishmentId = 4L;
+        Long actualEstablishmentId = 5L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(actualEstablishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Optional<Appointment> result = service.findByIdAndEstablishment(appointmentId, requestedEstablishmentId);
+        
+        assertFalse(result.isPresent()); // Returns empty instead of throwing exception for GET operations
+    }
+    
+    // Test updateStatus with establishment validation
+    @Test
+    void testUpdateStatus_WithEstablishmentValidation_Success() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        AppointmentStatus newStatus = AppointmentStatus.CONFIRMED;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(establishmentId);
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.updateStatus(appointmentId, newStatus, establishmentId);
+        
+        assertNotNull(result);
+        verify(repository, times(2)).findById(appointmentId); // Once for validation, once for update
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testUpdateStatus_WithEstablishmentValidation_WrongEstablishment() {
+        Long appointmentId = 1L;
+        Long requestedEstablishmentId = 4L;
+        Long actualEstablishmentId = 5L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(actualEstablishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            service.updateStatus(appointmentId, AppointmentStatus.CONFIRMED, requestedEstablishmentId);
+        });
+        assertEquals("Acesso negado: agendamento não pertence ao estabelecimento", exception.getMessage());
+    }
+    
+    // Test reschedule with establishment validation
+    @Test
+    void testReschedule_WithEstablishmentValidation_Success() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(establishmentId);
+        appointment.setProfessionalId(2L);
+        appointment.setServiceDurationMinutes(60);
+        appointment.setAppointmentDateTime(LocalDateTime.now().plusHours(1));
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.findPotentialConflictingAppointments(any(), any(), any()))
+            .thenReturn(Collections.emptyList());
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.reschedule(appointmentId, newDateTime, establishmentId);
+        
+        assertNotNull(result);
+    }
+    
+    @Test
+    void testReschedule_WithEstablishmentValidation_WrongEstablishment() {
+        Long appointmentId = 1L;
+        Long requestedEstablishmentId = 4L;
+        Long actualEstablishmentId = 5L;
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(3);
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(actualEstablishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            service.reschedule(appointmentId, newDateTime, requestedEstablishmentId);
+        });
+        assertEquals("Acesso negado: agendamento não pertence ao estabelecimento", exception.getMessage());
+    }
+    
+    // Test updateNotes with establishment validation
+    @Test
+    void testUpdateNotes_WithEstablishmentValidation_Success() {
+        Long appointmentId = 1L;
+        Long establishmentId = 4L;
+        String newNotes = "Updated notes";
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(establishmentId);
+        appointment.setNotes("Old notes");
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.updateNotes(appointmentId, newNotes, establishmentId);
+        
+        assertNotNull(result);
+    }
+    
+    @Test
+    void testUpdateNotes_WithEstablishmentValidation_WrongEstablishment() {
+        Long appointmentId = 1L;
+        Long requestedEstablishmentId = 4L;
+        Long actualEstablishmentId = 5L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setEstablishmentId(actualEstablishmentId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            service.updateNotes(appointmentId, "New notes", requestedEstablishmentId);
+        });
+        assertEquals("Acesso negado: agendamento não pertence ao estabelecimento", exception.getMessage());
+    }
+    
+    // Test cancelClientAppointment
+    @Test
+    void testCancelClientAppointment_Success() {
+        Long appointmentId = 1L;
+        Long clientId = 2L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setClientId(clientId);
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(repository.save(any(Appointment.class))).thenReturn(appointment);
+        
+        Appointment result = service.cancelClientAppointment(appointmentId, clientId);
+        
+        assertNotNull(result);
+        verify(repository).save(appointment);
+    }
+    
+    @Test
+    void testCancelClientAppointment_NotFound() {
+        Long appointmentId = 1L;
+        Long clientId = 2L;
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.cancelClientAppointment(appointmentId, clientId);
+        });
+        assertEquals("Agendamento não encontrado", exception.getMessage());
+    }
+    
+    @Test
+    void testCancelClientAppointment_WrongClient() {
+        Long appointmentId = 1L;
+        Long requestedClientId = 2L;
+        Long actualClientId = 3L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setClientId(actualClientId);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            service.cancelClientAppointment(appointmentId, requestedClientId);
+        });
+        assertEquals("Você não tem permissão para cancelar este agendamento", exception.getMessage());
+    }
+    
+    @Test
+    void testCancelClientAppointment_AlreadyCancelled() {
+        Long appointmentId = 1L;
+        Long clientId = 2L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setClientId(clientId);
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.cancelClientAppointment(appointmentId, clientId);
+        });
+        assertEquals("Este agendamento já está cancelado", exception.getMessage());
+    }
+    
+    @Test
+    void testCancelClientAppointment_AlreadyCompleted() {
+        Long appointmentId = 1L;
+        Long clientId = 2L;
+        
+        Appointment appointment = new Appointment();
+        appointment.setId(appointmentId);
+        appointment.setClientId(clientId);
+        appointment.setStatus(AppointmentStatus.COMPLETED);
+        
+        when(repository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.cancelClientAppointment(appointmentId, clientId);
+        });
+        assertEquals("Não é possível cancelar um agendamento já finalizado", exception.getMessage());
+    }
+    
+    // Test getAppointmentsNeedingReminders
+    @Test
+    void testGetAppointmentsNeedingReminders() {
+        LocalDateTime now = LocalDateTime.now();
+        
+        // Create appointments with various conditions
+        Appointment reminderNeeded = new Appointment();
+        reminderNeeded.setAppointmentDateTime(now.plusHours(12)); // Within 24 hour window
+        reminderNeeded.setStatus(AppointmentStatus.SCHEDULED);
+        
+        Appointment confirmed = new Appointment();
+        confirmed.setAppointmentDateTime(now.plusHours(20));
+        confirmed.setStatus(AppointmentStatus.CONFIRMED);
+        
+        Appointment tooFarAway = new Appointment();
+        tooFarAway.setAppointmentDateTime(now.plusHours(48)); // Beyond 24 hour window
+        tooFarAway.setStatus(AppointmentStatus.SCHEDULED);
+        
+        Appointment alreadyPassed = new Appointment();
+        alreadyPassed.setAppointmentDateTime(now.minusHours(1)); // In the past
+        alreadyPassed.setStatus(AppointmentStatus.SCHEDULED);
+        
+        Appointment cancelled = new Appointment();
+        cancelled.setAppointmentDateTime(now.plusHours(12));
+        cancelled.setStatus(AppointmentStatus.CANCELLED);
+        
+        when(repository.findAll()).thenReturn(Arrays.asList(
+            reminderNeeded, confirmed, tooFarAway, alreadyPassed, cancelled
+        ));
+        
+        List<Appointment> result = service.getAppointmentsNeedingReminders();
+        
+        // Should include reminderNeeded and confirmed, exclude others
+        assertEquals(2, result.size());
+        verify(repository).findAll();
+    }
+    
+    // Test createAppointment with service/professional not belonging to establishment
+    @Test
+    void testCreateAppointment_ProfessionalNotFound() {
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        Long establishmentId = 4L;
+        
+        when(professionalService.findById(2L)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, establishmentId, appointmentDateTime, 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Profissional não encontrado", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_ProfessionalWrongEstablishment() {
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        Long establishmentId = 4L;
+        Long differentEstablishmentId = 5L;
+        
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(2L);
+        mockProfessional.setEstablishmentId(differentEstablishmentId);
+        when(professionalService.findById(2L)).thenReturn(Optional.of(mockProfessional));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, establishmentId, appointmentDateTime, 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Profissional não pertence ao estabelecimento selecionado", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_ServiceNotFound() {
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        Long establishmentId = 4L;
+        
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(2L);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(2L)).thenReturn(Optional.of(mockProfessional));
+        
+        when(serviceService.findById(3L)).thenReturn(Optional.empty());
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, establishmentId, appointmentDateTime, 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Serviço não encontrado", exception.getMessage());
+    }
+    
+    @Test
+    void testCreateAppointment_ServiceWrongEstablishment() {
+        LocalDateTime appointmentDateTime = LocalDateTime.now().plusHours(2);
+        Long establishmentId = 4L;
+        Long differentEstablishmentId = 5L;
+        
+        Professional mockProfessional = new Professional();
+        mockProfessional.setId(2L);
+        mockProfessional.setEstablishmentId(establishmentId);
+        when(professionalService.findById(2L)).thenReturn(Optional.of(mockProfessional));
+        
+        com.slotfy.model.Service mockService = new com.slotfy.model.Service();
+        mockService.setId(3L);
+        mockService.setEstablishmentId(differentEstablishmentId);
+        when(serviceService.findById(3L)).thenReturn(Optional.of(mockService));
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createAppointment(1L, 2L, 3L, establishmentId, appointmentDateTime, 
+                    "notes", "client", "professional", "service", 60, new BigDecimal("50.00"));
+        });
+        assertEquals("Serviço não pertence ao estabelecimento selecionado", exception.getMessage());
+    }
 }

@@ -207,4 +207,124 @@ public class ForgotPasswordControllerTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.message").value("Erro interno do servidor"));
     }
+    
+    @Test
+    @WithMockUser
+    public void testForgotPasswordWithForwardedForHeader() throws Exception {
+        when(forgotPasswordService.sendClientPasswordResetEmail(anyString())).thenReturn(true);
+        when(forgotPasswordService.sendEstablishmentPasswordResetEmail(anyString())).thenReturn(true);
+
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "user@example.com");
+
+        mockMvc.perform(post("/api/auth/forgot-password")
+                .with(csrf())
+                .header("X-Forwarded-For", "10.0.0.1, 192.168.1.100")  // Multiple IPs in forwarded header
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true));
+    }
+    
+    @Test
+    @WithMockUser
+    public void testForgotPasswordWithNoHeaders() throws Exception {
+        when(forgotPasswordService.sendClientPasswordResetEmail(anyString())).thenReturn(true);
+        when(forgotPasswordService.sendEstablishmentPasswordResetEmail(anyString())).thenReturn(true);
+
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "user2@example.com");
+
+        // No X-Forwarded-For or X-Real-IP headers
+        mockMvc.perform(post("/api/auth/forgot-password")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true));
+    }
+    
+    @Test
+    @WithMockUser
+    public void testForgotPasswordWithWhitespaceEmail() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "   ");
+
+        mockMvc.perform(post("/api/auth/forgot-password")
+                .with(csrf())
+                .header("X-Real-IP", "192.168.1.20")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("E-mail é obrigatório"));
+    }
+    
+    @Test
+    @WithMockUser
+    public void testResetPasswordEmptyEmail() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "");
+        request.put("token", "valid-token");
+        request.put("newPassword", "newPassword123");
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("E-mail, token e nova senha são obrigatórios"));
+    }
+    
+    @Test
+    @WithMockUser
+    public void testResetPasswordWhitespaceEmail() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "   ");
+        request.put("token", "valid-token");
+        request.put("newPassword", "newPassword123");
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("E-mail, token e nova senha são obrigatórios"));
+    }
+    
+    @Test
+    @WithMockUser
+    public void testResetPasswordWhitespaceToken() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "user@example.com");
+        request.put("token", "   ");
+        request.put("newPassword", "newPassword123");
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("E-mail, token e nova senha são obrigatórios"));
+    }
+    
+    @Test
+    @WithMockUser
+    public void testResetPasswordWhitespaceNewPassword() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("email", "user@example.com");
+        request.put("token", "valid-token");
+        request.put("newPassword", "   ");
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("E-mail, token e nova senha são obrigatórios"));
+    }
 }
