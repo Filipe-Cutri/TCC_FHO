@@ -74,4 +74,75 @@ public class EmailServiceTest {
         boolean result = emailService.sendEmail(to, subject, body);
         assertFalse(result);
     }
+    
+    @Test
+    void testSendEmail_InvalidApiKey() {
+        // Setup with an invalid API key
+        ReflectionTestUtils.setField(emailService, "sendGridApiKey", "invalid-key");
+        
+        String to = "test@example.com";
+        String subject = "Test Email";
+        String body = "<html><body><h1>Test Email Body</h1></body></html>";
+        
+        // Should return false with invalid API key
+        boolean result = emailService.sendEmail(to, subject, body);
+        assertFalse(result);
+    }
+    
+    @Test
+    void testSendPasswordResetEmail_NullEmail() {
+        boolean result = emailService.sendPasswordResetEmail(null, "http://test.com/reset");
+        assertFalse(result);
+    }
+    
+    @Test
+    void testSendPasswordResetEmail_EmptyEmail() {
+        boolean result = emailService.sendPasswordResetEmail("", "http://test.com/reset");
+        assertFalse(result);
+    }
+    
+    @Test
+    void testSendEmail_NullSubject() {
+        String to = "test@example.com";
+        String body = "<html><body><h1>Test Email Body</h1></body></html>";
+        
+        // Should handle null subject gracefully
+        boolean result = emailService.sendEmail(to, null, body);
+        assertFalse(result);
+    }
+    
+    @Test
+    void testSendEmail_NullBody() {
+        String to = "test@example.com";
+        String subject = "Test Email";
+        
+        // Should handle null body gracefully
+        boolean result = emailService.sendEmail(to, subject, null);
+        assertFalse(result);
+    }
+    
+    @Test
+    void testSendEmail_NullFromEmail() {
+        // Set null from email
+        ReflectionTestUtils.setField(emailService, "fromEmail", null);
+        
+        String to = "test@example.com";
+        String subject = "Test Email";
+        String body = "<html><body><h1>Test Email Body</h1></body></html>";
+        
+        // Should return false with null from email
+        boolean result = emailService.sendEmail(to, subject, body);
+        assertFalse(result);
+    }
+    
+    @Test
+    void testSendPasswordResetEmail_WithSpecialCharactersInLink() {
+        String to = "test@example.com";
+        String resetLink = "https://example.com/reset?token=abc123&param=value%20encoded";
+        
+        // Should handle special characters in link
+        assertDoesNotThrow(() -> {
+            emailService.sendPasswordResetEmail(to, resetLink);
+        });
+    }
 }

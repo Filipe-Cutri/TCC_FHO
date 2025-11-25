@@ -120,6 +120,20 @@ public class ForgotPasswordServiceTest {
         ));
         verify(emailService).sendPasswordResetEmail(eq("establishment@example.com"), anyString());
     }
+    
+    @Test
+    void testSendEstablishmentPasswordResetEmail_EmailNotFound_StillReturnsTrue() {
+        // Arrange
+        when(establishmentUserRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
+
+        // Act
+        boolean result = forgotPasswordService.sendEstablishmentPasswordResetEmail("nonexistent@example.com");
+
+        // Assert - Should return true for security (don't reveal if email exists)
+        assertTrue(result);
+        verify(establishmentUserRepository, never()).save(any());
+        verify(emailService, never()).sendPasswordResetEmail(anyString(), anyString());
+    }
 
     @Test
     void testResetPassword_ValidToken_Client() {
@@ -276,5 +290,104 @@ public class ForgotPasswordServiceTest {
             
             return expiry >= expectedMin && expiry <= expectedMax;
         }));
+    }
+    
+    @Test
+    void testResetPassword_NullTokenExpiry_Client() {
+        // Arrange
+        testClient.setResetPasswordTokenHash("somehash");
+        testClient.setResetPasswordExpiry(null); // null expiry
+        
+        when(clientRepository.findByResetPasswordTokenHash(anyString()))
+            .thenReturn(Optional.of(testClient));
+
+        // Act
+        boolean result = forgotPasswordService.resetPassword(
+            "client@example.com", "token", "newPassword123");
+
+        // Assert
+        assertFalse(result);
+        verify(clientService, never()).updatePassword(anyString(), anyString());
+    }
+    
+    @Test
+    void testResetPassword_NullTokenExpiry_EstablishmentUser() {
+        // Arrange
+        testEstablishmentUser.setResetPasswordTokenHash("somehash");
+        testEstablishmentUser.setResetPasswordExpiry(null); // null expiry
+        
+        when(clientRepository.findByResetPasswordTokenHash(anyString())).thenReturn(Optional.empty());
+        when(establishmentUserRepository.findByResetPasswordTokenHash(anyString()))
+            .thenReturn(Optional.of(testEstablishmentUser));
+
+        // Act
+        boolean result = forgotPasswordService.resetPassword(
+            "establishment@example.com", "token", "newPassword123");
+
+        // Assert
+        assertFalse(result);
+        verify(establishmentUserService, never()).updatePassword(anyString(), anyString());
+    }
+    
+    @Test
+    void testResetPassword_ExpiredToken_EstablishmentUser() {
+        // Arrange
+        testEstablishmentUser.setResetPasswordTokenHash("somehash");
+        testEstablishmentUser.setResetPasswordExpiry(System.currentTimeMillis() - 1000); // Expired
+        
+        when(clientRepository.findByResetPasswordTokenHash(anyString())).thenReturn(Optional.empty());
+        when(establishmentUserRepository.findByResetPasswordTokenHash(anyString()))
+            .thenReturn(Optional.of(testEstablishmentUser));
+
+        // Act
+        boolean result = forgotPasswordService.resetPassword(
+            "establishment@example.com", "token", "newPassword123");
+
+        // Assert
+        assertFalse(result);
+        verify(establishmentUserService, never()).updatePassword(anyString(), anyString());
+    }
+    
+    @Test
+    void testResetPassword_EmailMismatch_EstablishmentUser() {
+        // Arrange
+        testEstablishmentUser.setResetPasswordTokenHash("somehash");
+        testEstablishmentUser.setResetPasswordExpiry(System.currentTimeMillis() + 3600000);
+        
+        when(clientRepository.findByResetPasswordTokenHash(anyString())).thenReturn(Optional.empty());
+        when(establishmentUserRepository.findByResetPasswordTokenHash(anyString()))
+            .thenReturn(Optional.of(testEstablishmentUser));
+
+        // Act - Using different email
+        boolean result = forgotPasswordService.resetPassword(
+            "different@example.com", "token", "newPassword123");
+
+        // Assert
+        assertFalse(result);
+        verify(establishmentUserService, never()).updatePassword(anyString(), anyString());
+    }
+    
+    @Test
+    void testResetLinkContainsToken() {
+        // Arrange
+        when(clientRepository.findByEmail("client@example.com")).thenReturn(Optional.of(testClient));
+        when(clientRepository.save(any(Client.class))).thenReturn(testClient);
+        when(emailService.sendPasswordResetEmail(anyString(), anyString())).thenReturn(true);
+
+        // Act
+        forgotPasswordService.sendClientPasswordResetEmail("client@example.com");
+
+        // Assert - Verify the reset link contains the token
+        verify(emailService).sendPasswordResetEmail(
+            eq("client@example.com"), 
+            argThat(link -> link.contains("token=") && link.startsWith("http://localhost:3000/reset-password"))
+        );
+    }
+    
+    @Test
+    void testConstructor() {
+        // Test that the constructor works properly
+        ForgotPasswordService service = new ForgotPasswordService();
+        assertNotNull(service);
     }
 }
