@@ -1,6 +1,16 @@
 class EstablishmentServicesManager {
     constructor() {
-        this.apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
+        // Use API_CONFIG if available, otherwise determine baseUrl based on current host
+        if (window.API_CONFIG?.baseUrl !== undefined) {
+            this.apiBaseUrl = window.API_CONFIG.baseUrl;
+        } else {
+            // Fallback: use same origin for API calls (works when frontend is served from backend)
+            const hostname = window.location.hostname;
+            const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+            this.apiBaseUrl = isLocalhost ? '' : ''; // Use relative URLs
+        }
+        console.log('API Base URL:', this.apiBaseUrl || '(relative)');
+        
         this.services = [];
         this.establishmentId = null;
         this.init();
@@ -13,6 +23,7 @@ class EstablishmentServicesManager {
             return;
         }
         
+        console.log('Establishment ID:', this.establishmentId);
         this.loadServices();
         this.setupEventListeners();
     }
@@ -56,7 +67,18 @@ class EstablishmentServicesManager {
         if (!tableBody) return;
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services?establishmentId=${this.establishmentId}`);
+            const url = `${this.apiBaseUrl}/api/establishment/services?establishmentId=${this.establishmentId}`;
+            console.log('Loading services from:', url);
+            
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server returned error:', response.status, errorText);
+                this.showError(`Erro do servidor: ${response.status}`);
+                return;
+            }
+            
             const data = await response.json();
 
             if (data.success && data.data) {
@@ -67,7 +89,7 @@ class EstablishmentServicesManager {
             }
         } catch (error) {
             console.error('Error loading services:', error);
-            this.showError('Erro ao conectar com o servidor');
+            this.showError('Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     }
 
@@ -210,9 +232,13 @@ class EstablishmentServicesManager {
 
         try {
             let response;
+            let url;
+            
             if (id) {
                 // Update existing service
-                response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}?establishmentId=${this.establishmentId}`, {
+                url = `${this.apiBaseUrl}/api/establishment/services/${id}?establishmentId=${this.establishmentId}`;
+                console.log('Updating service at:', url);
+                response = await fetch(url, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -221,13 +247,27 @@ class EstablishmentServicesManager {
                 });
             } else {
                 // Create new service
-                response = await fetch(`${this.apiBaseUrl}/api/establishment/services`, {
+                url = `${this.apiBaseUrl}/api/establishment/services`;
+                console.log('Creating service at:', url, 'with data:', service);
+                response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(service)
                 });
+            }
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server returned error:', response.status, errorText);
+                try {
+                    const errorData = JSON.parse(errorText);
+                    this.showError(errorData.message || `Erro do servidor: ${response.status}`);
+                } catch (e) {
+                    this.showError(`Erro do servidor: ${response.status}`);
+                }
+                return;
             }
 
             const data = await response.json();
@@ -252,7 +292,7 @@ class EstablishmentServicesManager {
             }
         } catch (error) {
             console.error('Error saving service:', error);
-            this.showError('Erro ao conectar com o servidor');
+            this.showError('Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     }
 
@@ -335,9 +375,24 @@ class EstablishmentServicesManager {
         }
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}?establishmentId=${this.establishmentId}`, {
+            const url = `${this.apiBaseUrl}/api/establishment/services/${id}?establishmentId=${this.establishmentId}`;
+            console.log('Deleting service at:', url);
+            
+            const response = await fetch(url, {
                 method: 'DELETE'
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server returned error:', response.status, errorText);
+                try {
+                    const errorData = JSON.parse(errorText);
+                    this.showError(errorData.message || `Erro do servidor: ${response.status}`);
+                } catch (e) {
+                    this.showError(`Erro do servidor: ${response.status}`);
+                }
+                return;
+            }
 
             const data = await response.json();
 
@@ -349,7 +404,7 @@ class EstablishmentServicesManager {
             }
         } catch (error) {
             console.error('Error deleting service:', error);
-            this.showError('Erro ao conectar com o servidor');
+            this.showError('Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     }
 
