@@ -43,6 +43,12 @@ class EstablishmentProfessionalsManager {
         if (removeBtn) {
             removeBtn.addEventListener('click', () => this.removeImagePreview());
         }
+
+        // Image URL input preview
+        const urlInput = document.getElementById('professionalImageUrl');
+        if (urlInput) {
+            urlInput.addEventListener('blur', (e) => this.handleImageUrlChange(e));
+        }
     }
 
     async loadProfessionals() {
@@ -50,7 +56,18 @@ class EstablishmentProfessionalsManager {
         if (!grid) return;
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals?establishmentId=${this.establishmentId}`);
+            const url = `${this.apiBaseUrl}/api/establishment/professionals?establishmentId=${this.establishmentId}`;
+            console.log('Loading professionals from:', url);
+            
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server returned error:', response.status, errorText);
+                this.showError(`Erro do servidor: ${response.status}`);
+                return;
+            }
+            
             const data = await response.json();
 
             if (data.success && data.data) {
@@ -61,7 +78,7 @@ class EstablishmentProfessionalsManager {
             }
         } catch (error) {
             console.error('Error loading professionals:', error);
-            this.showError('Erro ao conectar com o servidor');
+            this.showError('Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     }
 
@@ -219,9 +236,13 @@ class EstablishmentProfessionalsManager {
 
         try {
             let response;
+            let url;
+            
             if (id) {
                 // Update existing professional
-                response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals/${id}?establishmentId=${this.establishmentId}`, {
+                url = `${this.apiBaseUrl}/api/establishment/professionals/${id}?establishmentId=${this.establishmentId}`;
+                console.log('Updating professional at:', url);
+                response = await fetch(url, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -230,13 +251,27 @@ class EstablishmentProfessionalsManager {
                 });
             } else {
                 // Create new professional
-                response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals`, {
+                url = `${this.apiBaseUrl}/api/establishment/professionals`;
+                console.log('Creating professional at:', url, 'with data:', professional);
+                response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(professional)
                 });
+            }
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server returned error:', response.status, errorText);
+                try {
+                    const errorData = JSON.parse(errorText);
+                    this.showError(errorData.message || `Erro do servidor: ${response.status}`);
+                } catch (e) {
+                    this.showError(`Erro do servidor: ${response.status}`);
+                }
+                return;
             }
 
             const data = await response.json();
@@ -261,7 +296,7 @@ class EstablishmentProfessionalsManager {
             }
         } catch (error) {
             console.error('Error saving professional:', error);
-            this.showError('Erro ao conectar com o servidor');
+            this.showError('Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     }
 
@@ -320,6 +355,16 @@ class EstablishmentProfessionalsManager {
         document.getElementById('professionalSpecialties').value = professional.specialties || '';
         document.getElementById('professionalImageUrl').value = professional.imageUrl || '';
 
+        // Show image preview if professional has an image URL
+        if (professional.imageUrl) {
+            const preview = document.getElementById('professionalImagePreview');
+            const img = document.getElementById('professionalPreviewImg');
+            if (preview && img) {
+                img.src = professional.imageUrl;
+                preview.style.display = 'block';
+            }
+        }
+
         // Update modal title
         document.getElementById('modalTitle').textContent = 'Editar Profissional';
         
@@ -334,9 +379,24 @@ class EstablishmentProfessionalsManager {
         }
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals/${id}?establishmentId=${this.establishmentId}`, {
+            const url = `${this.apiBaseUrl}/api/establishment/professionals/${id}?establishmentId=${this.establishmentId}`;
+            console.log('Deleting professional at:', url);
+            
+            const response = await fetch(url, {
                 method: 'DELETE'
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server returned error:', response.status, errorText);
+                try {
+                    const errorData = JSON.parse(errorText);
+                    this.showError(errorData.message || `Erro do servidor: ${response.status}`);
+                } catch (e) {
+                    this.showError(`Erro do servidor: ${response.status}`);
+                }
+                return;
+            }
 
             const data = await response.json();
 
@@ -348,7 +408,7 @@ class EstablishmentProfessionalsManager {
             }
         } catch (error) {
             console.error('Error deleting professional:', error);
-            this.showError('Erro ao conectar com o servidor');
+            this.showError('Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     }
 
@@ -417,6 +477,35 @@ class EstablishmentProfessionalsManager {
         if (preview) preview.style.display = 'none';
         if (img) img.src = '';
         if (fileInput) fileInput.value = '';
+    }
+
+    handleImageUrlChange(event) {
+        const url = event.target.value.trim();
+        if (url) {
+            // Validate URL format and protocol
+            try {
+                const urlObj = new URL(url);
+                // Only allow http and https protocols
+                if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+                    this.showError('Apenas URLs HTTP e HTTPS são permitidas');
+                    return;
+                }
+                
+                // Show preview for URL
+                const preview = document.getElementById('professionalImagePreview');
+                const img = document.getElementById('professionalPreviewImg');
+                if (preview && img) {
+                    img.src = url;
+                    preview.style.display = 'block';
+                }
+
+                // Clear file input when URL is entered
+                const fileInput = document.getElementById('professionalImageFile');
+                if (fileInput) fileInput.value = '';
+            } catch (e) {
+                this.showError('URL inválida. Por favor, insira uma URL válida.');
+            }
+        }
     }
 
     closeModal() {
