@@ -1,6 +1,14 @@
 class EstablishmentProfessionalsManager {
     constructor() {
-        this.apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
+        // Use API_CONFIG if available, otherwise determine baseUrl based on current host
+        if (window.API_CONFIG?.baseUrl !== undefined) {
+            this.apiBaseUrl = window.API_CONFIG.baseUrl;
+        } else {
+            // Fallback: use same origin for API calls (works when frontend is served from backend)
+            this.apiBaseUrl = '';
+        }
+        console.log('API Base URL:', this.apiBaseUrl || '(relative)');
+        
         this.professionals = [];
         this.establishmentId = null;
         this.init();
@@ -13,6 +21,7 @@ class EstablishmentProfessionalsManager {
             return;
         }
         
+        console.log('Establishment ID:', this.establishmentId);
         this.loadProfessionals();
         this.setupEventListeners();
     }

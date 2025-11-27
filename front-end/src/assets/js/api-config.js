@@ -5,10 +5,24 @@
 
 // API Configuration
 const API_CONFIG = {
-    // Base URL for API calls - Updated to use HTTPS
-    baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'https://localhost:8443' 
-        : '', // Use relative URLs in production
+    // Base URL for API calls
+    // When running on localhost:8443 (Spring Boot server), use relative URLs
+    // When running on production (Railway, etc.), use relative URLs
+    // Only use absolute URL when running frontend separately from backend
+    baseUrl: (function() {
+        const hostname = window.location.hostname;
+        const port = window.location.port;
+        const protocol = window.location.protocol;
+        
+        // If already on the backend server (port 8443 or production), use relative URLs
+        if (port === '8443' || (hostname !== 'localhost' && hostname !== '127.0.0.1')) {
+            return '';
+        }
+        
+        // If on a different port (e.g., 3000, 5500), try to connect to backend
+        // Note: This may fail if the browser blocks self-signed certificates
+        return 'https://localhost:8443';
+    })(),
     
     // API endpoints
     endpoints: {
