@@ -1,5 +1,57 @@
 /* Custom improvements for pricing cards and logo adjustments */
 
+/* Enhanced Navbar Logo */
+.logo-navbar-enhanced {
+    height: 55px;
+    width: auto;
+    filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.3));
+    transition: all 0.3s ease;
+}
+
+.logo-navbar-enhanced:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 6px 12px rgba(59, 130, 246, 0.4));
+}
+
+.navbar-brand .brand-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+/* Hero section improvements */
+.hero-section .hero-content.text-center .hero-badge {
+    display: inline-flex;
+    margin-bottom: 2rem;
+}
+
+.hero-section .hero-content.text-center .hero-title {
+    text-align: center;
+}
+
+.hero-section .hero-content.text-center .hero-subtitle {
+    text-align: center;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
 /* Pricing cards improvements to prevent content cutoff */
 .pricing-card {
     min-height: 520px;
@@ -30,6 +82,14 @@
     .pricing-features ul {
         min-height: 160px;
     }
+    
+    .logo-navbar-enhanced {
+        height: 45px;
+    }
+    
+    .navbar-brand .brand-text {
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -39,6 +99,14 @@
     
     .pricing-features ul {
         min-height: 140px;
+    }
+    
+    .logo-navbar-enhanced {
+        height: 40px;
+    }
+    
+    .navbar-brand .brand-text {
+        font-size: 1.3rem;
     }
 }
 
