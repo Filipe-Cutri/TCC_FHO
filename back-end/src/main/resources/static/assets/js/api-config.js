@@ -5,10 +5,24 @@
 
 // API Configuration
 const API_CONFIG = {
-    // Base URL for API calls - Updated to use HTTPS
-    baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'https://localhost:8443' 
-        : '', // Use relative URLs in production
+    // Base URL for API calls
+    // When running on localhost:8443 (Spring Boot server), use relative URLs
+    // When running on production (Railway, etc.), use relative URLs
+    // Only use absolute URL when running frontend separately from backend
+    baseUrl: (function() {
+        const hostname = window.location.hostname;
+        const port = window.location.port;
+        const protocol = window.location.protocol;
+        
+        // If already on the backend server (port 8443 or production), use relative URLs
+        if (port === '8443' || (hostname !== 'localhost' && hostname !== '127.0.0.1')) {
+            return '';
+        }
+        
+        // If on a different port (e.g., 3000, 5500), try to connect to backend
+        // Note: This may fail if the browser blocks self-signed certificates
+        return 'https://localhost:8443';
+    })(),
     
     // API endpoints
     endpoints: {
@@ -17,11 +31,20 @@ const API_CONFIG = {
             register: '/api/client/register',
             forgotPassword: '/api/client/forgot-password',
             updateEstablishment: '/api/client/establishment',
+            establishments: {
+                list: '/api/client/establishments',
+                details: '/api/client/establishments/{id}',
+                services: '/api/client/establishments/{id}/services',
+                professionals: '/api/client/establishments/{id}/professionals',
+                availability: '/api/client/establishments/{id}/availability'
+            },
             appointments: {
                 next: '/api/client/appointments/next',
                 list: '/api/client/appointments',
                 history: '/api/client/appointments/history',
-                book: '/api/client/appointments/book'
+                book: '/api/client/appointments/book',
+                details: '/api/client/appointments/{id}',
+                cancel: '/api/client/appointments/{id}/cancel'
             },
             profile: {
                 get: '/api/client/profile',
@@ -40,6 +63,7 @@ const API_CONFIG = {
             list: '/api/establishment/list',
             createStaff: '/api/establishment/create-staff',
             roles: '/api/establishment/roles',
+            clients: '/api/establishment/clients',
             dashboard: {
                 overview: '/api/establishment/dashboard/overview',
                 todayAppointments: '/api/establishment/dashboard/today-appointments',
