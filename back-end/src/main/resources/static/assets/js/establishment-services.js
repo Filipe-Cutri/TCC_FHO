@@ -485,13 +485,19 @@ class EstablishmentServicesManager {
                     return;
                 }
                 
-                // Show preview for URL
+                // Show preview for URL with error handling for image load failures
                 const preview = document.getElementById('serviceImagePreview');
                 const img = document.getElementById('servicePreviewImg');
                 if (preview && img) {
-                    // Setting src on img element is safe as browsers handle this properly
+                    // Add error handler for image loading failures
+                    img.onerror = () => {
+                        preview.style.display = 'none';
+                        this.showError('Não foi possível carregar a imagem. Verifique a URL.');
+                    };
+                    img.onload = () => {
+                        preview.style.display = 'block';
+                    };
                     img.src = url;
-                    preview.style.display = 'block';
                 }
 
                 // Clear file input when URL is entered

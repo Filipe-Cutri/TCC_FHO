@@ -503,12 +503,19 @@ class EstablishmentProfessionalsManager {
                     return;
                 }
                 
-                // Show preview for URL
+                // Show preview for URL with error handling for image load failures
                 const preview = document.getElementById('professionalImagePreview');
                 const img = document.getElementById('professionalPreviewImg');
                 if (preview && img) {
+                    // Add error handler for image loading failures
+                    img.onerror = () => {
+                        preview.style.display = 'none';
+                        this.showError('Não foi possível carregar a imagem. Verifique a URL.');
+                    };
+                    img.onload = () => {
+                        preview.style.display = 'block';
+                    };
                     img.src = url;
-                    preview.style.display = 'block';
                 }
 
                 // Clear file input when URL is entered
