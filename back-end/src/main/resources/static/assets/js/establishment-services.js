@@ -1,13 +1,11 @@
 class EstablishmentServicesManager {
     constructor() {
-        // Use API_CONFIG if available, otherwise determine baseUrl based on current host
+        // Use API_CONFIG if available, otherwise use relative URLs for same-origin requests
         if (window.API_CONFIG?.baseUrl !== undefined) {
             this.apiBaseUrl = window.API_CONFIG.baseUrl;
         } else {
-            // Fallback: use same origin for API calls (works when frontend is served from backend)
-            const hostname = window.location.hostname;
-            const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-            this.apiBaseUrl = isLocalhost ? '' : ''; // Use relative URLs
+            // Fallback: use relative URLs (works when frontend is served from backend)
+            this.apiBaseUrl = '';
         }
         console.log('API Base URL:', this.apiBaseUrl || '(relative)');
         

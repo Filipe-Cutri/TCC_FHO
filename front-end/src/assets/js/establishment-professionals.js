@@ -227,6 +227,7 @@ class EstablishmentProfessionalsManager {
         const email = document.getElementById('professionalEmail')?.value?.trim();
         const phone = document.getElementById('professionalPhone')?.value?.trim();
         const specialties = document.getElementById('professionalSpecialties')?.value?.trim();
+        // Image is handled separately after professional is created/updated
         const imageUrl = document.getElementById('professionalImageUrl')?.value?.trim();
         const imageFile = document.getElementById('professionalImageFile')?.files[0];
 
@@ -235,6 +236,8 @@ class EstablishmentProfessionalsManager {
             return;
         }
 
+        // Note: imageUrl is not included here as it's updated separately after
+        // the professional is created/updated via uploadProfessionalImageFile or updateProfessionalImage
         const professional = {
             name,
             email: email || null,
