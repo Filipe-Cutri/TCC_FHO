@@ -376,4 +376,180 @@ public class ProfessionalServiceTest {
         assertEquals("Profissional não encontrado", exception.getMessage());
         verify(professionalRepository, never()).deleteById(anyLong());
     }
+
+    @Test
+    void testUpdateImage_Success() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        String imageUrl = "https://example.com/professional.jpg";
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+        when(professionalRepository.save(any(Professional.class))).thenReturn(professional);
+
+        Professional result = professionalService.updateImage(professionalId, imageUrl, establishmentId);
+
+        assertNotNull(result);
+        assertEquals(imageUrl, result.getImageUrl());
+        verify(professionalRepository).save(professional);
+    }
+
+    @Test
+    void testUpdateImage_ProfessionalNotFound() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        String imageUrl = "https://example.com/professional.jpg";
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            professionalService.updateImage(professionalId, imageUrl, establishmentId);
+        });
+        
+        assertEquals("Profissional não encontrado", exception.getMessage());
+        verify(professionalRepository, never()).save(any(Professional.class));
+    }
+
+    @Test
+    void testUpdateImage_WrongEstablishment() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+        String imageUrl = "https://example.com/professional.jpg";
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            professionalService.updateImage(professionalId, imageUrl, wrongEstablishmentId);
+        });
+        
+        assertEquals("Acesso negado: profissional não pertence ao estabelecimento", exception.getMessage());
+        verify(professionalRepository, never()).save(any(Professional.class));
+    }
+
+    @Test
+    void testUpdateProfessionalWithEstablishment_Success() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        String newName = "Updated Professional";
+        String newEmail = "updated@example.com";
+        String newPhone = "987654321";
+        String newSpecialties = "Updated Specialties";
+
+        Professional professional = new Professional("Old Name", "old@example.com", "123", "Old Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+        when(professionalRepository.existsByEmailAndEstablishmentIdAndIdNot(newEmail, establishmentId, professionalId))
+            .thenReturn(false);
+        when(professionalRepository.save(any(Professional.class))).thenReturn(professional);
+
+        Professional result = professionalService.updateProfessional(professionalId, newName, newEmail, newPhone, newSpecialties, establishmentId);
+
+        assertNotNull(result);
+        verify(professionalRepository).save(professional);
+    }
+
+    @Test
+    void testUpdateProfessionalWithEstablishment_WrongEstablishment() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            professionalService.updateProfessional(professionalId, "Name", "email@example.com", "123", "Specialty", wrongEstablishmentId);
+        });
+        
+        assertEquals("Acesso negado: profissional não pertence ao estabelecimento", exception.getMessage());
+        verify(professionalRepository, never()).save(any(Professional.class));
+    }
+
+    @Test
+    void testDeleteProfessionalWithEstablishment_Success() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+        doNothing().when(professionalRepository).deleteById(professionalId);
+
+        professionalService.deleteProfessional(professionalId, establishmentId);
+
+        verify(professionalRepository).deleteById(professionalId);
+    }
+
+    @Test
+    void testDeleteProfessionalWithEstablishment_WrongEstablishment() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            professionalService.deleteProfessional(professionalId, wrongEstablishmentId);
+        });
+        
+        assertEquals("Acesso negado: profissional não pertence ao estabelecimento", exception.getMessage());
+        verify(professionalRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void testFindByIdAndEstablishment_Success() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+
+        Optional<Professional> result = professionalService.findByIdAndEstablishment(professionalId, establishmentId);
+
+        assertTrue(result.isPresent());
+        assertEquals(professional, result.get());
+    }
+
+    @Test
+    void testFindByIdAndEstablishment_WrongEstablishment() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+
+        Professional professional = new Professional("Name", "email@example.com", "123", "Specialty", establishmentId);
+        professional.setId(professionalId);
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.of(professional));
+
+        Optional<Professional> result = professionalService.findByIdAndEstablishment(professionalId, wrongEstablishmentId);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void testFindByIdAndEstablishment_NotFound() {
+        Long professionalId = 1L;
+        Long establishmentId = 1L;
+
+        when(professionalRepository.findById(professionalId)).thenReturn(Optional.empty());
+
+        Optional<Professional> result = professionalService.findByIdAndEstablishment(professionalId, establishmentId);
+
+        assertFalse(result.isPresent());
+    }
 }
