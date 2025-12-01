@@ -14,7 +14,6 @@ permissions:
 jobs:
   test-and-analyze:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
 
     steps:
       - name: Checkout code
@@ -33,34 +32,28 @@ jobs:
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-home-cache-cleanup: true
 
-      - name: Grant execute permission for gradlew
+      - name: Grant execute permission
         run: chmod +x back-end/gradlew
 
       - name: Run tests with coverage
         run: |
           cd back-end
-          ./gradlew test jacocoTestReport --no-daemon --continue
+          ./gradlew test jacocoTestReport --no-daemon
 
-      - name: Upload coverage to Codecov
+      - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           file: ./back-end/build/reports/jacoco/test/jacocoTestReport.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Run SonarQube analysis
+      - name: SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd back-end
-          ./gradlew sonar --info
+          ./gradlew sonar
