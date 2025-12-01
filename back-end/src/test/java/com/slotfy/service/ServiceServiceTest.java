@@ -405,4 +405,181 @@ public class ServiceServiceTest {
         assertEquals("Serviço não encontrado", exception.getMessage());
         verify(serviceRepository, never()).deleteById(anyLong());
     }
+
+    @Test
+    void testUpdateImage_Success() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        String imageUrl = "https://example.com/image.jpg";
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+        when(serviceRepository.save(any(Service.class))).thenReturn(service);
+
+        Service result = serviceService.updateImage(serviceId, imageUrl, establishmentId);
+
+        assertNotNull(result);
+        assertEquals(imageUrl, result.getImageUrl());
+        verify(serviceRepository).save(service);
+    }
+
+    @Test
+    void testUpdateImage_ServiceNotFound() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        String imageUrl = "https://example.com/image.jpg";
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            serviceService.updateImage(serviceId, imageUrl, establishmentId);
+        });
+        
+        assertEquals("Serviço não encontrado", exception.getMessage());
+        verify(serviceRepository, never()).save(any(Service.class));
+    }
+
+    @Test
+    void testUpdateImage_WrongEstablishment() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+        String imageUrl = "https://example.com/image.jpg";
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            serviceService.updateImage(serviceId, imageUrl, wrongEstablishmentId);
+        });
+        
+        assertEquals("Acesso negado: serviço não pertence ao estabelecimento", exception.getMessage());
+        verify(serviceRepository, never()).save(any(Service.class));
+    }
+
+    @Test
+    void testUpdateServiceWithEstablishment_Success() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        String newName = "Updated Service";
+        String newDescription = "Updated Description";
+        Integer newDuration = 90;
+        BigDecimal newPrice = new BigDecimal("75.00");
+        String newCategory = "New Category";
+
+        Service service = new Service("Old Service", "Old Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+        when(serviceRepository.existsByNameAndEstablishmentIdAndIdNot(newName, establishmentId, serviceId))
+            .thenReturn(false);
+        when(serviceRepository.save(any(Service.class))).thenReturn(service);
+
+        Service result = serviceService.updateService(serviceId, newName, newDescription, newDuration, newPrice, newCategory, establishmentId);
+
+        assertNotNull(result);
+        verify(serviceRepository).save(service);
+    }
+
+    @Test
+    void testUpdateServiceWithEstablishment_WrongEstablishment() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            serviceService.updateService(serviceId, "Name", "Description", 60, new BigDecimal("50.00"), "Category", wrongEstablishmentId);
+        });
+        
+        assertEquals("Acesso negado: serviço não pertence ao estabelecimento", exception.getMessage());
+        verify(serviceRepository, never()).save(any(Service.class));
+    }
+
+    @Test
+    void testDeleteServiceWithEstablishment_Success() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+        doNothing().when(serviceRepository).deleteById(serviceId);
+
+        serviceService.deleteService(serviceId, establishmentId);
+
+        verify(serviceRepository).deleteById(serviceId);
+    }
+
+    @Test
+    void testDeleteServiceWithEstablishment_WrongEstablishment() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+        Exception exception = assertThrows(SecurityException.class, () -> {
+            serviceService.deleteService(serviceId, wrongEstablishmentId);
+        });
+        
+        assertEquals("Acesso negado: serviço não pertence ao estabelecimento", exception.getMessage());
+        verify(serviceRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void testFindByIdAndEstablishment_Success() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+        Optional<Service> result = serviceService.findByIdAndEstablishment(serviceId, establishmentId);
+
+        assertTrue(result.isPresent());
+        assertEquals(service, result.get());
+    }
+
+    @Test
+    void testFindByIdAndEstablishment_WrongEstablishment() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+        Long wrongEstablishmentId = 2L;
+
+        Service service = new Service("Service", "Description", 60, new BigDecimal("50.00"), establishmentId);
+        service.setId(serviceId);
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.of(service));
+
+        Optional<Service> result = serviceService.findByIdAndEstablishment(serviceId, wrongEstablishmentId);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void testFindByIdAndEstablishment_NotFound() {
+        Long serviceId = 1L;
+        Long establishmentId = 1L;
+
+        when(serviceRepository.findById(serviceId)).thenReturn(Optional.empty());
+
+        Optional<Service> result = serviceService.findByIdAndEstablishment(serviceId, establishmentId);
+
+        assertFalse(result.isPresent());
+    }
 }
