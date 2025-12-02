@@ -127,8 +127,7 @@ class EstablishmentSessionManager {
         ];
 
         const adminOnlyItems = [
-            { id: 'reports', label: 'Relatórios', icon: 'fas fa-chart-bar', href: 'establishment-reports.html' },
-            { id: 'payments', label: 'Pagamentos', icon: 'fas fa-credit-card', href: 'establishment-payments.html' }
+            { id: 'reports', label: 'Relatórios', icon: 'fas fa-chart-bar', href: 'establishment-reports.html' }
         ];
 
         if (role === 'admin') {
@@ -216,7 +215,7 @@ class EstablishmentSessionManager {
         if (!this.requireAuth()) return false;
 
         const currentPage = window.location.pathname.split('/').pop();
-        const adminOnlyPages = ['establishment-admin.html', 'establishment-reports.html', 'establishment-payments.html'];
+        const adminOnlyPages = ['establishment-admin.html', 'establishment-reports.html'];
 
         if (adminOnlyPages.includes(currentPage) && !this.isAdmin()) {
             alert('Acesso negado. Esta página requer permissões de administrador.');
