@@ -2,11 +2,8 @@ name: Deploy
 
 on:
   push:
-    tags:
-      - "v*.*.*"
-
-permissions:
-  contents: read
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -15,18 +12,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build Release Artifact
-        run: |
-          cd back-end
-          chmod +x gradlew
-          ./gradlew clean build -x test
 
       - name: Deploy to Railway
         env:
