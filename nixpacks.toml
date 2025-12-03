@@ -2,7 +2,7 @@
 nixPkgs = ['openjdk17']
 
 [phases.build]
-cmds = ['./gradlew clean build -x test']
+cmds = ['cd back-end && ./gradlew clean build -x test']
 
 [start]
 cmd = 'java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar back-end/build/libs/slotify-backend-*.jar'

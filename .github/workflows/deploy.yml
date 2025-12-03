@@ -9,8 +9,9 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  deploy-backend:
     runs-on: ubuntu-latest
+    name: Deploy Backend to Railway
 
     steps:
       - name: Checkout
@@ -19,8 +20,26 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Deploy to Railway
+      - name: Deploy Backend to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           railway up --service "TCC_FHO: Back-end" --ci
+  
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    name: Deploy Frontend to Railway
+    needs: deploy-backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy Frontend to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --service "TCC_FHO: Front-end" --ci

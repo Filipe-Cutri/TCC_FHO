@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ['nodejs', 'bash']
+
+[phases.install]
+cmds = ['npm install -g serve']
+
+[phases.build]
+cmds = ['chmod +x inject-config.sh && ./inject-config.sh']
+
+[start]
+cmd = 'serve -s src -l $PORT'

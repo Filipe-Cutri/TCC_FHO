@@ -13,7 +13,13 @@ Toda a documentação do projeto foi organizada na pasta `docs/`. Acesse [docs/R
 
 ## 🚀 Início Rápido
 
+### Desenvolvimento Local
 Para executar o projeto localmente, consulte o [Guia de Execução Local](docs/setup/GUIA_EXECUCAO_LOCAL.md).
+
+### Deploy em Produção (Railway)
+Para configurar e fazer deploy no Railway, consulte:
+- [Guia de Configuração do Railway](docs/deployment/RAILWAY_CONFIGURATION.md)
+- [Diferenças entre Localhost e Railway](docs/deployment/LOCALHOST_VS_RAILWAY.md)
 
 ## 🏗️ Estrutura do Projeto
 
@@ -21,6 +27,7 @@ Para executar o projeto localmente, consulte o [Guia de Execução Local](docs/s
 TCC_FHO/
 ├── docs/                     # 📚 Documentação organizada
 │   ├── setup/               # Guias de configuração
+│   ├── deployment/          # Guias de deploy (Railway, etc)
 │   ├── architecture/        # Diagramas e arquitetura
 │   ├── database/           # Documentação do banco
 │   ├── requirements/       # Requisitos e tecnologias
