@@ -11,6 +11,7 @@ back-end/.gradle/
 # Note: gradle wrapper files (gradle/, gradlew, gradlew.bat) should be committed
 back-end/out/
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
 *.class
