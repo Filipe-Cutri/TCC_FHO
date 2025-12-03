@@ -28,4 +28,3 @@ EOF
 
 echo "Frontend configuration updated with BACKEND_URL: ${BACKEND_URL}"
 echo "Config file written to: $CONFIG_PATH"
-
