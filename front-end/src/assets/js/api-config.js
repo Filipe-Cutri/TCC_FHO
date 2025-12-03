@@ -6,20 +6,31 @@
 // API Configuration
 const API_CONFIG = {
     // Base URL for API calls
-    // When running on localhost:8443 (Spring Boot server), use relative URLs
-    // When running on production (Railway, etc.), use relative URLs
-    // Only use absolute URL when running frontend separately from backend
+    // Automatically detects the environment and uses the appropriate backend URL
     baseUrl: (function() {
         const hostname = window.location.hostname;
         const port = window.location.port;
         const protocol = window.location.protocol;
         
-        // If already on the backend server (port 8443 or production), use relative URLs
-        if (port === '8443' || (hostname !== 'localhost' && hostname !== '127.0.0.1')) {
+        // Production: Railway or other cloud hosting
+        // If running on Railway (*.railway.app or custom domain), use environment variable or relative URL
+        if (hostname.includes('railway.app') || (hostname !== 'localhost' && hostname !== '127.0.0.1')) {
+            // In production, the backend URL should be set via an environment variable
+            // This can be injected during build or set in the HTML as a global variable
+            if (typeof window.BACKEND_URL !== 'undefined' && window.BACKEND_URL) {
+                return window.BACKEND_URL;
+            }
+            // If no BACKEND_URL is set, assume same-origin (frontend and backend on same domain)
             return '';
         }
         
-        // If on a different port (e.g., 3000, 5500), try to connect to backend
+        // Local development: Running on localhost
+        // If on backend port (8443), use relative URLs
+        if (port === '8443') {
+            return '';
+        }
+        
+        // If on a different port (e.g., 3000, 5500, 5173), connect to local backend
         // Note: This may fail if the browser blocks self-signed certificates
         return 'https://localhost:8443';
     })(),
