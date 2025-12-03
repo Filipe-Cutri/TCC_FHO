@@ -27,4 +27,4 @@ jobs:
           railway login
 
       - name: Deploy to Railway
-        run: railway up --service back-end --ci
+        run: railway up --service Back-end --ci
