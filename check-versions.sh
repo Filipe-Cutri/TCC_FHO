@@ -23,15 +23,11 @@ print_header() {
 # Function to check if jq is installed
 check_jq() {
     if ! command -v jq &> /dev/null; then
-        echo -e "${YELLOW}⚠️  jq is not installed. Installing for better JSON formatting...${NC}"
-        if command -v apt-get &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y jq
-        elif command -v brew &> /dev/null; then
-            brew install jq
-        else
-            echo -e "${YELLOW}Please install jq manually for better output formatting${NC}"
-            return 1
-        fi
+        echo -e "${YELLOW}⚠️  jq is not installed. For better JSON formatting, you can install it.${NC}"
+        echo -e "${YELLOW}   On Ubuntu/Debian: sudo apt-get install jq${NC}"
+        echo -e "${YELLOW}   On macOS: brew install jq${NC}"
+        echo -e "${YELLOW}   Continuing without jq...${NC}"
+        return 1
     fi
     return 0
 }

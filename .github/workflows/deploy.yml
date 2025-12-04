@@ -46,9 +46,16 @@ jobs:
           npm install -g @railway/cli
           
           # Set environment variables for backend service
-          railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service backend || true
-          railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service backend || true
-          railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service backend || true
+          echo "Setting backend environment variables..."
+          if ! railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service backend; then
+            echo "Warning: Failed to set APP_VERSION for backend"
+          fi
+          if ! railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service backend; then
+            echo "Warning: Failed to set COMMIT_HASH for backend"
+          fi
+          if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service backend; then
+            echo "Warning: Failed to set BUILD_DATE for backend"
+          fi
           
           echo "✅ Backend environment variables set"
       
@@ -58,9 +65,16 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           # Set environment variables for frontend service
-          railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service frontend || true
-          railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service frontend || true
-          railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service frontend || true
+          echo "Setting frontend environment variables..."
+          if ! railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service frontend; then
+            echo "Warning: Failed to set APP_VERSION for frontend"
+          fi
+          if ! railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service frontend; then
+            echo "Warning: Failed to set COMMIT_HASH for frontend"
+          fi
+          if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service frontend; then
+            echo "Warning: Failed to set BUILD_DATE for frontend"
+          fi
           
           echo "✅ Frontend environment variables set"
       
@@ -70,10 +84,20 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           # Trigger redeployment
-          railway up --service backend || echo "Backend deployment triggered"
-          railway up --service frontend || echo "Frontend deployment triggered"
+          echo "Triggering Railway deployments..."
+          if railway up --service backend; then
+            echo "✅ Backend deployment triggered successfully"
+          else
+            echo "Warning: Backend deployment trigger may have failed"
+          fi
           
-          echo "✅ Railway deployments triggered"
+          if railway up --service frontend; then
+            echo "✅ Frontend deployment triggered successfully"
+          else
+            echo "Warning: Frontend deployment trigger may have failed"
+          fi
+          
+          echo "✅ Railway deployment process completed"
       
       - name: Summary
         run: |
