@@ -25,8 +25,9 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service "TCC_FHO: Back-end" --ci
-  
+          railway link 8d043692-e0d2-4547-bf90-411ad0dd0279
+          railway up --service "TCC_FHO: Back-end" --detach
+
   deploy-frontend:
     runs-on: ubuntu-latest
     name: Deploy Frontend to Railway
@@ -44,4 +45,5 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service "TCC_FHO: front-end" --ci
+          railway link 8d043692-e0d2-4547-bf90-411ad0dd0279
+          railway up --service "TCC_FHO: front-end" --detach
