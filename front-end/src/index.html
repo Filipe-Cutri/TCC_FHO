@@ -617,7 +617,12 @@
     // Log version information when the page loads
     (function() {
         fetch('/version.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('%c🚀 Slotfy Frontend', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
                 console.log('%cVersion:', 'font-weight: bold;', data.version);
