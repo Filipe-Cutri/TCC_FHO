@@ -25,14 +25,7 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          # Try with explicit service name first (current format)
-          railway up --service "TCC_FHO: Back-end" --ci || \
-          # Try with lowercase and hyphens
-          railway up --service "tcc-fho-back-end" --ci || \
-          # Try simplified name
-          railway up --service "backend" --ci || \
-          # Try without service specification (Railway auto-detects based on root directory)
-          railway up --ci
+          railway up --service "TCC_FHO: Back-end" --ci
   
   deploy-frontend:
     runs-on: ubuntu-latest
@@ -51,11 +44,4 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          # Try with explicit service name first (current format)
-          railway up --service "TCC_FHO: Front-end" --ci || \
-          # Try with lowercase and hyphens
-          railway up --service "tcc-fho-front-end" --ci || \
-          # Try simplified name
-          railway up --service "frontend" --ci || \
-          # Try without service specification (Railway auto-detects based on root directory)
-          railway up --ci
+          railway up --service "TCC_FHO: front-end" --ci
