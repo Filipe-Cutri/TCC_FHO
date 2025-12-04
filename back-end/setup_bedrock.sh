@@ -37,9 +37,18 @@ if [ ! -f "build.gradle" ]; then
     exit 1
 fi
 
-# Credenciais fornecidas (base64) - PADRÃO
-# Este valor pode ser substituído pela variável de ambiente BEDROCK_ENCODED_KEY
-# Exemplo de uso: BEDROCK_ENCODED_KEY="sua-chave-aqui" ./setup_bedrock.sh
+# Credenciais fornecidas (base64) - FORNECIDAS PELO USUÁRIO
+# 
+# IMPORTANTE: Este valor padrão contém as credenciais fornecidas no problema original.
+# Se você é o proprietário original dessas credenciais, use-as diretamente.
+# Caso contrário, substitua pela variável de ambiente BEDROCK_ENCODED_KEY com suas próprias credenciais.
+#
+# Para usar suas próprias credenciais:
+#   BEDROCK_ENCODED_KEY="sua-chave-base64" ./setup_bedrock.sh
+#
+# Para usar credenciais de teste/desenvolvimento:
+#   Deixe vazio e o script usará as credenciais fornecidas no projeto
+#
 ENCODED_KEY="${BEDROCK_ENCODED_KEY:-ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0=}"
 
 echo -e "${YELLOW}📦 Decodificando credenciais do Amazon Bedrock...${NC}"

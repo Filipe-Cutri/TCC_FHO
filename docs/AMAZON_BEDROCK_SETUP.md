@@ -1,5 +1,17 @@
 # Amazon Bedrock API Setup Guide
 
+⚠️ **AVISO DE SEGURANÇA CRÍTICO**:
+
+Este guia foi criado com base nas credenciais fornecidas no problema original do projeto. As credenciais incluídas aqui são aquelas que foram explicitamente fornecidas pelo usuário.
+
+**IMPORTANTE**:
+- Se você é o proprietário original dessas credenciais, pode usá-las
+- Se não for o proprietário, **SEMPRE obtenha suas próprias credenciais AWS** através do IAM Console
+- **NUNCA use credenciais de terceiros sem verificação adequada**
+- Para produção, use credenciais próprias com permissões mínimas necessárias
+
+---
+
 Este guia explica como configurar e implementar a API do Amazon Bedrock no sistema Slotfy para funcionalidades de IA em agendamento inteligente.
 
 ## 📋 Pré-requisitos

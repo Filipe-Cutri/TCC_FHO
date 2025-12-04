@@ -1,6 +1,12 @@
 # Amazon Bedrock - Referência Rápida de Credenciais
 
-⚠️ **IMPORTANTE**: Este arquivo contém informações sensíveis. NÃO deve ser commitado em produção com credenciais reais.
+⚠️ **AVISO DE SEGURANÇA IMPORTANTE**: 
+
+Este documento foi criado com base nas credenciais fornecidas pelo usuário no problema original. Se você é o proprietário dessas credenciais, pode usá-las. Caso contrário, **SEMPRE use suas próprias credenciais AWS** obtidas através do AWS IAM Console.
+
+**NUNCA use credenciais de terceiros em produção sem verificação adequada!**
+
+---
 
 ## Formato das Credenciais
 
