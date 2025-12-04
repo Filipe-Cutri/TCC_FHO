@@ -54,7 +54,7 @@ Após o merge desta PR, o próximo push para `main` irá:
 
 ## Configuração Necessária no Railway
 
-Para garantir que o auto-detecção funcione corretamente, verifique que:
+Para garantir que a auto-detecção funcione corretamente, verifique que:
 
 ### Backend Service
 - **Nome do serviço**: Pode ser qualquer um dos formatos mencionados
