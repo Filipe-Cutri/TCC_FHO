@@ -611,5 +611,27 @@
 <script src="assets/js/ui-utils.js"></script>
 <script src="assets/js/form-utils.js"></script>
 <script src="assets/js/common-utils.js"></script>
+
+<!-- Version Information Logger -->
+<script>
+    // Log version information when the page loads
+    (function() {
+        fetch('/version.json')
+            .then(response => response.json())
+            .then(data => {
+                console.log('%c🚀 Slotfy Frontend', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
+                console.log('%cVersion:', 'font-weight: bold;', data.version);
+                console.log('%cCommit:', 'font-weight: bold;', data.commit);
+                console.log('%cBuild Date:', 'font-weight: bold;', data.buildDate);
+                console.log('%cEnvironment:', 'font-weight: bold;', data.environment);
+                
+                // Store version info globally for debugging
+                window.SLOTFY_VERSION = data;
+            })
+            .catch(err => {
+                console.log('%c⚠️ Version info not available', 'color: #f59e0b; font-weight: bold;');
+            });
+    })();
+</script>
 </body>
 </html>
