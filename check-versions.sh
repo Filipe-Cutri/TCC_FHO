@@ -45,7 +45,7 @@ HAS_JQ=$?
 # Check Backend
 print_header "📦 BACKEND - $BACKEND_URL"
 
-BACKEND_HEALTH=$(curl -s -w "\n%{http_code}" "$BACKEND_URL/api/health" 2>&1)
+BACKEND_HEALTH=$(curl -s --connect-timeout 10 --max-time 30 -w "\n%{http_code}" "$BACKEND_URL/api/health" 2>&1)
 BACKEND_HTTP_CODE=$(echo "$BACKEND_HEALTH" | tail -n1)
 BACKEND_BODY=$(echo "$BACKEND_HEALTH" | sed '$d')
 
@@ -90,7 +90,7 @@ fi
 # Check Frontend
 print_header "🎨 FRONTEND - $FRONTEND_URL"
 
-FRONTEND_ROOT=$(curl -s -w "\n%{http_code}" "$FRONTEND_URL/" 2>&1)
+FRONTEND_ROOT=$(curl -s --connect-timeout 10 --max-time 30 -w "\n%{http_code}" "$FRONTEND_URL/" 2>&1)
 FRONTEND_ROOT_CODE=$(echo "$FRONTEND_ROOT" | tail -n1)
 
 if [ "$FRONTEND_ROOT_CODE" = "200" ]; then
@@ -102,7 +102,7 @@ fi
 echo ""
 echo "Checking version info..."
 
-FRONTEND_VERSION=$(curl -s -w "\n%{http_code}" "$FRONTEND_URL/version.json" 2>&1)
+FRONTEND_VERSION=$(curl -s --connect-timeout 10 --max-time 30 -w "\n%{http_code}" "$FRONTEND_URL/version.json" 2>&1)
 FRONTEND_VERSION_CODE=$(echo "$FRONTEND_VERSION" | tail -n1)
 FRONTEND_VERSION_BODY=$(echo "$FRONTEND_VERSION" | sed '$d')
 

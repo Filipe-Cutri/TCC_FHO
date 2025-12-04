@@ -630,6 +630,11 @@
             })
             .catch(err => {
                 console.log('%c⚠️ Version info not available', 'color: #f59e0b; font-weight: bold;');
+                console.log('%cThis may indicate:', 'font-weight: bold;');
+                console.log('  • Running in local development mode');
+                console.log('  • Version file not generated during build');
+                console.log('  • Network issue fetching version.json');
+                console.log('%cFor production deployments, ensure inject-config.sh runs during build.', 'color: #6b7280;');
             });
     })();
 </script>

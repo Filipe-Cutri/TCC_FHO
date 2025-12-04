@@ -48,13 +48,16 @@ jobs:
           # Set environment variables for backend service
           echo "Setting backend environment variables..."
           if ! railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service backend; then
-            echo "Warning: Failed to set APP_VERSION for backend"
+            echo "::warning::Failed to set APP_VERSION=${{ steps.version.outputs.version }} for backend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
           fi
           if ! railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service backend; then
-            echo "Warning: Failed to set COMMIT_HASH for backend"
+            echo "::warning::Failed to set COMMIT_HASH=${{ steps.version.outputs.commit }} for backend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
           fi
           if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service backend; then
-            echo "Warning: Failed to set BUILD_DATE for backend"
+            echo "::warning::Failed to set BUILD_DATE=${{ steps.version.outputs.build_date }} for backend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
           fi
           
           echo "✅ Backend environment variables set"
@@ -67,13 +70,16 @@ jobs:
           # Set environment variables for frontend service
           echo "Setting frontend environment variables..."
           if ! railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service frontend; then
-            echo "Warning: Failed to set APP_VERSION for frontend"
+            echo "::warning::Failed to set APP_VERSION=${{ steps.version.outputs.version }} for frontend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
           fi
           if ! railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service frontend; then
-            echo "Warning: Failed to set COMMIT_HASH for frontend"
+            echo "::warning::Failed to set COMMIT_HASH=${{ steps.version.outputs.commit }} for frontend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
           fi
           if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service frontend; then
-            echo "Warning: Failed to set BUILD_DATE for frontend"
+            echo "::warning::Failed to set BUILD_DATE=${{ steps.version.outputs.build_date }} for frontend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
           fi
           
           echo "✅ Frontend environment variables set"
@@ -88,13 +94,13 @@ jobs:
           if railway up --service backend; then
             echo "✅ Backend deployment triggered successfully"
           else
-            echo "Warning: Backend deployment trigger may have failed"
+            echo "::warning::Backend deployment trigger failed - check RAILWAY_TOKEN and service name 'backend'"
           fi
           
           if railway up --service frontend; then
             echo "✅ Frontend deployment triggered successfully"
           else
-            echo "Warning: Frontend deployment trigger may have failed"
+            echo "::warning::Frontend deployment trigger failed - check RAILWAY_TOKEN and service name 'frontend'"
           fi
           
           echo "✅ Railway deployment process completed"

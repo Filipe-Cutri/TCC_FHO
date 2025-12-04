@@ -70,14 +70,14 @@ echo ""
 # Check Backend
 echo "📦 BACKEND ($BACKEND_URL)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-BACKEND_RESPONSE=$(curl -s "$BACKEND_URL/api/health" || echo '{"error":"Failed to connect"}')
+BACKEND_RESPONSE=$(curl -s --connect-timeout 10 --max-time 30 "$BACKEND_URL/api/health" || echo '{"error":"Failed to connect"}')
 echo "$BACKEND_RESPONSE" | jq '.' 2>/dev/null || echo "$BACKEND_RESPONSE"
 echo ""
 
 # Check Frontend
 echo "🎨 FRONTEND ($FRONTEND_URL)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-FRONTEND_RESPONSE=$(curl -s "$FRONTEND_URL/version.json" || echo '{"error":"Failed to connect"}')
+FRONTEND_RESPONSE=$(curl -s --connect-timeout 10 --max-time 30 "$FRONTEND_URL/version.json" || echo '{"error":"Failed to connect"}')
 echo "$FRONTEND_RESPONSE" | jq '.' 2>/dev/null || echo "$FRONTEND_RESPONSE"
 echo ""
 
@@ -95,12 +95,12 @@ chmod +x check-versions.sh
 
 **Check Backend:**
 ```bash
-curl https://tccfho-production.up.railway.app/api/health | jq
+curl --connect-timeout 10 --max-time 30 https://tccfho-production.up.railway.app/api/health | jq
 ```
 
 **Check Frontend:**
 ```bash
-curl https://tccfho-production-baff.up.railway.app/version.json | jq
+curl --connect-timeout 10 --max-time 30 https://tccfho-production-baff.up.railway.app/version.json | jq
 ```
 
 ## Deployment Process
