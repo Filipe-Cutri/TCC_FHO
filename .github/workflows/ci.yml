@@ -45,7 +45,7 @@ jobs:
           ./gradlew test jacocoTestReport --no-daemon
 
       - name: Upload Coverage to Codecov
-        if: ${{ secrets.CODECOV_TOKEN != '' }}
+        continue-on-error: true
         uses: codecov/codecov-action@v4
         with:
           file: ./back-end/build/reports/jacoco/test/jacocoTestReport.xml
@@ -53,7 +53,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: SonarQube Analysis
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
