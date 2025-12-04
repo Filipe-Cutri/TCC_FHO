@@ -2,6 +2,8 @@
 
 This guide explains how to configure the Slotfy application on Railway with separate frontend and backend services.
 
+> **⚠️ Problema com Deploy Automático?** Se você está tendo problemas com o deploy automático do GitHub Actions para o Railway, veja [Railway Deployment Fix](./RAILWAY_DEPLOYMENT_FIX.md) para uma solução completa.
+
 ## Prerequisites
 
 - Railway account
@@ -131,6 +133,16 @@ Add the following secret to your GitHub repository:
 2. GitHub Actions triggers the deploy workflow
 3. Backend service is deployed first
 4. Frontend service is deployed after backend completes
+
+### Service Name Resolution
+
+The workflow uses a fallback strategy to find the correct service names:
+1. Tries the documented format (e.g., `"TCC_FHO: Front-end"`)
+2. Tries lowercase with hyphens (e.g., `"tcc-fho-front-end"`)
+3. Tries simplified names (e.g., `"frontend"`)
+4. Falls back to auto-detection based on working directory
+
+> **💡 Tip**: If deployments are failing, see [Railway Deployment Fix](./RAILWAY_DEPLOYMENT_FIX.md) for detailed troubleshooting steps.
 
 ## CORS Configuration
 
