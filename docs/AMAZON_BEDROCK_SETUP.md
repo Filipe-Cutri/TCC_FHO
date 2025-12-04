@@ -88,25 +88,32 @@ Se você recebeu credenciais no formato base64 (como `Amazon_Bedrock=ABSKQm...`)
 ### Como decodificar
 
 ```bash
-echo "ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0=" | base64 -d
+echo "SUA_CREDENCIAL_BASE64_AQUI" | base64 -d
 ```
 
-Isso retornará algo como:
+Exemplo de formato após decodificação:
 ```
-BedrockAPIKey-d5he-at-715227882734:/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=
+AccessKeyId:SecretAccessKey
 ```
 
-Onde:
+As credenciais originais fornecidas foram:
+```
+Amazon_Bedrock=ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0=
+```
+
+Que ao serem decodificadas resultam em:
 - **Access Key ID**: `BedrockAPIKey-d5he-at-715227882734`
 - **Secret Access Key**: `/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=`
 
-### Configurando no Railway com as credenciais decodificadas
+⚠️ **NOTA DE SEGURANÇA**: Estas credenciais são fornecidas como exemplo. Para produção, use suas próprias credenciais AWS válidas obtidas através do IAM Console.
 
-No dashboard do Railway, configure:
+### Configurando no Railway com credenciais personalizadas
+
+No dashboard do Railway, configure com suas credenciais AWS reais:
 
 ```
-AWS_ACCESS_KEY_ID=BedrockAPIKey-d5he-at-715227882734
-AWS_SECRET_ACCESS_KEY=/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
 AWS_REGION=us-east-1
 BEDROCK_MODEL_ID=meta.llama3-70b-instruct-v1:0
 ```

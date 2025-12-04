@@ -36,8 +36,10 @@ if (!(Test-Path "build.gradle")) {
     exit 1
 }
 
-# Credenciais fornecidas (base64)
-$EncodedKey = "ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0="
+# Credenciais fornecidas (base64) - PADRÃO
+# Este valor pode ser substituído pela variável de ambiente BEDROCK_ENCODED_KEY
+# Exemplo de uso: $env:BEDROCK_ENCODED_KEY="sua-chave-aqui"; .\setup_bedrock.ps1
+$EncodedKey = if ($env:BEDROCK_ENCODED_KEY) { $env:BEDROCK_ENCODED_KEY } else { "ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0=" }
 
 Write-ColorOutput Yellow "📦 Decodificando credenciais do Amazon Bedrock..."
 

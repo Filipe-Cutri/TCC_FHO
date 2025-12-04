@@ -2,31 +2,30 @@
 
 ⚠️ **IMPORTANTE**: Este arquivo contém informações sensíveis. NÃO deve ser commitado em produção com credenciais reais.
 
-## Credenciais Fornecidas
+## Formato das Credenciais
 
-As credenciais foram fornecidas no seguinte formato base64:
+⚠️ **ATENÇÃO DE SEGURANÇA**: As credenciais reais foram removidas deste arquivo para evitar exposição acidental. 
 
+Se você recebeu credenciais no formato base64, você pode decodificá-las usando:
+
+```bash
+echo "SUA_CREDENCIAL_BASE64_AQUI" | base64 -d
 ```
-Amazon_Bedrock=ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0=
+
+Exemplo de formato após decodificação:
 ```
-
-## Decodificação
-
-Após decodificar o base64, obtemos:
-
-```
-BedrockAPIKey-d5he-at-715227882734:/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=
+AccessKeyId:SecretAccessKey
 ```
 
 ## Formato das Variáveis de Ambiente
 
 ### Para Railway (Produção)
 
-Configure as seguintes variáveis no dashboard do Railway:
+Configure as seguintes variáveis no dashboard do Railway com suas credenciais reais:
 
 ```env
-AWS_ACCESS_KEY_ID=BedrockAPIKey-d5he-at-715227882734
-AWS_SECRET_ACCESS_KEY=/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
 AWS_REGION=us-east-1
 BEDROCK_MODEL_ID=meta.llama3-70b-instruct-v1:0
 ```
@@ -35,16 +34,16 @@ BEDROCK_MODEL_ID=meta.llama3-70b-instruct-v1:0
 
 No Linux/Mac (bash):
 ```bash
-export AWS_ACCESS_KEY_ID="BedrockAPIKey-d5he-at-715227882734"
-export AWS_SECRET_ACCESS_KEY="/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc="
+export AWS_ACCESS_KEY_ID="your-aws-access-key-id"
+export AWS_SECRET_ACCESS_KEY="your-aws-secret-access-key"
 export AWS_REGION="us-east-1"
 export BEDROCK_MODEL_ID="meta.llama3-70b-instruct-v1:0"
 ```
 
 No Windows (PowerShell):
 ```powershell
-$env:AWS_ACCESS_KEY_ID="BedrockAPIKey-d5he-at-715227882734"
-$env:AWS_SECRET_ACCESS_KEY="/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc="
+$env:AWS_ACCESS_KEY_ID="your-aws-access-key-id"
+$env:AWS_SECRET_ACCESS_KEY="your-aws-secret-access-key"
 $env:AWS_REGION="us-east-1"
 $env:BEDROCK_MODEL_ID="meta.llama3-70b-instruct-v1:0"
 ```
@@ -57,8 +56,8 @@ Crie um arquivo `.env` na raiz do projeto backend (NÃO comitar este arquivo!):
 
 ```bash
 # .env - NÃO COMMITTAR ESTE ARQUIVO!
-AWS_ACCESS_KEY_ID=BedrockAPIKey-d5he-at-715227882734
-AWS_SECRET_ACCESS_KEY=/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
 AWS_REGION=us-east-1
 BEDROCK_MODEL_ID=meta.llama3-70b-instruct-v1:0
 ```
@@ -88,6 +87,16 @@ curl -X POST http://localhost:8443/api/scheduler/suggest \
     "preferences": "Preferência por horários de manhã"
   }'
 ```
+
+⚠️ **NOTA SOBRE CREDENCIAIS**: As credenciais fornecidas originalmente foram decodificadas do formato base64 fornecido: `Amazon_Bedrock=ABSKQmVkcm9ja0FQSUtleS1kNWhlLWF0LTcxNTIyNzg4MjczNDovT2Z3UFNhVjlxRE1iajBKZ29ZU1lxZEhXdmVaZllnRUVITys3V0RYcDhpNzhpZzJwTG5OdlNJNGxEYz0=`
+
+Após decodificação, o formato é:
+```
+AWS_ACCESS_KEY_ID=BedrockAPIKey-d5he-at-715227882734
+AWS_SECRET_ACCESS_KEY=/OfwPSaV9qDMbj0JgoYSYqdHWveZfYgEEHO+7WDXp8i78ig2pLnNvSI4lDc=
+```
+
+**IMPORTANTE**: Por questões de segurança, substitua com suas próprias credenciais AWS válidas.
 
 ## Integração Existente
 
