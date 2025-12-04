@@ -5,6 +5,11 @@ dist/
 .env
 .vscode/
 
+# Credentials and sensitive files
+BEDROCK_CREDENTIALS_PRIVATE.md
+*_PRIVATE.md
+*.credentials
+
 # Backend specific
 back-end/build/
 back-end/.gradle/
