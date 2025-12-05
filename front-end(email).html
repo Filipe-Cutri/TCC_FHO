@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${reportType + (issue != null ? ' - ' + issue.key : ' Report')}">Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .report-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .issue-header {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .chart-container {
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .action-buttons .btn {
+            margin-right: 10px;
+        }
+        .chart-image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<!-- Report Content -->
+<div class="container mt-4 mb-5">
+    <div class="report-container">
+        <!-- Report Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0" th:text="${reportType}">Report Type</h1>
+            <button class="btn btn-outline-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print
+            </button>
+        </div>
+
+        <!-- Issue Details Section (for issue-based reports) -->
+        <div th:if="${issue != null}" class="issue-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>
+                        <span class="badge bg-secondary me-2" th:text="${issue.key}">PROJ-123</span>
+                        <span th:text="${issue.fields?.title}">Issue Summary</span>
+                    </h2>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end align-items-center">
+                    <span class="badge rounded-pill me-2"
+                          th:text="${issue.fields?.status?.name}"
+                          th:classappend="${
+                            issue.fields?.status?.name == 'Done' ? 'bg-success' :
+                            issue.fields?.status?.name == 'In Progress' ? 'bg-info' :
+                            issue.fields?.status?.name == 'To Do' ? 'bg-secondary' : 'bg-warning'
+                          }">Status</span>
+                    <span class="badge bg-dark" th:text="${issue.fields?.priority?.name}">Priority</span>
+                    <!-- Cost information with divider -->
+                    <div class="ms-3 border-start ps-3 d-flex align-items-center">
+                        <div class="d-flex flex-column align-items-end">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock me-1" title="Total development time"></i>
+                                <span th:text="${#numbers.formatDecimal(issue.customValues.issueTotalHours, 1, 2) + 'h'}">100.0h</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-currency-dollar me-1" title="Total development cost based on R$ 250,00/hour rate"></i>
+                                <span th:text="${'R$' + #numbers.formatDecimal(issue.customValues.issueDevelopmentCost, 0, 2)}">$2,500.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Assignee:</strong>
+                        <span th:text="${issue.fields?.assignee?.displayName ?: 'Unassigned'}">John Doe</span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Reporter:</strong>
+                        <span th:text="${issue.fields?.reporter?.displayName ?: 'Unknown'}">Jane Smith</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coverage Report Header (for coverage report) -->
+        <div th:if="${reportType == 'Code Coverage by Month'}" class="issue-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>VRCore Project Coverage Analysis</h2>
+                    <p class="text-muted">
+                        Showing code coverage trends for the last
+                        <span th:text="${coverageData.size()}">12</span> months
+                    </p>
+                </div>
+                <div class="col-md-4 d-flex justify-content-end align-items-center">
+                    <div class="d-flex flex-column align-items-end">
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="status-indicator status-on-target"></span>
+                            <span>On Target</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="status-indicator status-near-target"></span>
+                            <span>Within 5% of Target</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="status-indicator status-below-target"></span>
+                            <span>Below Target</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Current Coverage:</strong>
+                        <span th:if="${!coverageData.isEmpty()}"
+                              th:with="latest=${coverageData[coverageData.size()-1]}"
+                              th:text="${#numbers.formatDecimal(latest.executedPercentage, 1, 1)} + '%'">
+                            85.5%
+                        </span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Target Coverage:</strong>
+                        <span th:if="${!coverageData.isEmpty()}"
+                              th:with="latest=${coverageData[coverageData.size()-1]}"
+                              th:text="${#numbers.formatDecimal(latest.estimatedPercentage, 1, 1)} + '%'">
+                            90.0%
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Date and Info -->
+        <div class="alert alert-light">
+            <p class="mb-0">
+                <strong>Report generated:</strong> <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}">01 Jan 2025 12:00</span>
+            </p>
+        </div>
+
+        <!-- Chart Section for Worklog -->
+        <div th:if="${issue != null}" class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Worklog Distribution by Actor</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container text-center">
+                    <img th:if="${worklogChartImage}" th:src="${worklogChartImage}"
+                         class="chart-image" alt="Worklog Chart">
+                    <div th:if="${worklogChartImage == null}" class="alert alert-warning">
+                        No worklog data available for this issue.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section for Coverage -->
+        <div th:if="${reportType == 'Code Coverage Analysis'}" class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Coverage Trends</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container text-center">
+                    <img th:if="${coverageChartImage}" th:src="${coverageChartImage}"
+                         class="chart-image" alt="Coverage Chart">
+                    <div th:if="${coverageChartImage == null}" class="alert alert-warning">
+                        No coverage data available for analysis.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information - Worklog Details -->
+        <div class="card mb-4" th:if="${issue != null && issue.fields?.worklog != null && issue.fields?.worklog.worklogs != null && !issue.fields?.worklog.worklogs.isEmpty()}">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Worklog Details</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Time Spent</th>
+                            <th>Comment</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="worklog : ${issue.fields?.worklog.worklogs}">
+                            <td th:text="${worklog.author?.displayName}">John Doe</td>
+                            <td th:text="${worklog.customValues?.worklogFormattedStartDate}">01 Jan 2025</td>
+                            <td>
+                                <span th:text="${worklog.timeSpentSeconds + 's'}">1h 30m</span>
+                                <span class="text-muted"
+                                      th:text="${'(' + #numbers.formatDecimal(worklog.customValues?.worklogTimeSpentHours, 1, 2) + 'h)'}"></span>
+                            </td>
+                            <td th:text="${worklog.customValues?.worklogCommentText ?: '-'}">Fixed bug</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr class="table-active">
+                            <td colspan="2"><strong>Total</strong></td>
+                            <td>
+                                <strong th:text="${#numbers.formatDecimal(issue.customValues?.issueTotalHours, 1, 2) + 'h'}">10.5h</strong>
+                            </td>
+                            <td></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information - Coverage Details -->
+        <div th:if="${reportType == 'Code Coverage by Month'}" class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Monthly Coverage Details</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Estimated Target</th>
+                            <th>Executed Coverage</th>
+                            <th>Forecasted</th>
+                            <th>Gap</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="entry : ${coverageData}"
+                            th:with="gap=${entry.estimatedPercentage - entry.executedPercentage}">
+                            <td th:text="${entry.month}">Jan 2023</td>
+                            <td th:text="${#numbers.formatDecimal(entry.estimatedPercentage, 1, 1)} + '%'">85.0%</td>
+                            <td th:text="${#numbers.formatDecimal(entry.executedPercentage, 1, 1)} + '%'">80.5%</td>
+                            <td th:text="${#numbers.formatDecimal(entry.forecastedPercentage, 1, 1)} + '%'">87.0%</td>
+                            <td th:text="${gap <= 0 ? '+' + #numbers.formatDecimal(-gap, 1, 1) : '-' + #numbers.formatDecimal(gap, 1, 1)} + '%'">-4.5%</td>
+                            <td>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${gap <= 0 ? 'bg-success' : (gap <= 5 ? 'bg-warning' : 'bg-danger')}"
+                                      th:text="${gap <= 0 ? 'On Target' : (gap <= 5 ? 'Near Target' : 'Below Target')}">
+                                    Status
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons d-flex justify-content-end">
+            <!-- Common button for all reports -->
+            <a href="/reports" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Reports
+            </a>
+
+            <!-- Issue-specific buttons -->
+            <div th:if="${issue != null}">
+                <a th:href="@{'/reports/worklog/' + ${issue.key} + '/image'}"
+                   class="btn btn-success" download>
+                    <i class="bi bi-download"></i> Download Chart
+                </a>
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#emailModal">
+                    <i class="bi bi-envelope"></i> Email Report
+                </button>
+            </div>
+
+            <!-- Coverage-specific buttons -->
+            <div th:if="${reportType == 'Code Coverage Analysis'}">
+                <a href="/reports/coverage/image" class="btn btn-success" download="coverage.png">
+                    <i class="bi bi-download"></i> Download Chart
+                </a>
+                <a href="/reports/coverage/export?format=csv" class="btn btn-outline-primary">
+                    <i class="bi bi-file-earmark-excel"></i> Export CSV
+                </a>
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#emailModal">
+                    <i class="bi bi-envelope"></i> Email Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Send Report via Email</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Email Form -->
+                <form id="emailForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Recipient Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject"
+                               th:value="${reportType + (issue != null ? ' for issue ' + issue.key : ' Report')}" required>
+                        <input id="issueKey" type="hidden" th:if="${issue != null}" th:value="${issue.key}"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="3"
+                                  th:text="${'Please find attached the ' + reportType + ' report.'}" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="sendEmail()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function sendEmail() {
+     const email = document.getElementById('email').value;
+     const subject = document.getElementById('subject').value;
+     const message = document.getElementById('message').value;
+     const issueKey = document.getElementById('issueKey')?.value; // Make it optional
+
+     // Determine which endpoint to use based on the report type
+     const endpoint = subject.includes('Coverage')
+         ? '/reports/send-email-coverage'
+         : '/reports/send-email-worklog';
+
+     // Prepare the request body
+     const requestBody = {
+         to: email,
+         subject: subject,
+         message: message
+     };
+
+     // Add issueKey as query parameter for worklog reports
+     const url = !subject.includes('Coverage') && issueKey
+         ? `${endpoint}?issueKey=${encodeURIComponent(issueKey)}`
+         : endpoint;
+
+     fetch(url, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(requestBody)
+     })
+     .then(response => {
+         if (!response.ok) {
+             throw new Error('Network response was not ok');
+         }
+         return response.text();
+     })
+     .then(data => {
+         alert(data);
+         const modal = bootstrap.Modal.getInstance(document.getElementById('emailModal'));
+         modal.hide();
+     })
+     .catch(error => {
+         alert('Error sending email: ' + error.message);
+     });
+ }
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Multiple Issue Reports</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="container mt-4">
+  <h1 class="mb-4" th:text="${reportType}">Multiple Issue Reports</h1>
+
+  <div class="mb-4" th:each="issue : ${issues}">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <span class="badge bg-secondary" th:text="${issue.key}">PROJ-123</span>
+          <span th:text="${issue.fields?.title}">Issue Title</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <img th:src="${worklogCharts.get(issue.key)}" class="img-fluid"
+                 th:alt="'Worklog chart for ' + ${issue.key}">
+          </div>
+        </div>
+
+        <!-- Issue Details -->
+        <div class="mt-3">
+          <h6>Issue Details:</h6>
+          <ul class="list-unstyled">
+            <li>Status: <span class="badge"
+                              th:text="${issue.fields?.status?.name}"
+                              th:classappend="${
+                                    issue.fields?.status?.name == 'Done' ? 'bg-success' :
+                                    issue.fields?.status?.name == 'In Progress' ? 'bg-info' :
+                                    issue.fields?.status?.name == 'To Do' ? 'bg-secondary' : 'bg-warning'
+                                }">Status</span>
+            </li>
+            <li>Total Hours: <span th:text="${issue.totalHours}">0</span></li>
+            <li>Development Cost: <span th:text="${issue.developmentCost}">$0</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
