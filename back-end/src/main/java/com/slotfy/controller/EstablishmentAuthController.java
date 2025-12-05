@@ -7,6 +7,7 @@ import com.slotfy.model.EstablishmentUser;
 import com.slotfy.model.UserRole;
 import com.slotfy.service.EstablishmentService;
 import com.slotfy.service.EstablishmentUserService;
+import com.slotfy.service.ForgotPasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class EstablishmentAuthController {
     
     @Autowired
     private EstablishmentService establishmentService;
+    
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
     
     /**
      * Login endpoint for establishment users
@@ -343,5 +347,107 @@ public class EstablishmentAuthController {
                     )
                 )
             ));
+    }
+    
+    /**
+     * Forgot password endpoint - initiates password reset process
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
+                    ));
+            }
+            
+            forgotPasswordService.sendEstablishmentPasswordResetEmail(email.trim());
+            
+            // Always return success to prevent email enumeration
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "message", "Se o email existir em nosso sistema, você receberá instruções para redefinir sua senha"
+                ));
+                
+        } catch (Exception e) {
+            logger.error("Unexpected error during password reset initiation", e);
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao processar solicitação"
+                ));
+        }
+    }
+    
+    /**
+     * Reset password endpoint - resets password using token
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            String token = request.get("token");
+            String email = request.get("email");
+            String newPassword = request.get("newPassword");
+            
+            if (token == null || token.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Token é obrigatório"
+                    ));
+            }
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
+                    ));
+            }
+            
+            if (newPassword == null || newPassword.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Nova senha é obrigatória"
+                    ));
+            }
+            
+            boolean success = forgotPasswordService.resetPassword(email.trim(), token.trim(), newPassword.trim());
+            
+            if (success) {
+                return ResponseEntity.ok()
+                    .body(Map.of(
+                        "success", true,
+                        "message", "Senha redefinida com sucesso"
+                    ));
+            } else {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Token de redefinição inválido ou expirado"
+                    ));
+            }
+                
+        } catch (IllegalArgumentException e) {
+            logger.error("Error during password reset: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            logger.error("Unexpected error during password reset", e);
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao processar solicitação"
+                ));
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.slotfy.controller;
 import com.slotfy.model.Client;
 import com.slotfy.service.AuthenticatableService;
 import com.slotfy.service.ClientService;
+import com.slotfy.service.ForgotPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,9 @@ public class ClientAuthController extends BaseAuthController<Client> {
     
     @Autowired
     private ClientService clientService;
+    
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
     
     @Override
     protected AuthenticatableService<Client> getAuthService() {
@@ -145,6 +149,105 @@ public class ClientAuthController extends BaseAuthController<Client> {
                 .body(Map.of(
                     "success", false,
                     "message", "Erro ao atualizar estabelecimento selecionado"
+                ));
+        }
+    }
+    
+    /**
+     * Forgot password endpoint - initiates password reset process
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
+                    ));
+            }
+            
+            forgotPasswordService.sendClientPasswordResetEmail(email.trim());
+            
+            // Always return success to prevent email enumeration
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "message", "Se o email existir em nosso sistema, você receberá instruções para redefinir sua senha"
+                ));
+                
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao processar solicitação"
+                ));
+        }
+    }
+    
+    /**
+     * Reset password endpoint - resets password using token
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            String token = request.get("token");
+            String email = request.get("email");
+            String newPassword = request.get("newPassword");
+            
+            if (token == null || token.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Token é obrigatório"
+                    ));
+            }
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
+                    ));
+            }
+            
+            if (newPassword == null || newPassword.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Nova senha é obrigatória"
+                    ));
+            }
+            
+            boolean success = forgotPasswordService.resetPassword(email.trim(), token.trim(), newPassword.trim());
+            
+            if (success) {
+                return ResponseEntity.ok()
+                    .body(Map.of(
+                        "success", true,
+                        "message", "Senha redefinida com sucesso"
+                    ));
+            } else {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Token de redefinição inválido ou expirado"
+                    ));
+            }
+                
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao processar solicitação"
                 ));
         }
     }
