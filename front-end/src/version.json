@@ -1,0 +1,7 @@
+{
+  "service": "frontend",
+  "version": "v0.0.37",
+  "commit": "unknown",
+  "buildDate": "2025-12-04T00:00:00Z",
+  "environment": "local"
+}

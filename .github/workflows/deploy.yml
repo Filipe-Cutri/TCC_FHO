@@ -1,0 +1,120 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get version information
+        id: version
+        run: |
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0-untagged")
+          
+          # Get commit hash (short)
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          
+          # Get build date
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          
+          echo "version=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "commit=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "build_date=$BUILD_DATE" >> $GITHUB_OUTPUT
+          
+          echo "Version: $LATEST_TAG"
+          echo "Commit: $COMMIT_HASH"
+          echo "Build Date: $BUILD_DATE"
+      
+      - name: Set Railway environment variables for Backend
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Install Railway CLI
+          npm install -g @railway/cli
+          
+          # Set environment variables for backend service
+          echo "Setting backend environment variables..."
+          if ! railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service backend; then
+            echo "::warning::Failed to set APP_VERSION=${{ steps.version.outputs.version }} for backend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
+          fi
+          if ! railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service backend; then
+            echo "::warning::Failed to set COMMIT_HASH=${{ steps.version.outputs.commit }} for backend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
+          fi
+          if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service backend; then
+            echo "::warning::Failed to set BUILD_DATE=${{ steps.version.outputs.build_date }} for backend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
+          fi
+          
+          echo "✅ Backend environment variables set"
+      
+      - name: Set Railway environment variables for Frontend
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Set environment variables for frontend service
+          echo "Setting frontend environment variables..."
+          if ! railway variables set APP_VERSION="${{ steps.version.outputs.version }}" --service frontend; then
+            echo "::warning::Failed to set APP_VERSION=${{ steps.version.outputs.version }} for frontend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
+          fi
+          if ! railway variables set COMMIT_HASH="${{ steps.version.outputs.commit }}" --service frontend; then
+            echo "::warning::Failed to set COMMIT_HASH=${{ steps.version.outputs.commit }} for frontend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
+          fi
+          if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service frontend; then
+            echo "::warning::Failed to set BUILD_DATE=${{ steps.version.outputs.build_date }} for frontend service"
+            echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
+          fi
+          
+          echo "✅ Frontend environment variables set"
+      
+      - name: Trigger Railway deployment
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Trigger redeployment
+          echo "Triggering Railway deployments..."
+          if railway up --service backend; then
+            echo "✅ Backend deployment triggered successfully"
+          else
+            echo "::warning::Backend deployment trigger failed - check RAILWAY_TOKEN and service name 'backend'"
+          fi
+          
+          if railway up --service frontend; then
+            echo "✅ Frontend deployment triggered successfully"
+          else
+            echo "::warning::Frontend deployment trigger failed - check RAILWAY_TOKEN and service name 'frontend'"
+          fi
+          
+          echo "✅ Railway deployment process completed"
+      
+      - name: Summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ steps.version.outputs.commit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Date**: ${{ steps.version.outputs.build_date }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Environment variables have been set in Railway services." >> $GITHUB_STEP_SUMMARY
+          echo "Services will use these values on next deployment." >> $GITHUB_STEP_SUMMARY

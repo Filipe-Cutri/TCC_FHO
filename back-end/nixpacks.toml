@@ -5,4 +5,4 @@ nixPkgs = ['openjdk17']
 cmds = ['./gradlew clean build -x test']
 
 [start]
-cmd = 'java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar build/libs/slotify-backend-*.jar'
+cmd = 'java -Dserver.port=$PORT -Dspring.profiles.active=prod -Dapp.version=${APP_VERSION:-unknown} -Dapp.commit.hash=${COMMIT_HASH:-unknown} -jar build/libs/slotify-backend-*.jar'
