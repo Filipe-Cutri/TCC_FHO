@@ -7,6 +7,7 @@ import com.slotfy.model.EstablishmentUser;
 import com.slotfy.model.UserRole;
 import com.slotfy.service.EstablishmentService;
 import com.slotfy.service.EstablishmentUserService;
+import com.slotfy.service.ForgotPasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class EstablishmentAuthController {
     
     @Autowired
     private EstablishmentService establishmentService;
+    
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
     
     /**
      * Login endpoint for establishment users
@@ -361,7 +365,7 @@ public class EstablishmentAuthController {
                     ));
             }
             
-            boolean emailSent = establishmentUserService.initiatePasswordReset(email.trim());
+            forgotPasswordService.sendEstablishmentPasswordResetEmail(email.trim());
             
             // Always return success to prevent email enumeration
             return ResponseEntity.ok()
@@ -370,13 +374,6 @@ public class EstablishmentAuthController {
                     "message", "Se o email existir em nosso sistema, você receberá instruções para redefinir sua senha"
                 ));
                 
-        } catch (IllegalArgumentException e) {
-            logger.error("Error during password reset initiation: {}", e.getMessage());
-            return ResponseEntity.badRequest()
-                .body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-                ));
         } catch (Exception e) {
             logger.error("Unexpected error during password reset initiation", e);
             return ResponseEntity.internalServerError()
@@ -394,6 +391,7 @@ public class EstablishmentAuthController {
     public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
         try {
             String token = request.get("token");
+            String email = request.get("email");
             String newPassword = request.get("newPassword");
             
             if (token == null || token.trim().isEmpty()) {
@@ -401,6 +399,14 @@ public class EstablishmentAuthController {
                     .body(Map.of(
                         "success", false,
                         "message", "Token é obrigatório"
+                    ));
+            }
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
                     ));
             }
             
@@ -412,7 +418,7 @@ public class EstablishmentAuthController {
                     ));
             }
             
-            boolean success = establishmentUserService.resetPassword(token.trim(), newPassword.trim());
+            boolean success = forgotPasswordService.resetPassword(email.trim(), token.trim(), newPassword.trim());
             
             if (success) {
                 return ResponseEntity.ok()
@@ -424,7 +430,7 @@ public class EstablishmentAuthController {
                 return ResponseEntity.badRequest()
                     .body(Map.of(
                         "success", false,
-                        "message", "Erro ao redefinir senha"
+                        "message", "Token de redefinição inválido ou expirado"
                     ));
             }
                 

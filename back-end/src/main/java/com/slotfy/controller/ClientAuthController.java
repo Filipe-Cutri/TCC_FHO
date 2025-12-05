@@ -3,6 +3,7 @@ package com.slotfy.controller;
 import com.slotfy.model.Client;
 import com.slotfy.service.AuthenticatableService;
 import com.slotfy.service.ClientService;
+import com.slotfy.service.ForgotPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,9 @@ public class ClientAuthController extends BaseAuthController<Client> {
     
     @Autowired
     private ClientService clientService;
+    
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
     
     @Override
     protected AuthenticatableService<Client> getAuthService() {
@@ -165,7 +169,7 @@ public class ClientAuthController extends BaseAuthController<Client> {
                     ));
             }
             
-            boolean emailSent = clientService.initiatePasswordReset(email.trim());
+            forgotPasswordService.sendClientPasswordResetEmail(email.trim());
             
             // Always return success to prevent email enumeration
             return ResponseEntity.ok()
@@ -174,12 +178,6 @@ public class ClientAuthController extends BaseAuthController<Client> {
                     "message", "Se o email existir em nosso sistema, você receberá instruções para redefinir sua senha"
                 ));
                 
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                .body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-                ));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                 .body(Map.of(
@@ -196,6 +194,7 @@ public class ClientAuthController extends BaseAuthController<Client> {
     public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
         try {
             String token = request.get("token");
+            String email = request.get("email");
             String newPassword = request.get("newPassword");
             
             if (token == null || token.trim().isEmpty()) {
@@ -203,6 +202,14 @@ public class ClientAuthController extends BaseAuthController<Client> {
                     .body(Map.of(
                         "success", false,
                         "message", "Token é obrigatório"
+                    ));
+            }
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
                     ));
             }
             
@@ -214,7 +221,7 @@ public class ClientAuthController extends BaseAuthController<Client> {
                     ));
             }
             
-            boolean success = clientService.resetPassword(token.trim(), newPassword.trim());
+            boolean success = forgotPasswordService.resetPassword(email.trim(), token.trim(), newPassword.trim());
             
             if (success) {
                 return ResponseEntity.ok()
@@ -226,7 +233,7 @@ public class ClientAuthController extends BaseAuthController<Client> {
                 return ResponseEntity.badRequest()
                     .body(Map.of(
                         "success", false,
-                        "message", "Erro ao redefinir senha"
+                        "message", "Token de redefinição inválido ou expirado"
                     ));
             }
                 

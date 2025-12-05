@@ -6,7 +6,6 @@ import com.slotfy.repository.EstablishmentUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,15 +21,6 @@ public class EstablishmentUserService extends BaseAuthService<EstablishmentUser,
     
     @Autowired
     private EstablishmentUserRepository establishmentUserRepository;
-    
-    @Autowired
-    private PasswordResetService passwordResetService;
-    
-    @Autowired
-    private EmailService emailService;
-    
-    @Value("${frontend.url}")
-    private String frontendUrl;
     
     public EstablishmentUserService(EstablishmentUserRepository repository) {
         super(repository);
@@ -162,82 +152,5 @@ public class EstablishmentUserService extends BaseAuthService<EstablishmentUser,
             user.get().setActive(false);
             save(user.get());
         }
-    }
-    
-    /**
-     * Initiate password reset process by generating token and sending email
-     */
-    public boolean initiatePasswordReset(String email) {
-        Optional<EstablishmentUser> userOpt = findByEmail(email);
-        if (!userOpt.isPresent()) {
-            // Return false but don't reveal that email doesn't exist for security
-            return false;
-        }
-        
-        EstablishmentUser user = userOpt.get();
-        if (!user.getActive()) {
-            throw new IllegalArgumentException("Conta desativada");
-        }
-        
-        // Generate reset token
-        String token = passwordResetService.generateToken();
-        String hashedToken = passwordResetService.hashToken(token);
-        Long expiry = passwordResetService.getTokenExpiry();
-        
-        // Save token to database
-        user.setResetPasswordTokenHash(hashedToken);
-        user.setResetPasswordExpiry(expiry);
-        save(user);
-        
-        // Build reset link - this should point to the frontend reset page
-        String resetLink = buildResetLink(token, "establishment");
-        
-        // Send email
-        return emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
-    }
-    
-    /**
-     * Reset password using token
-     */
-    public boolean resetPassword(String token, String newPassword) {
-        if (!isValidPassword(newPassword)) {
-            throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
-        }
-        
-        String hashedToken = passwordResetService.hashToken(token);
-        Optional<EstablishmentUser> userOpt = establishmentUserRepository.findByResetPasswordTokenHash(hashedToken);
-        
-        if (!userOpt.isPresent()) {
-            throw new IllegalArgumentException("Token de redefinição inválido");
-        }
-        
-        EstablishmentUser user = userOpt.get();
-        
-        // Check if token is expired
-        if (passwordResetService.isTokenExpired(user.getResetPasswordExpiry())) {
-            // Clear expired token
-            user.setResetPasswordTokenHash(null);
-            user.setResetPasswordExpiry(null);
-            save(user);
-            throw new IllegalArgumentException("Token de redefinição expirado");
-        }
-        
-        // Update password
-        String encodedPassword = hashPassword(newPassword);
-        user.setPassword(encodedPassword);
-        
-        // Clear reset token
-        user.setResetPasswordTokenHash(null);
-        user.setResetPasswordExpiry(null);
-        
-        save(user);
-        return true;
-    }
-    
-    /**
-     * Build password reset link for frontend
-     */
-    private String buildResetLink(String token, String userType) {
-        return String.format("%s/pages/reset-password.html?token=%s&type=%s", frontendUrl, token, userType);
     }
 }
