@@ -21,12 +21,6 @@ Para configurar e fazer deploy no Railway, consulte:
 - [Guia de Configuração do Railway](docs/deployment/RAILWAY_CONFIGURATION.md)
 - [Diferenças entre Localhost e Railway](docs/deployment/LOCALHOST_VS_RAILWAY.md)
 
-### Configuração do Amazon Bedrock (IA)
-Para configurar a integração com Amazon Bedrock para funcionalidades de IA:
-- [Guia Completo de Setup do Amazon Bedrock](docs/AMAZON_BEDROCK_SETUP.md)
-- [Referência Rápida de Credenciais](docs/BEDROCK_CREDENTIALS_REFERENCE.md)
-- Scripts de configuração: `back-end/setup_bedrock.sh` (Linux/Mac) ou `back-end/setup_bedrock.ps1` (Windows)
-
 ## 🏗️ Estrutura do Projeto
 
 ```
