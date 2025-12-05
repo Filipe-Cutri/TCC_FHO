@@ -344,4 +344,104 @@ public class EstablishmentAuthController {
                 )
             ));
     }
+    
+    /**
+     * Forgot password endpoint - initiates password reset process
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Email é obrigatório"
+                    ));
+            }
+            
+            boolean emailSent = establishmentUserService.initiatePasswordReset(email.trim());
+            
+            // Always return success to prevent email enumeration
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true,
+                    "message", "Se o email existir em nosso sistema, você receberá instruções para redefinir sua senha"
+                ));
+                
+        } catch (IllegalArgumentException e) {
+            logger.error("Error during password reset initiation: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            logger.error("Unexpected error during password reset initiation", e);
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao processar solicitação"
+                ));
+        }
+    }
+    
+    /**
+     * Reset password endpoint - resets password using token
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            String token = request.get("token");
+            String newPassword = request.get("newPassword");
+            
+            if (token == null || token.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Token é obrigatório"
+                    ));
+            }
+            
+            if (newPassword == null || newPassword.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Nova senha é obrigatória"
+                    ));
+            }
+            
+            boolean success = establishmentUserService.resetPassword(token.trim(), newPassword.trim());
+            
+            if (success) {
+                return ResponseEntity.ok()
+                    .body(Map.of(
+                        "success", true,
+                        "message", "Senha redefinida com sucesso"
+                    ));
+            } else {
+                return ResponseEntity.badRequest()
+                    .body(Map.of(
+                        "success", false,
+                        "message", "Erro ao redefinir senha"
+                    ));
+            }
+                
+        } catch (IllegalArgumentException e) {
+            logger.error("Error during password reset: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                .body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                ));
+        } catch (Exception e) {
+            logger.error("Unexpected error during password reset", e);
+            return ResponseEntity.internalServerError()
+                .body(Map.of(
+                    "success", false,
+                    "message", "Erro ao processar solicitação"
+                ));
+        }
+    }
 }
