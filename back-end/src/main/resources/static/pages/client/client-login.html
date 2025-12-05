@@ -179,11 +179,18 @@
         });
         
         if (response.success) {
-          // Store session data
-          sessionStorage.setItem('clientSession', JSON.stringify(response.user));
+          // Backend returns the user data under "client" key, normalize it to "user"
+          const userData = response.client || response.user;
+          
+          if (!userData) {
+            throw new Error('Dados do usuário não encontrados na resposta');
+          }
+          
+          // Store session data using ClientSessionManager
+          window.clientSession.setSession(userData);
           
           // Check if user has selected an establishment
-          if (!response.user.selectedEstablishmentId) {
+          if (!userData.selectedEstablishmentId) {
             // Show establishment selection modal
             const establishmentSelector = new EstablishmentSelector();
             try {
@@ -195,13 +202,14 @@
                   try {
                     // Update selected establishment via API
                     const updateResponse = await apiClient.put(API_CONFIG.endpoints.client.updateEstablishment, {
-                      clientId: response.user.id.toString(),
+                      clientId: userData.id.toString(),
                       establishmentId: estId.toString()
                     });
                     
                     if (updateResponse.success) {
                       // Update session with new data
-                      sessionStorage.setItem('clientSession', JSON.stringify(updateResponse.client));
+                      const updatedUserData = updateResponse.client || updateResponse.user;
+                      window.clientSession.setSession(updatedUserData);
                     }
                   } catch (error) {
                     console.error('Error updating establishment:', error);
