@@ -47,15 +47,11 @@ Or you can set them manually:
 #### Frontend URL
 - `FRONTEND_URL` - URL of your frontend service (e.g., `https://your-frontend.railway.app`)
 
-#### AWS Bedrock Configuration (for AI Scheduling features)
+#### AWS Bedrock Configuration (Optional - for AI features)
 - `AWS_REGION` - AWS region (default: `us-east-1`)
-- `AWS_ACCESS_KEY_ID` - AWS access key ID
-- `AWS_SECRET_ACCESS_KEY` - AWS secret access key
+- `AWS_ACCESS_KEY_ID` - AWS access key
+- `AWS_SECRET_ACCESS_KEY` - AWS secret key
 - `BEDROCK_MODEL_ID` - Bedrock model ID (default: `meta.llama3-70b-instruct-v1:0`)
-
-**📚 For detailed setup instructions, see:**
-- [Amazon Bedrock Setup Guide](../AMAZON_BEDROCK_SETUP.md) - Comprehensive setup guide
-- [Bedrock Credentials Reference](../BEDROCK_CREDENTIALS_REFERENCE.md) - Quick reference for credentials
 
 ### Build Configuration
 
