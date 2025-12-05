@@ -3,6 +3,7 @@ package com.slotfy.service;
 import com.slotfy.model.Client;
 import com.slotfy.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,6 +22,9 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
     
     @Autowired
     private EmailService emailService;
+    
+    @Value("${frontend.url}")
+    private String frontendUrl;
     
     public ClientService(ClientRepository repository) {
         super(repository);
@@ -229,12 +233,6 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
      * Build password reset link for frontend
      */
     private String buildResetLink(String token, String userType) {
-        // This should be configured based on environment
-        // For now, using a relative path that works for both local and production
-        String baseUrl = System.getenv("FRONTEND_URL");
-        if (baseUrl == null || baseUrl.isEmpty()) {
-            baseUrl = "https://slotfy-production.up.railway.app";
-        }
-        return String.format("%s/pages/reset-password.html?token=%s&type=%s", baseUrl, token, userType);
+        return String.format("%s/pages/reset-password.html?token=%s&type=%s", frontendUrl, token, userType);
     }
 }
