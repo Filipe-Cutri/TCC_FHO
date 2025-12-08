@@ -8,8 +8,8 @@ Historically, this directory was used to serve the frontend directly from the Sp
 
 ## Current Architecture
 
-- **Production (Railway)**: Frontend and backend are **separate services**
-  - Frontend: Served by `serve` npm package from `front-end/` directory
+- **Production**: Frontend and backend are **separate services**
+  - Frontend: Served by static file server from `front-end/` directory
   - Backend: Spring Boot API server (does NOT serve static files)
 
 - **Development**: You should run frontend separately
