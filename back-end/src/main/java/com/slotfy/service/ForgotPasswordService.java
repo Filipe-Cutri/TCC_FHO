@@ -62,7 +62,7 @@ public class ForgotPasswordService {
             client.setResetPasswordExpiry(expiry);
             clientRepository.save(client);
             
-            String resetLink = frontendUrl + "/reset-password?token=" + rawToken;
+            String resetLink = frontendUrl + "/reset-password.html?email=" + email + "&token=" + rawToken;
             emailService.sendPasswordResetEmail(email, resetLink);
         }
         
@@ -87,7 +87,7 @@ public class ForgotPasswordService {
             user.setResetPasswordExpiry(expiry);
             establishmentUserRepository.save(user);
             
-            String resetLink = frontendUrl + "/reset-password?token=" + rawToken;
+            String resetLink = frontendUrl + "/reset-password.html?email=" + email + "&token=" + rawToken;
             emailService.sendPasswordResetEmail(email, resetLink);
         }
         

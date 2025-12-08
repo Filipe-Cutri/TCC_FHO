@@ -40,7 +40,7 @@ const API_CONFIG = {
         client: {
             login: '/api/client/login',
             register: '/api/client/register',
-            forgotPassword: '/api/client/forgot-password',
+            forgotPassword: '/api/auth/forgot-password',
             updateEstablishment: '/api/client/establishment',
             establishments: {
                 list: '/api/client/establishments',
@@ -70,7 +70,7 @@ const API_CONFIG = {
             login: '/api/establishment/login',
             register: '/api/establishment/register',
             registerComplete: '/api/establishment/register-complete',
-            forgotPassword: '/api/establishment/forgot-password',
+            forgotPassword: '/api/auth/forgot-password',
             list: '/api/establishment/list',
             createStaff: '/api/establishment/create-staff',
             roles: '/api/establishment/roles',
