@@ -22,6 +22,27 @@ public class EmailService {
     }
 
     public boolean sendEmail(String to, String subject, String body) {
+        // Validate input parameters
+        if (to == null || to.trim().isEmpty()) {
+            System.err.println("Erro: Endereço de email de destino é nulo ou vazio");
+            return false;
+        }
+        
+        if (subject == null || subject.trim().isEmpty()) {
+            System.err.println("Erro: Assunto do email é nulo ou vazio");
+            return false;
+        }
+        
+        if (body == null || body.trim().isEmpty()) {
+            System.err.println("Erro: Corpo do email é nulo ou vazio");
+            return false;
+        }
+        
+        if (fromEmail == null || fromEmail.trim().isEmpty()) {
+            System.err.println("Erro: Email remetente não configurado");
+            return false;
+        }
+        
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -43,6 +64,17 @@ public class EmailService {
     }
 
     public boolean sendPasswordResetEmail(String to, String resetLink) {
+        // Validate input parameters
+        if (to == null || to.trim().isEmpty()) {
+            System.err.println("Erro: Endereço de email para reset de senha é nulo ou vazio");
+            return false;
+        }
+        
+        if (resetLink == null || resetLink.trim().isEmpty()) {
+            System.err.println("Erro: Link de reset de senha é nulo ou vazio");
+            return false;
+        }
+        
         String subject = "Redefinição de Senha - Slotfy";
         String body = buildPasswordResetEmailBody(resetLink);
         return sendEmail(to, subject, body);

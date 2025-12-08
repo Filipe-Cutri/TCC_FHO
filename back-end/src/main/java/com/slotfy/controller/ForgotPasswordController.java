@@ -28,28 +28,36 @@ public class ForgotPasswordController {
         
         try {
             String email = request.get("email");
+            System.out.println("Requisição de recuperação de senha recebida para: " + email);
             
             if (email == null || email.trim().isEmpty()) {
+                System.err.println("Erro: Email não fornecido na requisição");
                 return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", "E-mail é obrigatório"));
             }
             
             // Basic rate limiting
             String clientIp = getClientIp(forwardedFor, realIp);
+            System.out.println("IP do cliente: " + clientIp);
             if (!checkRateLimit(clientIp)) {
+                System.err.println("Rate limit excedido para IP: " + clientIp);
                 return ResponseEntity.status(429)
                     .body(Map.of("success", false, "message", "Muitas requisições. Tente novamente em 1 minuto."));
             }
             
             // Try client first, then establishment
+            System.out.println("Tentando enviar email de reset para cliente e estabelecimento...");
             forgotPasswordService.sendClientPasswordResetEmail(email);
             forgotPasswordService.sendEstablishmentPasswordResetEmail(email);
+            System.out.println("Processamento de recuperação de senha concluído para: " + email);
             
             // Always return generic success message for security
             return ResponseEntity.ok()
                 .body(Map.of("success", true, "message", "Se o e-mail existir, as instruções de redefinição foram enviadas"));
             
         } catch (Exception e) {
+            System.err.println("Erro ao processar recuperação de senha: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Erro interno do servidor"));
         }

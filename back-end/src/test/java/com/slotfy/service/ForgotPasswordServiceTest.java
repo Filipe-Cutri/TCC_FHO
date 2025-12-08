@@ -49,7 +49,7 @@ public class ForgotPasswordServiceTest {
     @BeforeEach
     void setUp() {
         // Set frontend URL for testing
-        ReflectionTestUtils.setField(forgotPasswordService, "frontendUrl", "http://localhost:3000");
+        ReflectionTestUtils.setField(forgotPasswordService, "frontendUrl", "https://localhost:8443");
 
         // Create test client
         testClient = new Client();
@@ -380,7 +380,7 @@ public class ForgotPasswordServiceTest {
         // Assert - Verify the reset link contains the token
         verify(emailService).sendPasswordResetEmail(
             eq("client@example.com"), 
-            argThat(link -> link.contains("token=") && link.startsWith("http://localhost:3000/reset-password"))
+            argThat(link -> link.contains("token=") && link.startsWith("https://localhost:8443/pages/reset-password"))
         );
     }
     
