@@ -17,7 +17,8 @@ class EstablishmentSelector {
         try {
             const response = await window.apiClient.get(API_CONFIG.endpoints.establishment.list);
             if (response.success) {
-                // Filter to ensure only establishments with data are included
+                // Filter to ensure only valid establishments are included
+                // Backend already filters for ACTIVE status, we just validate required fields
                 this.establishments = (response.data || []).filter(est => 
                     est && est.id && est.name
                 );
