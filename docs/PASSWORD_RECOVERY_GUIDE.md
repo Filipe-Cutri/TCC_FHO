@@ -31,20 +31,25 @@ Este guia documenta o sistema de recuperação de senha implementado no Slotfy, 
 ```properties
 # Gmail SMTP Configuration
 spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=${GMAIL_USERNAME:filipe.cutri18@gmail.com.br}
-spring.mail.password=${GMAIL_PASSWORD:sanbeohgweevaljp}
+spring.mail.port=465
+spring.mail.username=filipe.cutri18@gmail.com
+spring.mail.password=hhup lovh lfue bhhl
+
 spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.starttls.enable=true
-spring.mail.properties.mail.smtp.starttls.required=true
-spring.mail.properties.mail.smtp.connectiontimeout=5000
-spring.mail.properties.mail.smtp.timeout=5000
-spring.mail.properties.mail.smtp.writetimeout=5000
+spring.mail.properties.mail.smtp.ssl.enable=true
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+spring.mail.properties.mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory
+spring.mail.properties.mail.smtp.socketFactory.port=465
 
 # Email sender information
-email.from.address=${EMAIL_FROM_ADDRESS:filipe.cutri18@gmail.com.br}
+email.from.address=filipe.cutri18@gmail.com
 email.from.name=Slotfy - Sistema de Agendamento
+
+# Frontend URL for password reset links
+frontend.url=${FRONTEND_URL:https://localhost:8443}
 ```
+
+**Nota:** Esta configuração usa porta 465 com SSL direto. Alternativamente, você pode usar porta 587 com STARTTLS.
 
 ### Frontend
 
@@ -80,12 +85,12 @@ Usuario → Frontend (client/establishment-forgot-password.html)
 
 O link gerado tem o formato:
 ```
-{FRONTEND_URL}/reset-password.html?email={EMAIL}&token={TOKEN}
+{FRONTEND_URL}/pages/reset-password.html?email={EMAIL}&token={TOKEN}
 ```
 
 Exemplo:
 ```
-http://localhost:3000/reset-password.html?email=usuario@exemplo.com&token=a1b2c3d4e5f6...
+https://localhost:8443/pages/reset-password.html?email=usuario@exemplo.com&token=a1b2c3d4e5f6...
 ```
 
 ### 3. Redefinição de Senha
@@ -187,16 +192,50 @@ cd back-end
 
 ### E-mail não está sendo enviado
 
-1. Verifique as credenciais do Gmail
-2. Certifique-se de usar "Senha de App" e não a senha normal
-3. Verifique os logs do backend para erros SMTP
-4. Verifique se a conta Gmail tem 2FA habilitado
+1. **Verifique as credenciais do Gmail**
+   - Certifique-se de usar "Senha de App" e não a senha normal
+   - A senha de app tem o formato: `xxxx xxxx xxxx xxxx` (com espaços)
+   - Verifique se a conta Gmail tem verificação em duas etapas habilitada
+
+2. **Verifique os logs do backend para erros SMTP**
+   - Procure por mensagens de erro no console do backend
+   - Mensagens de log úteis:
+     ```
+     Tentando enviar email de reset para cliente: [email]
+     Cliente encontrado: [email]
+     Token gerado e salvo para cliente: [email]
+     Link de reset gerado: [link]
+     Email enviado para cliente [email]: true/false
+     ```
+
+3. **Erros comuns de SMTP:**
+   - `AuthenticationFailedException`: Senha incorreta ou não é senha de app
+   - `Connection timed out`: Firewall bloqueando porta 465
+   - `Invalid Addresses`: Email de destino inválido
+
+4. **Verifique a configuração SMTP:**
+   - Porta 465 deve estar aberta
+   - SSL deve estar habilitado
+   - Host: smtp.gmail.com
 
 ### Link de redefinição não funciona
 
-1. Verifique se `FRONTEND_URL` está configurado corretamente
-2. Verifique se o token não expirou (válido por 1 hora)
-3. Verifique se o e-mail na URL corresponde ao e-mail cadastrado
+1. **Verifique se `FRONTEND_URL` está configurado corretamente**
+   - Para desenvolvimento local: `https://localhost:8443`
+   - Para produção: URL do seu domínio (ex: `https://slotfy.com`)
+
+2. **Verifique se o token não expirou**
+   - Token é válido por 1 hora
+   - Após 1 hora, solicite um novo link
+
+3. **Verifique o formato do link**
+   - Deve conter: `/pages/reset-password.html?email=...&token=...`
+   - Email deve corresponder ao cadastrado
+   - Token deve ter 64 caracteres hexadecimais
+
+4. **Verifique os logs do backend:**
+   - Se o usuário não foi encontrado, não haverá log de "Cliente encontrado"
+   - Se o email não foi enviado, o log mostrará `Email enviado: false`
 
 ### Erro 429 (Too Many Requests)
 
