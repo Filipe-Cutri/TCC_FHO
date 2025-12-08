@@ -1,6 +1,7 @@
 package com.slotfy.service;
 
 import com.slotfy.model.Client;
+import com.slotfy.model.Establishment;
 import com.slotfy.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
     
     @Autowired
     private ClientRepository clientRepository;
+    
+    @Autowired
+    private EstablishmentService establishmentService;
     
     public ClientService(ClientRepository repository) {
         super(repository);
@@ -65,6 +69,19 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
         Long establishmentId = additionalParams.length > 1 && additionalParams[1] != null 
             ? Long.parseLong(additionalParams[1]) : null;
         
+        // Validate establishment exists and is active (if provided)
+        if (establishmentId != null) {
+            Optional<Establishment> establishmentOpt = establishmentService.findById(establishmentId);
+            if (!establishmentOpt.isPresent()) {
+                throw new IllegalArgumentException("Estabelecimento não encontrado");
+            }
+            
+            Establishment establishment = establishmentOpt.get();
+            if (!establishment.isActive()) {
+                throw new IllegalArgumentException("Estabelecimento não está ativo. Por favor, escolha outro estabelecimento.");
+            }
+        }
+        
         String encodedPassword = hashPassword(password);
         
         Client client = new Client(name, email, encodedPassword, phone);
@@ -93,6 +110,19 @@ public class ClientService extends BaseAuthService<Client, ClientRepository> {
         Optional<Client> clientOpt = findById(clientId);
         if (!clientOpt.isPresent()) {
             throw new IllegalArgumentException("Cliente não encontrado");
+        }
+        
+        // Validate establishment exists and is active (if establishmentId is provided)
+        if (establishmentId != null) {
+            Optional<Establishment> establishmentOpt = establishmentService.findById(establishmentId);
+            if (!establishmentOpt.isPresent()) {
+                throw new IllegalArgumentException("Estabelecimento não encontrado");
+            }
+            
+            Establishment establishment = establishmentOpt.get();
+            if (!establishment.isActive()) {
+                throw new IllegalArgumentException("Estabelecimento não está ativo");
+            }
         }
         
         Client client = clientOpt.get();

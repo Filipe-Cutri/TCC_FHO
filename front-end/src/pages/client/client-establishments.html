@@ -327,7 +327,7 @@
         `;
       }
 
-      viewServices(establishmentId) {
+      async viewServices(establishmentId) {
         // Store establishment ID in session storage
         sessionStorage.setItem('selectedEstablishmentId', establishmentId);
         
@@ -338,7 +338,13 @@
           window.clientSession.setSelectedEstablishmentId(establishmentId);
           
           // Call API to persist the selection
-          this.updateEstablishmentSelection(session.id, establishmentId);
+          const success = await this.updateEstablishmentSelection(session.id, establishmentId);
+          
+          if (!success) {
+            // If update failed, don't navigate and show error
+            console.error('Failed to update establishment selection, not navigating');
+            return;
+          }
         }
         
         // Navigate to services page
@@ -347,12 +353,23 @@
       
       async updateEstablishmentSelection(clientId, establishmentId) {
         try {
-          await window.apiClient.put(API_CONFIG.endpoints.client.updateEstablishment, {
+          const response = await window.apiClient.put(API_CONFIG.endpoints.client.updateEstablishment, {
             clientId: clientId,
             establishmentId: establishmentId
           });
+          
+          if (!response.success) {
+            console.error('Failed to update establishment selection:', response.message);
+            alert('Erro ao vincular estabelecimento: ' + (response.message || 'Erro desconhecido'));
+            return false;
+          }
+          
+          console.log('Establishment selection updated successfully');
+          return true;
         } catch (error) {
           console.error('Error updating establishment selection:', error);
+          alert('Erro ao vincular estabelecimento: ' + (error.message || 'Erro de comunicação com o servidor'));
+          return false;
         }
       }
     }

@@ -1,6 +1,8 @@
 package com.slotfy.service;
 
 import com.slotfy.model.Client;
+import com.slotfy.model.Establishment;
+import com.slotfy.model.EstablishmentStatus;
 import com.slotfy.repository.ClientRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,9 @@ public class ClientServiceTest {
     
     @Mock
     private PasswordEncoder passwordEncoder;
+    
+    @Mock
+    private EstablishmentService establishmentService;
 
     private ClientService clientService;
 
@@ -34,6 +39,8 @@ public class ClientServiceTest {
         clientService = new ClientService(clientRepository);
         // Inject the mocked password encoder into the service
         ReflectionTestUtils.setField(clientService, "passwordEncoder", passwordEncoder);
+        // Inject the mocked establishment service into the service
+        ReflectionTestUtils.setField(clientService, "establishmentService", establishmentService);
         // Mock password encoder to return a simple hash
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
     }
@@ -108,6 +115,13 @@ public class ClientServiceTest {
 
         when(clientRepository.existsByEmail(email)).thenReturn(false);
         
+        // Mock establishment service to return an active establishment
+        Establishment establishment = new Establishment();
+        establishment.setId(establishmentId);
+        establishment.setName("Test Establishment");
+        establishment.setStatus(EstablishmentStatus.ACTIVE);
+        when(establishmentService.findById(establishmentId)).thenReturn(Optional.of(establishment));
+        
         Client savedClient = new Client(name, email, "encodedPassword", phone);
         savedClient.setId(1L);
         savedClient.setSelectedEstablishmentId(establishmentId);
@@ -116,6 +130,7 @@ public class ClientServiceTest {
         Client result = clientService.registerClient(name, email, password, phone, establishmentId);
 
         assertNotNull(result);
+        verify(establishmentService).findById(establishmentId);
         verify(clientRepository).save(any(Client.class));
     }
 
@@ -127,12 +142,20 @@ public class ClientServiceTest {
         Client client = new Client("Test", "test@example.com", "password", "1234567890");
         client.setId(clientId);
 
+        // Mock establishment service to return an active establishment
+        Establishment establishment = new Establishment();
+        establishment.setId(establishmentId);
+        establishment.setName("Test Establishment");
+        establishment.setStatus(EstablishmentStatus.ACTIVE);
+        when(establishmentService.findById(establishmentId)).thenReturn(Optional.of(establishment));
+
         when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
         when(clientRepository.save(any(Client.class))).thenReturn(client);
 
         Client result = clientService.updateSelectedEstablishment(clientId, establishmentId);
 
         assertNotNull(result);
+        verify(establishmentService).findById(establishmentId);
         verify(clientRepository).findById(clientId);
         verify(clientRepository).save(client);
     }
@@ -260,6 +283,118 @@ public class ClientServiceTest {
         Client result = clientService.updateProfile(clientId, "Test", "");
 
         assertNotNull(result);
+        verify(clientRepository).save(client);
+    }
+
+    @Test
+    void testRegisterClient_WithInvalidEstablishmentId() {
+        String name = "Test Client";
+        String email = "test@example.com";
+        String password = "password123";
+        String phone = "1234567890";
+        Long establishmentId = 999L;
+
+        when(clientRepository.existsByEmail(email)).thenReturn(false);
+        when(establishmentService.findById(establishmentId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            clientService.registerClient(name, email, password, phone, establishmentId);
+        });
+        
+        assertEquals("Estabelecimento não encontrado", exception.getMessage());
+        verify(establishmentService).findById(establishmentId);
+        verify(clientRepository, never()).save(any(Client.class));
+    }
+
+    @Test
+    void testRegisterClient_WithInactiveEstablishment() {
+        String name = "Test Client";
+        String email = "test@example.com";
+        String password = "password123";
+        String phone = "1234567890";
+        Long establishmentId = 5L;
+
+        when(clientRepository.existsByEmail(email)).thenReturn(false);
+        
+        // Mock establishment service to return an inactive establishment
+        Establishment establishment = new Establishment();
+        establishment.setId(establishmentId);
+        establishment.setName("Inactive Establishment");
+        establishment.setStatus(EstablishmentStatus.INACTIVE);
+        when(establishmentService.findById(establishmentId)).thenReturn(Optional.of(establishment));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            clientService.registerClient(name, email, password, phone, establishmentId);
+        });
+        
+        assertEquals("Estabelecimento não está ativo. Por favor, escolha outro estabelecimento.", exception.getMessage());
+        verify(establishmentService).findById(establishmentId);
+        verify(clientRepository, never()).save(any(Client.class));
+    }
+
+    @Test
+    void testUpdateSelectedEstablishment_WithInvalidEstablishmentId() {
+        Long clientId = 1L;
+        Long establishmentId = 999L;
+
+        Client client = new Client("Test", "test@example.com", "password", "1234567890");
+        client.setId(clientId);
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        when(establishmentService.findById(establishmentId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            clientService.updateSelectedEstablishment(clientId, establishmentId);
+        });
+        
+        assertEquals("Estabelecimento não encontrado", exception.getMessage());
+        verify(clientRepository).findById(clientId);
+        verify(establishmentService).findById(establishmentId);
+        verify(clientRepository, never()).save(any(Client.class));
+    }
+
+    @Test
+    void testUpdateSelectedEstablishment_WithInactiveEstablishment() {
+        Long clientId = 1L;
+        Long establishmentId = 2L;
+
+        Client client = new Client("Test", "test@example.com", "password", "1234567890");
+        client.setId(clientId);
+
+        // Mock establishment service to return an inactive establishment
+        Establishment establishment = new Establishment();
+        establishment.setId(establishmentId);
+        establishment.setName("Inactive Establishment");
+        establishment.setStatus(EstablishmentStatus.INACTIVE);
+        when(establishmentService.findById(establishmentId)).thenReturn(Optional.of(establishment));
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            clientService.updateSelectedEstablishment(clientId, establishmentId);
+        });
+        
+        assertEquals("Estabelecimento não está ativo", exception.getMessage());
+        verify(clientRepository).findById(clientId);
+        verify(establishmentService).findById(establishmentId);
+        verify(clientRepository, never()).save(any(Client.class));
+    }
+
+    @Test
+    void testUpdateSelectedEstablishment_WithNullEstablishmentId() {
+        Long clientId = 1L;
+
+        Client client = new Client("Test", "test@example.com", "password", "1234567890");
+        client.setId(clientId);
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        when(clientRepository.save(any(Client.class))).thenReturn(client);
+
+        Client result = clientService.updateSelectedEstablishment(clientId, null);
+
+        assertNotNull(result);
+        verify(clientRepository).findById(clientId);
+        verify(establishmentService, never()).findById(any());
         verify(clientRepository).save(client);
     }
 
