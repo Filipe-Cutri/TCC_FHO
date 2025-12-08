@@ -19,11 +19,16 @@
 
 ### 4. **Falta de Logging para Diagnóstico**
 - **Problema:** Difícil identificar onde o processo estava falando
-- **Solução:** Adicionados logs detalhados em cada etapa do processo
+- **Solução:** Adicionados logs detalhados em cada etapa do processo (com mascaramento de emails para segurança)
 - **Arquivos:** 
   - `EmailService.java`
   - `ForgotPasswordService.java`
   - `ForgotPasswordController.java`
+
+### 5. **Segurança de Logs**
+- **Melhoria:** Implementado mascaramento de emails em todos os logs
+- **Formato:** Emails aparecem como `us***@example.com` nos logs
+- **Motivo:** Prevenir exposição de informações pessoais em logs
 
 ## Como Testar
 
@@ -54,18 +59,20 @@ https://localhost:8443/pages/establishment/establishment-forgot-password.html
 
 #### 3. Verificar os Logs
 
-Ao submeter o formulário, você deve ver no console do backend:
+Ao submeter o formulário, você deve ver no console do backend (emails mascarados para segurança):
 
 ```
-Requisição de recuperação de senha recebida para: [seu-email]
-IP do cliente: [seu-ip]
-Tentando enviar email de reset para cliente: [seu-email]
-Cliente encontrado: [seu-email]
-Token gerado e salvo para cliente: [seu-email]
-Link de reset gerado: https://localhost:8443/pages/reset-password.html?email=[seu-email]&token=[token]
-Email enviado com sucesso para: [seu-email]
-Email enviado para cliente [seu-email]: true
-Processamento de recuperação de senha concluído para: [seu-email]
+Requisição de recuperação de senha recebida: us***@example.com
+Processando recuperação de senha
+Tentando enviar email de reset para cliente: us***@example.com
+Cliente encontrado
+Token gerado e salvo para cliente
+Enviando email de reset para cliente
+Email enviado com sucesso para: us***@example.com
+Email enviado: true
+Tentando enviar email de reset para estabelecimento: us***@example.com
+Estabelecimento não encontrado
+Processamento concluído
 ```
 
 #### 4. Verificar o Email

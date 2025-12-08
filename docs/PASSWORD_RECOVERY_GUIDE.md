@@ -28,6 +28,8 @@ Este guia documenta o sistema de recuperação de senha implementado no Slotfy, 
 
 #### Configuração SMTP
 
+**Nota de Segurança:** As credenciais abaixo são exemplos. Em produção, use variáveis de ambiente e nunca commite credenciais reais no código.
+
 ```properties
 # Gmail SMTP Configuration
 spring.mail.host=smtp.gmail.com
@@ -199,13 +201,14 @@ cd back-end
 
 2. **Verifique os logs do backend para erros SMTP**
    - Procure por mensagens de erro no console do backend
-   - Mensagens de log úteis:
+   - Mensagens de log úteis (emails são mascarados para segurança):
      ```
-     Tentando enviar email de reset para cliente: [email]
-     Cliente encontrado: [email]
-     Token gerado e salvo para cliente: [email]
-     Link de reset gerado: [link]
-     Email enviado para cliente [email]: true/false
+     Requisição de recuperação de senha recebida: us***@example.com
+     Tentando enviar email de reset para cliente: us***@example.com
+     Cliente encontrado
+     Token gerado e salvo para cliente
+     Enviando email de reset para cliente
+     Email enviado: true
      ```
 
 3. **Erros comuns de SMTP:**
