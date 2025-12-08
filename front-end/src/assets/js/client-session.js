@@ -6,6 +6,9 @@ class ClientSessionManager {
     constructor() {
         this.sessionKey = 'slotfy_client_session';
         this.apiBaseUrl = '/api/client';
+        this.loginPage = 'client-login.html';
+        this.dashboardPage = 'client-dashboard.html';
+        this.registerPage = 'client-register.html';
     }
 
     /**
@@ -124,7 +127,7 @@ class ClientSessionManager {
      */
     requireAuth() {
         if (!this.isLoggedIn()) {
-            window.location.href = 'legacy/login-enhanced.html';
+            window.location.href = this.loginPage;
             return false;
         }
         return true;
@@ -161,7 +164,7 @@ class ClientSessionManager {
      */
     logout() {
         this.clearSession();
-        window.location.href = 'legacy/login-enhanced.html';
+        window.location.href = this.loginPage;
     }
 
     /**
@@ -178,7 +181,7 @@ class ClientSessionManager {
         });
 
         // Show/hide login/logout buttons
-        const loginButtons = document.querySelectorAll('a[href="legacy/login-enhanced.html"]:not(.logout-btn)');
+        const loginButtons = document.querySelectorAll(`a[href="${this.loginPage}"]:not(.logout-btn)`);
         const logoutButtons = document.querySelectorAll('.logout-btn');
 
         loginButtons.forEach(btn => {
@@ -198,8 +201,8 @@ class ClientSessionManager {
     redirectIfLoggedIn() {
         if (this.isLoggedIn()) {
             const currentPage = window.location.pathname.split('/').pop();
-            if (currentPage === 'legacy/login-enhanced.html' || currentPage === 'client-register.html') {
-                window.location.href = 'client-dashboard.html';
+            if (currentPage === this.loginPage || currentPage === this.registerPage) {
+                window.location.href = this.dashboardPage;
             }
         }
     }
@@ -220,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.clientSession.redirectIfLoggedIn();
     
     // Add logout handlers for client logout buttons
-    document.querySelectorAll('.logout-btn, a[href="legacy/login-enhanced.html"]').forEach(link => {
+    document.querySelectorAll(`.logout-btn, a[href="${window.clientSession.loginPage}"]`).forEach(link => {
         if (link.textContent.includes('Sair') || link.innerHTML.includes('sign-out') || link.classList.contains('logout-btn')) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
