@@ -17,7 +17,11 @@ class EstablishmentSelector {
         try {
             const response = await window.apiClient.get(API_CONFIG.endpoints.establishment.list);
             if (response.success) {
-                this.establishments = response.data;
+                // Filter to ensure only establishments with data are included
+                this.establishments = (response.data || []).filter(est => 
+                    est && est.id && est.name
+                );
+                console.log(`Loaded ${this.establishments.length} active establishments`);
                 return this.establishments;
             } else {
                 throw new Error(response.message || 'Erro ao carregar estabelecimentos');
