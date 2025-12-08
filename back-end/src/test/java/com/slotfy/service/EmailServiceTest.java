@@ -2,22 +2,29 @@ package com.slotfy.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
+import jakarta.mail.internet.MimeMessage;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
- * Test class for EmailService with SendGrid integration
+ * Test class for EmailService with Gmail SMTP integration
  */
 public class EmailServiceTest {
 
     private EmailService emailService;
+    private JavaMailSender mailSender;
 
     @BeforeEach
     void setUp() {
-        emailService = new EmailService();
-        // Set the SendGrid API key for testing
-        ReflectionTestUtils.setField(emailService, "sendGridApiKey", "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");
+        mailSender = mock(JavaMailSender.class);
+        MimeMessage mimeMessage = mock(MimeMessage.class);
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        
+        emailService = new EmailService(mailSender);
         ReflectionTestUtils.setField(emailService, "fromEmail", "noreply@slotfy.com");
         ReflectionTestUtils.setField(emailService, "fromName", "Slotfy - Sistema de Agendamento");
     }
@@ -29,17 +36,15 @@ public class EmailServiceTest {
 
     @Test
     void testSendEmail_ValidEmail() {
-        // Note: This test will actually attempt to send an email via SendGrid
-        // In production, you might want to mock the SendGrid API
         String to = "test@example.com";
         String subject = "Test Email";
         String body = "<html><body><h1>Test Email Body</h1></body></html>";
         
-        // The method should return true or false depending on SendGrid's response
-        // We'll just verify it doesn't throw an exception
-        assertDoesNotThrow(() -> {
-            emailService.sendEmail(to, subject, body);
-        });
+        boolean result = emailService.sendEmail(to, subject, body);
+        
+        // Verify that mailSender was called
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+        assertTrue(result);
     }
 
     @Test
@@ -47,11 +52,11 @@ public class EmailServiceTest {
         String to = "test@example.com";
         String resetLink = "https://localhost:8443/pages/reset-password.html?token=test-token";
         
-        // The method should return true or false depending on SendGrid's response
-        // We'll just verify it doesn't throw an exception
-        assertDoesNotThrow(() -> {
-            emailService.sendPasswordResetEmail(to, resetLink);
-        });
+        boolean result = emailService.sendPasswordResetEmail(to, resetLink);
+        
+        // Verify that mailSender was called
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+        assertTrue(result);
     }
 
     @Test
@@ -76,15 +81,15 @@ public class EmailServiceTest {
     }
     
     @Test
-    void testSendEmail_InvalidApiKey() {
-        // Setup with an invalid API key
-        ReflectionTestUtils.setField(emailService, "sendGridApiKey", "invalid-key");
+    void testSendEmail_ExceptionHandling() {
+        // Setup mail sender to throw exception
+        doThrow(new RuntimeException("Mail server error")).when(mailSender).send(any(MimeMessage.class));
         
         String to = "test@example.com";
         String subject = "Test Email";
         String body = "<html><body><h1>Test Email Body</h1></body></html>";
         
-        // Should return false with invalid API key
+        // Should return false when exception occurs
         boolean result = emailService.sendEmail(to, subject, body);
         assertFalse(result);
     }
@@ -140,9 +145,10 @@ public class EmailServiceTest {
         String to = "test@example.com";
         String resetLink = "https://example.com/reset?token=abc123&param=value%20encoded";
         
-        // Should handle special characters in link
-        assertDoesNotThrow(() -> {
-            emailService.sendPasswordResetEmail(to, resetLink);
-        });
+        boolean result = emailService.sendPasswordResetEmail(to, resetLink);
+        
+        // Verify that mailSender was called
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+        assertTrue(result);
     }
 }
