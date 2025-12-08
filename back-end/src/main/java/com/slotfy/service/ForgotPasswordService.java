@@ -46,14 +46,33 @@ public class ForgotPasswordService {
     }
 
     /**
+     * Mask email address for logging (show first 2 chars and domain)
+     */
+    private String maskEmail(String email) {
+        if (email == null || email.length() < 3 || !email.contains("@")) {
+            return "***";
+        }
+        int atIndex = email.indexOf("@");
+        String username = email.substring(0, atIndex);
+        String domain = email.substring(atIndex);
+        
+        if (username.length() <= 2) {
+            return username.charAt(0) + "***" + domain;
+        }
+        return username.substring(0, 2) + "***" + domain;
+    }
+
+    /**
      * Request password reset for client.
      * Always returns true to avoid revealing if email exists.
      */
     public boolean sendClientPasswordResetEmail(String email) {
+        System.out.println("Tentando enviar email de reset para cliente: " + maskEmail(email));
         Optional<Client> clientOpt = clientRepository.findByEmail(email);
         
         if (clientOpt.isPresent()) {
             Client client = clientOpt.get();
+            System.out.println("Cliente encontrado");
             String rawToken = generateSecureToken();
             String tokenHash = hashToken(rawToken);
             long expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
@@ -61,9 +80,14 @@ public class ForgotPasswordService {
             client.setResetPasswordTokenHash(tokenHash);
             client.setResetPasswordExpiry(expiry);
             clientRepository.save(client);
+            System.out.println("Token gerado e salvo para cliente");
             
-            String resetLink = frontendUrl + "/reset-password.html?email=" + email + "&token=" + rawToken;
-            emailService.sendPasswordResetEmail(email, resetLink);
+            String resetLink = frontendUrl + "/pages/reset-password.html?email=" + email + "&token=" + rawToken;
+            System.out.println("Enviando email de reset para cliente");
+            boolean emailSent = emailService.sendPasswordResetEmail(email, resetLink);
+            System.out.println("Email enviado: " + emailSent);
+        } else {
+            System.out.println("Cliente não encontrado");
         }
         
         // Always return true for security (don't reveal if email exists)
@@ -75,10 +99,12 @@ public class ForgotPasswordService {
      * Always returns true to avoid revealing if email exists.
      */
     public boolean sendEstablishmentPasswordResetEmail(String email) {
+        System.out.println("Tentando enviar email de reset para estabelecimento: " + maskEmail(email));
         Optional<EstablishmentUser> userOpt = establishmentUserRepository.findByEmail(email);
         
         if (userOpt.isPresent()) {
             EstablishmentUser user = userOpt.get();
+            System.out.println("Estabelecimento encontrado");
             String rawToken = generateSecureToken();
             String tokenHash = hashToken(rawToken);
             long expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
@@ -86,9 +112,14 @@ public class ForgotPasswordService {
             user.setResetPasswordTokenHash(tokenHash);
             user.setResetPasswordExpiry(expiry);
             establishmentUserRepository.save(user);
+            System.out.println("Token gerado e salvo para estabelecimento");
             
-            String resetLink = frontendUrl + "/reset-password.html?email=" + email + "&token=" + rawToken;
-            emailService.sendPasswordResetEmail(email, resetLink);
+            String resetLink = frontendUrl + "/pages/reset-password.html?email=" + email + "&token=" + rawToken;
+            System.out.println("Enviando email de reset para estabelecimento");
+            boolean emailSent = emailService.sendPasswordResetEmail(email, resetLink);
+            System.out.println("Email enviado: " + emailSent);
+        } else {
+            System.out.println("Estabelecimento não encontrado");
         }
         
         // Always return true for security (don't reveal if email exists)

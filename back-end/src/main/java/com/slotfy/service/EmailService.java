@@ -21,7 +21,45 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    /**
+     * Mask email address for logging (show first 2 chars and domain)
+     */
+    private String maskEmail(String email) {
+        if (email == null || email.length() < 3 || !email.contains("@")) {
+            return "***";
+        }
+        int atIndex = email.indexOf("@");
+        String username = email.substring(0, atIndex);
+        String domain = email.substring(atIndex);
+        
+        if (username.length() <= 2) {
+            return username.charAt(0) + "***" + domain;
+        }
+        return username.substring(0, 2) + "***" + domain;
+    }
+
     public boolean sendEmail(String to, String subject, String body) {
+        // Validate input parameters
+        if (to == null || to.trim().isEmpty()) {
+            System.err.println("Erro: Endereço de email de destino é nulo ou vazio");
+            return false;
+        }
+        
+        if (subject == null || subject.trim().isEmpty()) {
+            System.err.println("Erro: Assunto do email é nulo ou vazio");
+            return false;
+        }
+        
+        if (body == null || body.trim().isEmpty()) {
+            System.err.println("Erro: Corpo do email é nulo ou vazio");
+            return false;
+        }
+        
+        if (fromEmail == null || fromEmail.trim().isEmpty()) {
+            System.err.println("Erro: Email remetente não configurado");
+            return false;
+        }
+        
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -32,7 +70,7 @@ public class EmailService {
             helper.setText(body, true); // true indicates HTML content
             
             mailSender.send(message);
-            System.out.println("Email enviado com sucesso para: " + to);
+            System.out.println("Email enviado com sucesso para: " + maskEmail(to));
             return true;
             
         } catch (Exception e) {
@@ -43,6 +81,17 @@ public class EmailService {
     }
 
     public boolean sendPasswordResetEmail(String to, String resetLink) {
+        // Validate input parameters
+        if (to == null || to.trim().isEmpty()) {
+            System.err.println("Erro: Endereço de email para reset de senha é nulo ou vazio");
+            return false;
+        }
+        
+        if (resetLink == null || resetLink.trim().isEmpty()) {
+            System.err.println("Erro: Link de reset de senha é nulo ou vazio");
+            return false;
+        }
+        
         String subject = "Redefinição de Senha - Slotfy";
         String body = buildPasswordResetEmailBody(resetLink);
         return sendEmail(to, subject, body);

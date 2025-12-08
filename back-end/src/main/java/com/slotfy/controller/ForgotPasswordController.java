@@ -20,6 +20,23 @@ public class ForgotPasswordController {
     private final ConcurrentHashMap<String, Long> rateLimitMap = new ConcurrentHashMap<>();
     private static final long RATE_LIMIT_MS = 60000; // 1 minute between requests
 
+    /**
+     * Mask email address for logging (show first 2 chars and domain)
+     */
+    private String maskEmail(String email) {
+        if (email == null || email.length() < 3 || !email.contains("@")) {
+            return "***";
+        }
+        int atIndex = email.indexOf("@");
+        String username = email.substring(0, atIndex);
+        String domain = email.substring(atIndex);
+        
+        if (username.length() <= 2) {
+            return username.charAt(0) + "***" + domain;
+        }
+        return username.substring(0, 2) + "***" + domain;
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, Object>> forgotPassword(
             @RequestBody Map<String, String> request,
@@ -28,8 +45,10 @@ public class ForgotPasswordController {
         
         try {
             String email = request.get("email");
+            System.out.println("Requisição de recuperação de senha recebida: " + maskEmail(email));
             
             if (email == null || email.trim().isEmpty()) {
+                System.err.println("Erro: Email não fornecido na requisição");
                 return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", "E-mail é obrigatório"));
             }
@@ -37,19 +56,24 @@ public class ForgotPasswordController {
             // Basic rate limiting
             String clientIp = getClientIp(forwardedFor, realIp);
             if (!checkRateLimit(clientIp)) {
+                System.err.println("Rate limit excedido");
                 return ResponseEntity.status(429)
                     .body(Map.of("success", false, "message", "Muitas requisições. Tente novamente em 1 minuto."));
             }
             
             // Try client first, then establishment
+            System.out.println("Processando recuperação de senha");
             forgotPasswordService.sendClientPasswordResetEmail(email);
             forgotPasswordService.sendEstablishmentPasswordResetEmail(email);
+            System.out.println("Processamento concluído");
             
             // Always return generic success message for security
             return ResponseEntity.ok()
                 .body(Map.of("success", true, "message", "Se o e-mail existir, as instruções de redefinição foram enviadas"));
             
         } catch (Exception e) {
+            System.err.println("Erro ao processar recuperação de senha: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Erro interno do servidor"));
         }
