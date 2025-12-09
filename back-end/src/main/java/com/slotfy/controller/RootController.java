@@ -17,16 +17,16 @@ import java.util.Map;
 @Controller
 public class RootController {
     
-    private static final String APP_VERSION = "1.0.0";
-    
     @Value("${frontend.url:}")
     private String frontendUrl;
     
     @GetMapping("/")
     public RedirectView index() {
         // Redirect to frontend in production
-        // If FRONTEND_URL is set, redirect to it; otherwise show API info at /api/info
-        if (frontendUrl != null && !frontendUrl.isEmpty() && !frontendUrl.contains("localhost")) {
+        // If FRONTEND_URL is set and appears to be a production URL (not localhost/127.0.0.1)
+        if (frontendUrl != null && !frontendUrl.isEmpty() 
+            && !frontendUrl.contains("localhost") 
+            && !frontendUrl.contains("127.0.0.1")) {
             return new RedirectView(frontendUrl);
         }
         // For localhost development, redirect to /api/info
