@@ -40,6 +40,7 @@ public class RootController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
+
 /**
  * API Info controller to provide API information
  */
