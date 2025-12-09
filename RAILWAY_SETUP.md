@@ -8,6 +8,31 @@ Este projeto usa **TRÊS serviços separados** no Railway:
 2. **Frontend Service** (Static HTML/JS)
 3. **PostgreSQL Database**
 
+## 🔐 Variáveis de Ambiente Obrigatórias
+
+### Backend Service
+
+As seguintes variáveis de ambiente **DEVEM** ser configuradas no Railway:
+
+1. **FRONTEND_URL** (Obrigatório)
+   - URL do frontend para links em emails de recuperação de senha
+   - Exemplo: `https://tcc-fho-production.up.railway.app`
+   - ⚠️ **NUNCA** use `localhost` em produção
+   - Esta variável é usada em `application.properties` como `frontend.url=${FRONTEND_URL:https://localhost:8443}`
+
+2. **DATABASE_URL** (Configurado automaticamente pelo Railway)
+   - URL de conexão com o PostgreSQL
+
+3. **SPRING_PROFILES_ACTIVE** (Opcional, padrão: `dev`)
+   - Recomendado: `prod` para produção
+
+### Frontend Service
+
+1. **BACKEND_URL** (Obrigatório)
+   - URL do backend para chamadas de API
+   - Exemplo: `https://tcc-fho-backend-production.up.railway.app`
+   - Esta variável é injetada no `config.js` durante o build via `inject-config.sh`
+
 ## ⚠️ IMPORTANTE: Estrutura de Arquivos
 
 ### ✅ CORRETO

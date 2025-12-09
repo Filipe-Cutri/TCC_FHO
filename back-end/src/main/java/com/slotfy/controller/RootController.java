@@ -1,9 +1,12 @@
 package com.slotfy.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,24 +14,23 @@ import java.util.Map;
 /**
  * Root controller to handle requests to the root path.
  */
-@RestController
+@Controller
 public class RootController {
     
     private static final String APP_VERSION = "1.0.0";
     
+    @Value("${frontend.url:}")
+    private String frontendUrl;
+    
     @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> index() {
-        // Return API information for root path
-        // In production, frontend is served separately
-        Map<String, Object> response = new HashMap<>();
-        response.put("application", "Slotfy Backend");
-        response.put("version", APP_VERSION);
-        response.put("status", "running");
-        response.put("message", "Backend API está funcionando. O frontend é servido separadamente.");
-        response.put("api_info", "/api/info");
-        response.put("health_check", "/api/health");
-        
-        return ResponseEntity.ok(response);
+    public RedirectView index() {
+        // Redirect to frontend in production
+        // If FRONTEND_URL is set, redirect to it; otherwise show API info at /api/info
+        if (frontendUrl != null && !frontendUrl.isEmpty() && !frontendUrl.contains("localhost")) {
+            return new RedirectView(frontendUrl);
+        }
+        // For localhost development, redirect to /api/info
+        return new RedirectView("/api/info");
     }
     
     @GetMapping("/favicon.ico")
@@ -37,6 +39,14 @@ public class RootController {
         // Frontend handles its own favicon
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+}
+/**
+ * API Info controller to provide API information
+ */
+@RestController
+class ApiInfoController {
+    
+    private static final String APP_VERSION = "1.0.0";
     
     @GetMapping("/api")
     public ResponseEntity<Map<String, Object>> apiIndex() {
@@ -47,15 +57,6 @@ public class RootController {
         
         return ResponseEntity.ok(response);
     }
-}
-
-/**
- * API Info controller to provide API information
- */
-@RestController
-class ApiInfoController {
-    
-    private static final String APP_VERSION = "1.0.0";
     
     @GetMapping("/api/info")
     public ResponseEntity<Map<String, Object>> apiInfo() {
