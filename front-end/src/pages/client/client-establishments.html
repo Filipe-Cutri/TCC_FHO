@@ -150,7 +150,7 @@
 
       async init() {
         // Check if user is logged in
-        const session = ClientSession.getSession();
+        const session = window.clientSession ? window.clientSession.getSession() : null;
         if (!session) {
           window.location.href = 'client-login.html';
           return;

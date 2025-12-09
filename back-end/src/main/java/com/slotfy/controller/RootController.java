@@ -1,9 +1,12 @@
 package com.slotfy.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,24 +14,23 @@ import java.util.Map;
 /**
  * Root controller to handle requests to the root path.
  */
-@RestController
+@Controller
 public class RootController {
     
-    private static final String APP_VERSION = "1.0.0";
+    @Value("${frontend.url:}")
+    private String frontendUrl;
     
     @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> index() {
-        // Return API information for root path
-        // In production, frontend is served separately
-        Map<String, Object> response = new HashMap<>();
-        response.put("application", "Slotfy Backend");
-        response.put("version", APP_VERSION);
-        response.put("status", "running");
-        response.put("message", "Backend API está funcionando. O frontend é servido separadamente.");
-        response.put("api_info", "/api/info");
-        response.put("health_check", "/api/health");
-        
-        return ResponseEntity.ok(response);
+    public RedirectView index() {
+        // Redirect to frontend in production
+        // If FRONTEND_URL is set and appears to be a production URL (not localhost/127.0.0.1)
+        if (frontendUrl != null && !frontendUrl.isEmpty() 
+            && !frontendUrl.contains("localhost") 
+            && !frontendUrl.contains("127.0.0.1")) {
+            return new RedirectView(frontendUrl);
+        }
+        // For localhost development, redirect to /api/info
+        return new RedirectView("/api/info");
     }
     
     @GetMapping("/favicon.ico")
@@ -36,16 +38,6 @@ public class RootController {
         // Return 204 No Content for favicon requests
         // Frontend handles its own favicon
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-    
-    @GetMapping("/api")
-    public ResponseEntity<Map<String, Object>> apiIndex() {
-        // Redirect to /api/info for consistency
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Use /api/info para informações da API");
-        response.put("api_info_endpoint", "/api/info");
-        
-        return ResponseEntity.ok(response);
     }
 }
 
@@ -56,6 +48,16 @@ public class RootController {
 class ApiInfoController {
     
     private static final String APP_VERSION = "1.0.0";
+    
+    @GetMapping("/api")
+    public ResponseEntity<Map<String, Object>> apiIndex() {
+        // Redirect to /api/info for consistency
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Use /api/info para informações da API");
+        response.put("api_info_endpoint", "/api/info");
+        
+        return ResponseEntity.ok(response);
+    }
     
     @GetMapping("/api/info")
     public ResponseEntity<Map<String, Object>> apiInfo() {
