@@ -84,6 +84,8 @@ cmd = 'java -Dserver.port=$PORT -Dspring.profiles.active=prod -Dapp.version=${AP
 
 **Observações Importantes:**
 - O comando usa `slotify-backend-*.jar` com wildcard para compatibilidade com diferentes versões
+  - Nome atual do JAR: `slotify-backend-0.0.1-SNAPSHOT.jar` (baseado em `version = '0.0.1-SNAPSHOT'` do build.gradle)
+  - O wildcard `*` permite que o comando funcione mesmo se a versão mudar no futuro
 - As variáveis `APP_VERSION` e `COMMIT_HASH` são injetadas pelo workflow de deploy do GitHub Actions
 - O profile `prod` é obrigatório para configuração de produção
 
