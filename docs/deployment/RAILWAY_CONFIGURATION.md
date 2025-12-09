@@ -4,6 +4,14 @@ This guide explains how to configure the Slotfy application on Railway with sepa
 
 > **⚠️ Problema com Deploy Automático?** Se você está tendo problemas com o deploy automático do GitHub Actions para o Railway, veja [Railway Deployment Fix](./RAILWAY_DEPLOYMENT_FIX.md) para uma solução completa.
 
+> **🚨 IMPORTANTE: Configuração Multi-Service**  
+> Este projeto usa **TRÊS serviços separados** no Railway:
+> - **Backend Service** (root directory: `back-end`)
+> - **Frontend Service** (root directory: `front-end`)  
+> - **PostgreSQL Database**
+>
+> **NÃO deve existir** um arquivo `nixpacks.toml` na raiz do repositório. Cada serviço usa seu próprio `nixpacks.toml` dentro de seu diretório raiz.
+
 ## Prerequisites
 
 - Railway account
@@ -12,10 +20,11 @@ This guide explains how to configure the Slotfy application on Railway with sepa
 
 ## Project Structure on Railway
 
-The Slotfy application should be deployed as **two separate services** in Railway:
+The Slotfy application should be deployed as **three separate services** in Railway:
 
 1. **Backend Service** - Spring Boot application
 2. **Frontend Service** - Static HTML/JS application
+3. **PostgreSQL Database** - Database service
 
 ## Backend Service Configuration
 
@@ -55,6 +64,9 @@ Or you can set them manually:
 
 ### Build Configuration
 
+> **⚠️ IMPORTANTE:** O arquivo `nixpacks.toml` do backend está localizado em `back-end/nixpacks.toml`, **NÃO** na raiz do repositório.  
+> Railway usa a configuração de "Root Directory" (`back-end`) para encontrar este arquivo automaticamente.
+
 The backend uses `nixpacks.toml` for build configuration. Railway will automatically detect and use this.
 
 **File**: `back-end/nixpacks.toml`
@@ -67,8 +79,13 @@ nixPkgs = ['openjdk17']
 cmds = ['./gradlew clean build -x test']
 
 [start]
-cmd = 'java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar build/libs/slotify-backend-0.0.1-SNAPSHOT.jar'
+cmd = 'java -Dserver.port=$PORT -Dspring.profiles.active=prod -Dapp.version=${APP_VERSION:-unknown} -Dapp.commit.hash=${COMMIT_HASH:-unknown} -jar build/libs/slotify-backend-*.jar'
 ```
+
+**Observações Importantes:**
+- O comando usa `slotify-backend-*.jar` com wildcard para compatibilidade com diferentes versões
+- As variáveis `APP_VERSION` e `COMMIT_HASH` são injetadas pelo workflow de deploy do GitHub Actions
+- O profile `prod` é obrigatório para configuração de produção
 
 ### Health Check (Optional)
 - Path: `/actuator/health` (if Spring Boot Actuator is enabled)
@@ -89,6 +106,9 @@ Configure the following environment variables in Railway for the frontend servic
 
 ### Build Configuration
 
+> **⚠️ IMPORTANTE:** O arquivo `nixpacks.toml` do frontend está localizado em `front-end/nixpacks.toml`, **NÃO** na raiz do repositório.  
+> Railway usa a configuração de "Root Directory" (`front-end`) para encontrar este arquivo automaticamente.
+
 The frontend uses `nixpacks.toml` for build configuration.
 
 **File**: `front-end/nixpacks.toml`
@@ -108,6 +128,11 @@ cmd = 'serve -s src -l $PORT'
 ```
 
 The `inject-config.sh` script will automatically inject the `BACKEND_URL` into the frontend configuration.
+
+**Observações Importantes:**
+- O script `inject-config.sh` cria dinamicamente os arquivos `config.js` e `version.json` durante o build
+- A variável `BACKEND_URL` é obrigatória e deve apontar para o serviço backend
+- As variáveis `APP_VERSION` e `COMMIT_HASH` são injetadas pelo workflow de deploy do GitHub Actions
 
 ## Database Setup
 
@@ -210,9 +235,24 @@ After deployment, verify:
 - Ensure database credentials are valid
 
 ### Build failures
-- Check that root directories are set correctly
-- Verify `nixpacks.toml` files exist in the correct locations
+- Check that root directories are set correctly (`back-end` for backend, `front-end` for frontend)
+- Verify `nixpacks.toml` files exist in the correct locations (inside each service directory, NOT in repository root)
 - Review Railway build logs for specific errors
+- **IMPORTANTE:** Certifique-se de que NÃO existe um arquivo `nixpacks.toml` na raiz do repositório
+
+### Railway detecta o arquivo errado
+**Sintoma:** Railway tenta construir a partir do diretório errado
+
+**Causa:** Existe um `nixpacks.toml` na raiz do repositório interferindo com a configuração multi-service
+
+**Solução:**
+1. Delete o arquivo `nixpacks.toml` da raiz do repositório (se existir)
+2. Mantenha apenas:
+   - `back-end/nixpacks.toml` para o serviço backend
+   - `front-end/nixpacks.toml` para o serviço frontend
+3. Configure a "Root Directory" corretamente em cada serviço Railway:
+   - Backend Service → Settings → Root Directory: `back-end`
+   - Frontend Service → Settings → Root Directory: `front-end`
 
 ## Local Development
 

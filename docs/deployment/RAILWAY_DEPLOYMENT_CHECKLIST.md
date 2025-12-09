@@ -7,6 +7,8 @@ Use este checklist para garantir que sua aplicação está corretamente configur
 - [ ] Conta no Railway criada
 - [ ] Repositório GitHub conectado ao Railway
 - [ ] Railway CLI instalado localmente (opcional, para testes)
+- [ ] **IMPORTANTE:** Verificar que NÃO existe arquivo `nixpacks.toml` na raiz do repositório
+  - Deve existir apenas: `back-end/nixpacks.toml` e `front-end/nixpacks.toml`
 
 ## 📋 Backend Service
 
@@ -105,9 +107,11 @@ Use este checklist para garantir que sua aplicação está corretamente configur
 3. Testar conexão manual com `psql`
 
 ### Build falha
-1. Verificar que root directory está correto
-2. Verificar que `nixpacks.toml` existe
-3. Verificar logs de build para erro específico
+1. Verificar que root directory está correto (`back-end` ou `front-end`)
+2. Verificar que `nixpacks.toml` existe no diretório correto
+3. **CRÍTICO:** Verificar que NÃO existe `nixpacks.toml` na raiz do repositório
+4. Verificar logs de build para erro específico
+5. Testar build localmente
 
 ## 📚 Recursos Adicionais
 
