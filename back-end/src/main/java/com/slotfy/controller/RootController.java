@@ -2,7 +2,6 @@ package com.slotfy.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,13 +14,15 @@ import java.util.Map;
 @RestController
 public class RootController {
     
+    private static final String APP_VERSION = "1.0.0";
+    
     @GetMapping("/")
     public ResponseEntity<Map<String, Object>> index() {
         // Return API information for root path
         // In production, frontend is served separately
         Map<String, Object> response = new HashMap<>();
         response.put("application", "Slotfy Backend");
-        response.put("version", "1.0.0");
+        response.put("version", APP_VERSION);
         response.put("status", "running");
         response.put("message", "Backend API está funcionando. O frontend é servido separadamente.");
         response.put("api_info", "/api/info");
@@ -54,11 +55,13 @@ public class RootController {
 @RestController
 class ApiInfoController {
     
+    private static final String APP_VERSION = "1.0.0";
+    
     @GetMapping("/api/info")
     public ResponseEntity<Map<String, Object>> apiInfo() {
         Map<String, Object> response = new HashMap<>();
         response.put("application", "Slotfy Backend");
-        response.put("version", "1.0.0");
+        response.put("version", APP_VERSION);
         response.put("status", "running");
         response.put("message", "Bem-vindo ao Slotfy! Use os endpoints da API para interagir com o sistema.");
         response.put("endpoints", Map.of(
