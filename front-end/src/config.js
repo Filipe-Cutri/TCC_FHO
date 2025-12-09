@@ -2,7 +2,6 @@
  * Runtime Configuration for Slotfy Frontend
  * This file is auto-generated during deployment
  */
-
 // Backend URL para PRODUÇÃO
 window.BACKEND_URL = 'https://api.slotfy.com.br';
 
