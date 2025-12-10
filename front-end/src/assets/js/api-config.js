@@ -33,6 +33,7 @@ const API_CONFIG = {
             register: '/api/client/register',
             forgotPassword: '/api/auth/forgot-password',
             updateEstablishment: '/api/client/establishment',
+            dashboard: '/api/client/dashboard',
             establishments: {
                 list: '/api/client/establishments',
                 details: '/api/client/establishments/{id}',

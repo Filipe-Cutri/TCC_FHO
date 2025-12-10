@@ -260,7 +260,7 @@
     // Enhanced client page interactions
     document.addEventListener('DOMContentLoaded', async function() {
       // Check if user is logged in
-      const session = ClientSession.getSession();
+      const session = window.clientSession ? window.clientSession.getSession() : null;
       if (!session) {
         window.location.href = 'client-login.html';
         return;
@@ -283,7 +283,8 @@
 
     async function loadAppointments(clientId) {
       try {
-        const response = await apiClient.get(API_CONFIG.endpoints.client.appointments.list, { clientId });
+        const endpoint = `${API_CONFIG.endpoints.client.appointments.list}?clientId=${clientId}`;
+        const response = await window.apiClient.get(endpoint);
         
         if (response.success && response.data && response.data.length > 0) {
           const appointments = response.data;
@@ -425,13 +426,19 @@
       }
       
       try {
-        const session = ClientSession.getSession();
-        const endpoint = apiClient.replacePathParams(
+        const session = window.clientSession ? window.clientSession.getSession() : null;
+        if (!session) {
+          alert('Sessão expirada. Faça login novamente.');
+          window.location.href = 'client-login.html';
+          return;
+        }
+        
+        const endpoint = window.apiClient.replacePathParams(
           API_CONFIG.endpoints.client.appointments.cancel,
           { id: appointmentId }
         );
         
-        const response = await apiClient.put(endpoint, { clientId: session.id });
+        const response = await window.apiClient.put(`${endpoint}?clientId=${session.id}`);
         
         if (response.success) {
           alert('Agendamento cancelado com sucesso!');

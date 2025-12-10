@@ -57,6 +57,15 @@ class ClientServices {
             // Set minimum date to today
             const today = new Date().toISOString().split('T')[0];
             dateInput.setAttribute('min', today);
+            
+            // Set maximum date to 60 days from now
+            const maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 60);
+            dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
+
+            // TODO: Implement available dates filtering based on professional schedule
+            // This requires backend endpoint to return available dates for a professional
+            // For now, users can select any date within the next 60 days
 
             dateInput.addEventListener('change', (e) => {
                 const professionalId = document.getElementById('professionalSelect').value;
