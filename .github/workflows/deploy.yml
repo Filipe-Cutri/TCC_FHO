@@ -63,6 +63,17 @@ jobs:
             echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'backend' exists in Railway"
           fi
           
+          # Set FRONTEND_URL if provided as a secret
+          if [ -n "${{ secrets.FRONTEND_URL }}" ]; then
+            if ! railway variables set FRONTEND_URL="${{ secrets.FRONTEND_URL }}" --service backend; then
+              echo "::warning::Failed to set FRONTEND_URL for backend service"
+            else
+              echo "✅ FRONTEND_URL set to: ${{ secrets.FRONTEND_URL }}"
+            fi
+          else
+            echo "::notice::FRONTEND_URL secret not configured - using default from application.properties"
+          fi
+          
           echo "✅ Backend environment variables set"
       
       - name: Set Railway environment variables for Frontend
@@ -83,6 +94,17 @@ jobs:
           if ! railway variables set BUILD_DATE="${{ steps.version.outputs.build_date }}" --service frontend; then
             echo "::warning::Failed to set BUILD_DATE=${{ steps.version.outputs.build_date }} for frontend service"
             echo "Check: 1) RAILWAY_TOKEN is valid, 2) Service name 'frontend' exists in Railway"
+          fi
+          
+          # Set BACKEND_URL if provided as a secret
+          if [ -n "${{ secrets.BACKEND_URL }}" ]; then
+            if ! railway variables set BACKEND_URL="${{ secrets.BACKEND_URL }}" --service frontend; then
+              echo "::warning::Failed to set BACKEND_URL for frontend service"
+            else
+              echo "✅ BACKEND_URL set to: ${{ secrets.BACKEND_URL }}"
+            fi
+          else
+            echo "::notice::BACKEND_URL secret not configured - frontend will use default from config.js"
           fi
           
           echo "✅ Frontend environment variables set"
@@ -115,6 +137,18 @@ jobs:
           echo "- **Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ steps.version.outputs.commit }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Date**: ${{ steps.version.outputs.build_date }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Environment Variables" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.FRONTEND_URL }}" ]; then
+            echo "- **FRONTEND_URL**: Configured ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **FRONTEND_URL**: Not configured (using default) ⚠️" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -n "${{ secrets.BACKEND_URL }}" ]; then
+            echo "- **BACKEND_URL**: Configured ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **BACKEND_URL**: Not configured (using default) ⚠️" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Environment variables have been set in Railway services." >> $GITHUB_STEP_SUMMARY
           echo "Services will use these values on next deployment." >> $GITHUB_STEP_SUMMARY

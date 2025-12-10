@@ -16,9 +16,10 @@ As seguintes variáveis de ambiente **DEVEM** ser configuradas no Railway:
 
 1. **FRONTEND_URL** (Obrigatório)
    - URL do frontend para links em emails de recuperação de senha
-   - Exemplo: `https://tcc-fho-production.up.railway.app`
+   - Exemplo: `https://slotfy.com.br`
    - ⚠️ **NUNCA** use `localhost` em produção
    - Esta variável é usada em `application.properties` como `frontend.url=${FRONTEND_URL:https://localhost:8443}`
+   - 📖 **Configuração Automática**: Pode ser configurada via GitHub Secrets (veja [GitHub Secrets Setup Guide](docs/GITHUB_SECRETS_SETUP.md))
 
 2. **DATABASE_URL** (Configurado automaticamente pelo Railway)
    - URL de conexão com o PostgreSQL
@@ -30,8 +31,9 @@ As seguintes variáveis de ambiente **DEVEM** ser configuradas no Railway:
 
 1. **BACKEND_URL** (Obrigatório)
    - URL do backend para chamadas de API
-   - Exemplo: `https://tcc-fho-backend-production.up.railway.app`
+   - Exemplo: `https://api.slotfy.com.br`
    - Esta variável é injetada no `config.js` durante o build via `inject-config.sh`
+   - 📖 **Configuração Automática**: Pode ser configurada via GitHub Secrets (veja [GitHub Secrets Setup Guide](docs/GITHUB_SECRETS_SETUP.md))
 
 ## ⚠️ IMPORTANTE: Estrutura de Arquivos
 
