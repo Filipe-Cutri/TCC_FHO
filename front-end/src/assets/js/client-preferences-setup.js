@@ -144,7 +144,7 @@ function updateProgress() {
  * Setup form submission handling
  */
 function setupFormSubmission() {
-    document.getElementById('preferencesSetupForm')?.addEventListener('submit', function(e) {
+    document.getElementById('preferencesSetupForm')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const submitBtn = this.querySelector('button[type="submit"]');
@@ -152,41 +152,45 @@ function setupFormSubmission() {
         
         const resetButton = LoadingManager.setButtonLoading(submitBtn, 'Salvando preferências...');
         
-        // Collect and save preferences
-        const preferences = ClientPreferencesManager.collectPreferencesFromForm(this);
-        
-        // Save preferences to localStorage for AI scheduling
-        const intervalo = document.querySelector('input[name="intervalo"]:checked');
-        const antecedencia = document.querySelector('input[name="antecedencia"]:checked');
-        
-        if (intervalo) {
-            localStorage.setItem('rescheduleInterval', intervalo.value);
-        }
-        if (antecedencia) {
-            localStorage.setItem('advanceNotice', antecedencia.value);
-        }
-        
-        // Save full preferences
-        ClientPreferencesManager.savePreferences(preferences, {
-            updateUI: false,
-            showSuccessMessage: false
-        });
-        
-        // Real API call to save preferences instead of simulation
-        this.savePreferencesToAPI(preferences).then(() => {
+        try {
+            // Collect and save preferences
+            const preferences = ClientPreferencesManager.collectPreferencesFromForm(this);
+            
+            // Save preferences to localStorage for AI scheduling
+            const intervalo = document.querySelector('input[name="intervalo"]:checked');
+            const antecedencia = document.querySelector('input[name="antecedencia"]:checked');
+            
+            if (intervalo) {
+                localStorage.setItem('rescheduleInterval', intervalo.value);
+            }
+            if (antecedencia) {
+                localStorage.setItem('advanceNotice', antecedencia.value);
+            }
+            
+            // Save full preferences
+            ClientPreferencesManager.savePreferences(preferences, {
+                updateUI: false,
+                showSuccessMessage: false
+            });
+            
+            // Save preferences to API
+            await savePreferencesToAPI(preferences);
+            
             LoadingManager.setButtonSuccess(submitBtn, 'Configuração concluída!');
             
             setTimeout(() => {
                 window.location.href = 'client-dashboard.html';
             }, 1000);
-        }).catch(error => {
+        } catch (error) {
             console.error('Error saving preferences:', error);
             LoadingManager.setButtonError(submitBtn, 'Erro ao salvar');
-            ToastManager.showError('Erro ao salvar preferências. Tente novamente.');
+            if (window.ToastManager) {
+                ToastManager.showError('Erro ao salvar preferências. Tente novamente.');
+            }
             setTimeout(() => {
                 resetButton();
             }, 2000);
-        });
+        }
     });
 }
 

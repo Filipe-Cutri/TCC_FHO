@@ -33,18 +33,24 @@ class ClientDashboard {
             this.displaySelectedEstablishment(session);
 
             // Fetch dashboard data from API
-            const response = await fetch(`/api/client/dashboard?clientId=${session.id}`);
-            const result = await response.json();
+            const endpoint = `${API_CONFIG.endpoints.client.dashboard || '/api/client/dashboard'}?clientId=${session.id}`;
+            const response = await window.apiClient.get(endpoint);
 
-            if (result.success && result.data) {
-                this.updateDashboardStats(result.data.stats);
-                this.updateNextAppointment(result.data.nextAppointment);
+            if (response.success && response.data) {
+                this.updateDashboardStats(response.data.stats || {});
+                this.updateNextAppointment(response.data.nextAppointment);
             } else {
-                console.error('Failed to load dashboard data:', result.message);
+                console.error('Failed to load dashboard data:', response.message);
+                // Still show the dashboard even if data fails to load
+                this.updateDashboardStats({});
+                this.updateNextAppointment(null);
             }
             
         } catch (error) {
             console.error('Error loading dashboard data:', error);
+            // Show empty dashboard on error
+            this.updateDashboardStats({});
+            this.updateNextAppointment(null);
         }
     }
 
