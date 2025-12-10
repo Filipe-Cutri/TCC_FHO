@@ -8,8 +8,22 @@
    - Backend (Spring Boot)
    - Frontend (Static HTML/JS)
    - PostgreSQL Database
+4. GitHub Secrets configurados (veja [GitHub Secrets Setup Guide](docs/GITHUB_SECRETS_SETUP.md))
 
 ## 🔧 Configuração Passo a Passo
+
+### Opção 1: Configuração Automática via GitHub Actions (Recomendado)
+
+1. Configure os GitHub Secrets (veja [GitHub Secrets Setup Guide](docs/GITHUB_SECRETS_SETUP.md)):
+   - `RAILWAY_TOKEN`: Token de autenticação do Railway
+   - `FRONTEND_URL`: URL do frontend (ex: `https://slotfy.com.br`)
+   - `BACKEND_URL`: URL do backend (ex: `https://api.slotfy.com.br`)
+
+2. Faça push para `main` ou execute manualmente o workflow de deploy
+
+3. GitHub Actions automaticamente configurará as variáveis de ambiente nos serviços Railway
+
+### Opção 2: Configuração Manual no Railway
 
 ### 1. Backend Service
 
@@ -22,7 +36,7 @@ back-end
 
 | Variável | Valor | Descrição |
 |----------|-------|-----------|
-| `FRONTEND_URL` | `https://seu-frontend.railway.app` | **CRÍTICO**: URL do frontend para links em emails |
+| `FRONTEND_URL` | `https://slotfy.com.br` | **CRÍTICO**: URL do frontend para links em emails |
 | `SPRING_PROFILES_ACTIVE` | `prod` | Perfil de produção |
 | `DATABASE_URL` | (auto-configurado) | Railway configura automaticamente |
 
@@ -31,7 +45,7 @@ back-end
 **Como configurar no Railway:**
 1. Acesse o Backend Service → Variables
 2. Clique em "+ Add Variable"
-3. Adicione: `FRONTEND_URL` = `https://seu-frontend.railway.app`
+3. Adicione: `FRONTEND_URL` = `https://slotfy.com.br` (use sua URL de produção)
 4. Adicione: `SPRING_PROFILES_ACTIVE` = `prod`
 5. Clique em "Deploy" para aplicar as mudanças
 
@@ -46,12 +60,12 @@ front-end
 
 | Variável | Valor | Descrição |
 |----------|-------|-----------|
-| `BACKEND_URL` | `https://seu-backend.railway.app` | **CRÍTICO**: URL do backend para chamadas de API |
+| `BACKEND_URL` | `https://api.slotfy.com.br` | **CRÍTICO**: URL do backend para chamadas de API |
 
 **Como configurar no Railway:**
 1. Acesse o Frontend Service → Variables
 2. Clique em "+ Add Variable"
-3. Adicione: `BACKEND_URL` = `https://seu-backend.railway.app`
+3. Adicione: `BACKEND_URL` = `https://api.slotfy.com.br` (use sua URL de produção)
 4. Clique em "Deploy" para aplicar as mudanças
 
 **Nota**: O script `inject-config.sh` automaticamente injeta esta variável no arquivo `config.js` durante o build.
