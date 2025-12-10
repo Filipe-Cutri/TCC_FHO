@@ -8,6 +8,7 @@
 function initClientProfile() {
     document.addEventListener('DOMContentLoaded', function() {
         loadProfileData();
+        loadPreferencesDisplay();
         ClientCommonManager.setupCommonInteractions();
         setupProfileFormHandling();
         setupInputEffects();
@@ -20,6 +21,8 @@ function initClientProfile() {
                 showSuccessMessage: true,
                 successMessage: 'Preferências salvas com sucesso!'
             });
+            // Reload preferences display
+            loadPreferencesDisplay();
         });
     });
 }
@@ -54,6 +57,160 @@ async function loadProfileData() {
         }
     } catch (error) {
         console.error('Error loading profile data:', error);
+    }
+}
+
+/**
+ * Load and display preferences from localStorage
+ */
+function loadPreferencesDisplay() {
+    try {
+        const preferencesStr = localStorage.getItem('clientPreferences');
+        if (!preferencesStr) {
+            // Show empty state (default HTML already shows this)
+            return;
+        }
+        
+        const preferences = JSON.parse(preferencesStr);
+        const container = document.getElementById('preferencesDisplay');
+        
+        if (!container) return;
+        
+        // Build preferences display HTML
+        let html = '';
+        
+        // Services
+        if (preferences.services && preferences.services.length > 0) {
+            const serviceLabels = {
+                'corte-masculino': 'Corte Masculino',
+                'corte-feminino': 'Corte Feminino',
+                'barba': 'Barba Completa',
+                'sobrancelha': 'Design de Sobrancelha',
+                'tratamento': 'Tratamento Capilar',
+                'coloracao': 'Coloração',
+                'escova': 'Escova/Chapinha',
+                'massagem': 'Massagem Relaxante'
+            };
+            const serviceNames = preferences.services.map(s => serviceLabels[s] || s).join(', ');
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Tipos de Serviços Preferidos:</div>
+                    <div class="preference-value">${serviceNames}</div>
+                </div>
+            `;
+        }
+        
+        // Interval
+        if (preferences.intervalo) {
+            const intervalLabels = {
+                '2-semanas': 'A cada 2 semanas',
+                '1-mes': 'Mensalmente',
+                '6-semanas': 'A cada 6 semanas',
+                '3-meses': 'A cada 3 meses',
+                'personalizado': 'Personalizado'
+            };
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Intervalo de Reagendamento:</div>
+                    <div class="preference-value">${intervalLabels[preferences.intervalo] || preferences.intervalo}</div>
+                </div>
+            `;
+        }
+        
+        // Advance notice
+        if (preferences.antecedencia) {
+            const advanceLabels = {
+                '3-dias': '3 dias antes',
+                '1-semana': '1 semana antes',
+                '2-semanas': '2 semanas antes'
+            };
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Antecedência Preferida:</div>
+                    <div class="preference-value">${advanceLabels[preferences.antecedencia] || preferences.antecedencia}</div>
+                </div>
+            `;
+        }
+        
+        // Time preference
+        if (preferences.horario) {
+            const timeLabels = {
+                'manha': 'Manhã (08:00 - 12:00)',
+                'tarde': 'Tarde (12:00 - 18:00)',
+                'noite': 'Noite (18:00 - 22:00)'
+            };
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Horário Preferido:</div>
+                    <div class="preference-value">${timeLabels[preferences.horario] || preferences.horario}</div>
+                </div>
+            `;
+        }
+        
+        // Days of week
+        if (preferences.diasSemana && preferences.diasSemana.length > 0) {
+            const dayLabels = {
+                'segunda': 'Segunda-feira',
+                'terca': 'Terça-feira',
+                'quarta': 'Quarta-feira',
+                'quinta': 'Quinta-feira',
+                'sexta': 'Sexta-feira',
+                'sabado': 'Sábado',
+                'domingo': 'Domingo'
+            };
+            const dayNames = preferences.diasSemana.map(d => dayLabels[d] || d).join(', ');
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Dias da Semana:</div>
+                    <div class="preference-value">${dayNames}</div>
+                </div>
+            `;
+        }
+        
+        // Style preference
+        if (preferences.estilos && preferences.estilos.length > 0) {
+            const styleLabels = {
+                'classico': 'Clássico/Tradicional',
+                'moderno': 'Moderno/Contemporâneo',
+                'alternativo': 'Alternativo/Ousado',
+                'casual': 'Casual/Descontraído'
+            };
+            const styleNames = preferences.estilos.map(s => styleLabels[s] || s).join(', ');
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Estilo Preferido:</div>
+                    <div class="preference-value">${styleNames}</div>
+                </div>
+            `;
+        }
+        
+        // Restrictions
+        if (preferences.restricoes) {
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Restrições/Alergias:</div>
+                    <div class="preference-value">${preferences.restricoes}</div>
+                </div>
+            `;
+        }
+        
+        // Observations
+        if (preferences.observacoes) {
+            html += `
+                <div class="preference-item">
+                    <div class="preference-label">Observações Especiais:</div>
+                    <div class="preference-value">${preferences.observacoes}</div>
+                </div>
+            `;
+        }
+        
+        // If we have any preferences, show them
+        if (html) {
+            container.innerHTML = html;
+        }
+        
+    } catch (error) {
+        console.error('Error loading preferences display:', error);
     }
 }
 
@@ -144,6 +301,9 @@ function savePreferences() {
             showSuccessMessage: true,
             successMessage: 'Preferências salvas com sucesso!'
         });
+        
+        // Reload preferences display
+        loadPreferencesDisplay();
         
         // Close modal
         ModalManager.hide('#preferencesModal');

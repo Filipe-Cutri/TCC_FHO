@@ -103,27 +103,7 @@
                   <div class="col-md-6">
                     <div class="client-form-group">
                       <label class="client-form-label">Data de Nascimento</label>
-                      <input type="date" name="birthdate" class="form-control client-form-control" value="">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="client-form-group">
-                  <label class="client-form-label">Endereço</label>
-                  <input type="text" class="form-control client-form-control" value="Rua das Flores, 123, Centro">
-                </div>
-
-                <div class="row">
-                  <div class="col-md-8">
-                    <div class="client-form-group">
-                      <label class="client-form-label">Cidade</label>
-                      <input type="text" class="form-control client-form-control" value="São Paulo">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="client-form-group">
-                      <label class="client-form-label">CEP</label>
-                      <input type="text" class="form-control client-form-control" value="01234-567">
+                      <input type="date" name="birthdate" id="birthdate" class="form-control client-form-control" value="">
                     </div>
                   </div>
                 </div>
@@ -143,45 +123,13 @@
                     </button>
                   </div>
                   
-                  <div class="client-preferences-display">
-                    <div class="preference-item">
-                      <div class="preference-label">Tipos de Serviços Preferidos:</div>
-                      <div class="preference-value">Corte Masculino, Barba Completa, Tratamento Capilar</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Intervalo de Reagendamento:</div>
-                      <div class="preference-value">Mensalmente</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Antecedência Preferida:</div>
-                      <div class="preference-value">1 semana antes</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Horário Preferido:</div>
-                      <div class="preference-value">Manhã (08:00 - 12:00)</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Dias da Semana:</div>
-                      <div class="preference-value">Sábado, Domingo</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Estilo Preferido:</div>
-                      <div class="preference-value">Clássico, Moderno</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Restrições/Alergias:</div>
-                      <div class="preference-value">Sem fragrâncias fortes</div>
-                    </div>
-                    
-                    <div class="preference-item">
-                      <div class="preference-label">Observações Especiais:</div>
-                      <div class="preference-value">Prefiro profissionais experientes, gosto de conversar durante o atendimento</div>
+                  <div class="client-preferences-display" id="preferencesDisplay">
+                    <div class="text-center py-4">
+                      <i class="fas fa-brain text-muted mb-3" style="font-size: 2rem;"></i>
+                      <p class="text-muted">Nenhuma preferência configurada ainda</p>
+                      <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#preferencesModal">
+                        <i class="fas fa-plus me-1"></i>Configurar Agora
+                      </button>
                     </div>
                   </div>
                 </div>
