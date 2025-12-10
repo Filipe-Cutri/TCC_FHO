@@ -129,17 +129,8 @@ public class FileUploadController {
     @PostMapping("/establishment/{id}/upload")
     public ResponseEntity<Map<String, Object>> uploadEstablishmentLogo(
             @PathVariable Long id,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("establishmentId") Long establishmentId) {
+            @RequestParam("file") MultipartFile file) {
         try {
-            // Verify that the establishment ID matches (security check)
-            if (!id.equals(establishmentId)) {
-                return ResponseEntity.status(403)
-                    .body(Map.of(
-                        "success", false,
-                        "message", "Não autorizado"
-                    ));
-            }
             
             // Store the file
             String filePath = fileStorageService.storeFile(file, "establishments");

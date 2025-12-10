@@ -524,7 +524,6 @@
         const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('establishmentId', establishmentId);
         
         const response = await fetch(`${apiBaseUrl}/api/files/establishment/${establishmentId}/upload`, {
           method: 'POST',

@@ -285,12 +285,10 @@
             throw new Error('Establishment ID not found');
           }
           
-          const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
-          const url = `${apiBaseUrl}/api/establishment/dashboard/overview?establishmentId=${establishmentId}`;
-          console.log('Loading overview from:', url);
-          
-          const response = await fetch(url);
-          const data = await response.json();
+          const data = await this.apiClient.get(
+            API_CONFIG.endpoints.establishment.dashboard.overview,
+            { establishmentId }
+          );
           
           if (data.success && data.data) {
             const overview = data.data;
@@ -324,12 +322,10 @@
             throw new Error('Establishment ID not found');
           }
           
-          const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
-          const url = `${apiBaseUrl}/api/establishment/dashboard/today-appointments?establishmentId=${establishmentId}`;
-          console.log('Loading today appointments from:', url);
-          
-          const response = await fetch(url);
-          const data = await response.json();
+          const data = await this.apiClient.get(
+            API_CONFIG.endpoints.establishment.dashboard.todayAppointments,
+            { establishmentId }
+          );
           
           if (data.success && data.data) {
             const appointments = data.data;
