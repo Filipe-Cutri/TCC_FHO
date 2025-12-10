@@ -385,17 +385,25 @@
           }
           
           // Load operating hours if available
-          if (est.workingDaysPattern) {
-            document.getElementById('workingDaysPattern').value = est.workingDaysPattern;
-            handleWorkingDaysPatternChange();
+          if (est.workingHours) {
+            try {
+              const workingHoursData = JSON.parse(est.workingHours);
+              
+              if (workingHoursData.workingDaysPattern) {
+                document.getElementById('workingDaysPattern').value = workingHoursData.workingDaysPattern;
+                handleWorkingDaysPatternChange();
+              }
+              if (workingHoursData.workingDays) {
+                loadCustomDays(workingHoursData.workingDays);
+              }
+              if (workingHoursData.openingTime) document.getElementById('openingTime').value = workingHoursData.openingTime;
+              if (workingHoursData.closingTime) document.getElementById('closingTime').value = workingHoursData.closingTime;
+              if (workingHoursData.lunchBreakStart) document.getElementById('lunchBreakStart').value = workingHoursData.lunchBreakStart;
+              if (workingHoursData.lunchBreakEnd) document.getElementById('lunchBreakEnd').value = workingHoursData.lunchBreakEnd;
+            } catch (e) {
+              console.error('Error parsing working hours:', e);
+            }
           }
-          if (est.workingDays) {
-            loadCustomDays(est.workingDays);
-          }
-          if (est.openingTime) document.getElementById('openingTime').value = est.openingTime;
-          if (est.closingTime) document.getElementById('closingTime').value = est.closingTime;
-          if (est.lunchBreakStart) document.getElementById('lunchBreakStart').value = est.lunchBreakStart;
-          if (est.lunchBreakEnd) document.getElementById('lunchBreakEnd').value = est.lunchBreakEnd;
         }
       } catch (error) {
         console.error('Error loading establishment data:', error);
@@ -572,6 +580,16 @@
         workingDays = selectedDays.join(',');
       }
       
+      // Create working hours object to store as JSON
+      const workingHoursData = {
+        workingDaysPattern,
+        workingDays,
+        openingTime,
+        closingTime,
+        lunchBreakStart,
+        lunchBreakEnd
+      };
+      
       try {
         const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
         
@@ -581,12 +599,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            workingDaysPattern,
-            workingDays,
-            openingTime,
-            closingTime,
-            lunchBreakStart,
-            lunchBreakEnd
+            workingHours: JSON.stringify(workingHoursData)
           })
         });
         
