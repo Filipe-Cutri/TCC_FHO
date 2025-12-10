@@ -52,12 +52,6 @@ class EstablishmentProfessionalsManager {
         if (removeBtn) {
             removeBtn.addEventListener('click', () => this.removeImagePreview());
         }
-
-        // Image URL input preview
-        const urlInput = document.getElementById('professionalImageUrl');
-        if (urlInput) {
-            urlInput.addEventListener('blur', (e) => this.handleImageUrlChange(e));
-        }
     }
 
     async loadProfessionals() {
@@ -228,7 +222,6 @@ class EstablishmentProfessionalsManager {
         const phone = document.getElementById('professionalPhone')?.value?.trim();
         const specialties = document.getElementById('professionalSpecialties')?.value?.trim();
         // Image is handled separately after professional is created/updated
-        const imageUrl = document.getElementById('professionalImageUrl')?.value?.trim();
         const imageFile = document.getElementById('professionalImageFile')?.files[0];
 
         if (!name) {
@@ -236,8 +229,6 @@ class EstablishmentProfessionalsManager {
             return;
         }
 
-        // Note: imageUrl is not included here as it's updated separately after
-        // the professional is created/updated via uploadProfessionalImageFile or updateProfessionalImage
         const professional = {
             name,
             email: email || null,
@@ -295,10 +286,6 @@ class EstablishmentProfessionalsManager {
                 if (imageFile && professionalId) {
                     await this.uploadProfessionalImageFile(professionalId, imageFile);
                 }
-                // Or update with URL if provided and no file
-                else if (imageUrl && professionalId && !imageFile) {
-                    await this.updateProfessionalImage(professionalId, imageUrl);
-                }
                 
                 this.showSuccess(id ? 'Profissional atualizado com sucesso!' : 'Profissional cadastrado com sucesso!');
                 this.closeModal();
@@ -333,25 +320,6 @@ class EstablishmentProfessionalsManager {
         }
     }
 
-    async updateProfessionalImage(id, imageUrl) {
-        try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/professionals/${id}/image?establishmentId=${this.establishmentId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ imageUrl })
-            });
-
-            const data = await response.json();
-            if (!data.success) {
-                console.error('Failed to update image:', data.message);
-            }
-        } catch (error) {
-            console.error('Error updating professional image:', error);
-        }
-    }
-
     async editProfessional(id) {
         const professional = this.professionals.find(p => p.id == id);
         if (!professional) {
@@ -365,7 +333,6 @@ class EstablishmentProfessionalsManager {
         document.getElementById('professionalEmail').value = professional.email || '';
         document.getElementById('professionalPhone').value = professional.phone || '';
         document.getElementById('professionalSpecialties').value = professional.specialties || '';
-        document.getElementById('professionalImageUrl').value = professional.imageUrl || '';
 
         // Show image preview if professional has an image URL
         if (professional.imageUrl) {
@@ -425,7 +392,7 @@ class EstablishmentProfessionalsManager {
     }
 
     clearForm() {
-        const fields = ['professionalId', 'professionalName', 'professionalEmail', 'professionalPhone', 'professionalSpecialties', 'professionalImageUrl'];
+        const fields = ['professionalId', 'professionalName', 'professionalEmail', 'professionalPhone', 'professionalSpecialties'];
         fields.forEach(id => {
             const field = document.getElementById(id);
             if (field) field.value = '';
@@ -474,10 +441,6 @@ class EstablishmentProfessionalsManager {
                 }
             };
             reader.readAsDataURL(file);
-
-            // Clear URL input when file is selected
-            const urlInput = document.getElementById('professionalImageUrl');
-            if (urlInput) urlInput.value = '';
         }
     }
 
@@ -489,42 +452,6 @@ class EstablishmentProfessionalsManager {
         if (preview) preview.style.display = 'none';
         if (img) img.src = '';
         if (fileInput) fileInput.value = '';
-    }
-
-    handleImageUrlChange(event) {
-        const url = event.target.value.trim();
-        if (url) {
-            // Validate URL format and protocol
-            try {
-                const urlObj = new URL(url);
-                // Only allow http and https protocols
-                if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-                    this.showError('Apenas URLs HTTP e HTTPS são permitidas');
-                    return;
-                }
-                
-                // Show preview for URL with error handling for image load failures
-                const preview = document.getElementById('professionalImagePreview');
-                const img = document.getElementById('professionalPreviewImg');
-                if (preview && img) {
-                    // Add error handler for image loading failures
-                    img.onerror = () => {
-                        preview.style.display = 'none';
-                        this.showError('Não foi possível carregar a imagem. Verifique a URL.');
-                    };
-                    img.onload = () => {
-                        preview.style.display = 'block';
-                    };
-                    img.src = url;
-                }
-
-                // Clear file input when URL is entered
-                const fileInput = document.getElementById('professionalImageFile');
-                if (fileInput) fileInput.value = '';
-            } catch (e) {
-                this.showError('URL inválida. Por favor, insira uma URL válida.');
-            }
-        }
     }
 
     closeModal() {

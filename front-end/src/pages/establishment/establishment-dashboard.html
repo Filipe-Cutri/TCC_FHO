@@ -280,14 +280,32 @@
 
       async loadOverviewStats() {
         try {
-          const overview = await this.apiClient.get(API_CONFIG.endpoints.establishment.dashboard.overview);
+          const establishmentId = this.session?.establishmentId || this.session?.id;
+          if (!establishmentId) {
+            throw new Error('Establishment ID not found');
+          }
           
-          // Update statistics
-          document.getElementById('todayAppointments').textContent = overview.todayAppointments || 0;
-          document.getElementById('activeProfessionals').textContent = overview.activeProfessionals || 0;
-          document.getElementById('monthlyRevenue').textContent = overview.monthlyRevenue 
-            ? `R$ ${overview.monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` 
-            : 'R$ 0,00';
+          const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
+          const url = `${apiBaseUrl}/api/establishment/dashboard/overview?establishmentId=${establishmentId}`;
+          console.log('Loading overview from:', url);
+          
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.success && data.data) {
+            const overview = data.data;
+            
+            // Update statistics
+            document.getElementById('todayAppointments').textContent = overview.appointments?.today || 0;
+            document.getElementById('activeProfessionals').textContent = overview.professionals?.active || 0;
+            
+            const revenue = overview.revenue?.monthly || 0;
+            document.getElementById('monthlyRevenue').textContent = typeof revenue === 'number'
+              ? `R$ ${revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+              : 'R$ 0,00';
+          } else {
+            throw new Error(data.message || 'Failed to load overview');
+          }
         } catch (error) {
           console.error('Failed to load overview stats from API:', error);
           // Show zero values on error
@@ -301,20 +319,36 @@
         const container = document.getElementById('todayAppointmentsList');
         
         try {
-          const appointments = await this.apiClient.get(API_CONFIG.endpoints.establishment.dashboard.todayAppointments);
+          const establishmentId = this.session?.establishmentId || this.session?.id;
+          if (!establishmentId) {
+            throw new Error('Establishment ID not found');
+          }
           
-          if (appointments && appointments.length > 0) {
-            container.innerHTML = appointments.map(appointment => this.renderAppointmentItem(appointment)).join('');
+          const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
+          const url = `${apiBaseUrl}/api/establishment/dashboard/today-appointments?establishmentId=${establishmentId}`;
+          console.log('Loading today appointments from:', url);
+          
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.success && data.data) {
+            const appointments = data.data;
+            
+            if (appointments && appointments.length > 0) {
+              container.innerHTML = appointments.map(appointment => this.renderAppointmentItem(appointment)).join('');
+            } else {
+              container.innerHTML = `
+                <div class="text-center py-4">
+                  <i class="fas fa-calendar-times fa-2x text-muted"></i>
+                  <p class="mt-2 text-muted">Nenhum agendamento para hoje</p>
+                  <a href="establishment-appointments.html" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-calendar me-1"></i>Ver Agendamentos
+                  </a>
+                </div>
+              `;
+            }
           } else {
-            container.innerHTML = `
-              <div class="text-center py-4">
-                <i class="fas fa-calendar-times fa-2x text-muted"></i>
-                <p class="mt-2 text-muted">Nenhum agendamento para hoje</p>
-                <a href="establishment-appointments.html" class="btn btn-outline-primary btn-sm">
-                  <i class="fas fa-calendar me-1"></i>Ver Agendamentos
-                </a>
-              </div>
-            `;
+            throw new Error(data.message || 'Failed to load appointments');
           }
         } catch (error) {
           console.error('Failed to load appointments from API:', error);
@@ -325,12 +359,6 @@
               <p class="text-muted">Não foi possível carregar os agendamentos. Tente novamente mais tarde.</p>
             </div>
           `;
-          
-          // Add a subtle indicator that this is example data
-          const indicator = document.createElement('div');
-          indicator.className = 'text-center mt-2';
-          indicator.innerHTML = '<small class="text-muted"><i class="fas fa-info-circle me-1"></i>Dados de exemplo (API não disponível)</small>';
-          container.appendChild(indicator);
         }
       }
 
