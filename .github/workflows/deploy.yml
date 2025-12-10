@@ -139,8 +139,16 @@ jobs:
           echo "- **Build Date**: ${{ steps.version.outputs.build_date }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Environment Variables" >> $GITHUB_STEP_SUMMARY
-          echo "- **FRONTEND_URL**: ${{ secrets.FRONTEND_URL != '' && 'Configured ✅' || 'Not configured (using default) ⚠️' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **BACKEND_URL**: ${{ secrets.BACKEND_URL != '' && 'Configured ✅' || 'Not configured (using default) ⚠️' }}" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.FRONTEND_URL }}" ]; then
+            echo "- **FRONTEND_URL**: Configured ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **FRONTEND_URL**: Not configured (using default) ⚠️" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -n "${{ secrets.BACKEND_URL }}" ]; then
+            echo "- **BACKEND_URL**: Configured ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **BACKEND_URL**: Not configured (using default) ⚠️" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Environment variables have been set in Railway services." >> $GITHUB_STEP_SUMMARY
           echo "Services will use these values on next deployment." >> $GITHUB_STEP_SUMMARY

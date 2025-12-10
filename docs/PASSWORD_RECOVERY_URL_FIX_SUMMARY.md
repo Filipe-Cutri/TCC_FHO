@@ -299,9 +299,9 @@ This solution is fully backward compatible:
 If issues arise:
 
 1. Check documentation:
-   - [GitHub Secrets Setup](docs/GITHUB_SECRETS_SETUP.md)
-   - [Test Plan](docs/PASSWORD_RECOVERY_URL_FIX_TEST_PLAN.md)
-   - [Deployment Guide](DEPLOYMENT_GUIDE.md)
+   - [GitHub Secrets Setup](GITHUB_SECRETS_SETUP.md)
+   - [Test Plan](PASSWORD_RECOVERY_URL_FIX_TEST_PLAN.md)
+   - [Deployment Guide](../DEPLOYMENT_GUIDE.md)
 
 2. Verify Railway configuration:
    ```bash
