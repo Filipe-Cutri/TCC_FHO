@@ -400,7 +400,7 @@ class EstablishmentServicesManager {
         const file = event.target.files[0];
         if (file) {
             // Validate file type
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            const validTypes = ['image/jpeg', 'image/png'];
             if (!validTypes.includes(file.type)) {
                 this.showError('Apenas arquivos JPG e PNG são permitidos');
                 event.target.value = '';
