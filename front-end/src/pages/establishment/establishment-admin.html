@@ -150,27 +150,76 @@
                 Horários de Funcionamento
               </h5>
               
-              <form>
+              <form id="operatingHoursForm">
                 <div class="establishment-form-group">
                   <label class="establishment-form-label">Dias de funcionamento</label>
-                  <select class="establishment-form-control">
-                    <option>Segunda a Sábado</option>
-                    <option>Segunda a Domingo</option>
-                    <option>Personalizado</option>
+                  <select id="workingDaysPattern" class="establishment-form-control">
+                    <option value="mon-sat">Segunda a Sábado</option>
+                    <option value="mon-sun">Segunda a Domingo</option>
+                    <option value="custom">Personalizado</option>
                   </select>
+                </div>
+                
+                <!-- Custom Days Selection (hidden by default) -->
+                <div id="customDaysSection" class="establishment-form-group" style="display: none;">
+                  <label class="establishment-form-label">Selecione os dias de funcionamento</label>
+                  <div class="row">
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="monday" id="day-monday">
+                        <label class="form-check-label" for="day-monday">Segunda-feira</label>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="tuesday" id="day-tuesday">
+                        <label class="form-check-label" for="day-tuesday">Terça-feira</label>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="wednesday" id="day-wednesday">
+                        <label class="form-check-label" for="day-wednesday">Quarta-feira</label>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="thursday" id="day-thursday">
+                        <label class="form-check-label" for="day-thursday">Quinta-feira</label>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="friday" id="day-friday">
+                        <label class="form-check-label" for="day-friday">Sexta-feira</label>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="saturday" id="day-saturday">
+                        <label class="form-check-label" for="day-saturday">Sábado</label>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="sunday" id="day-sunday">
+                        <label class="form-check-label" for="day-sunday">Domingo</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div class="row">
                   <div class="col-md-6">
                     <div class="establishment-form-group">
                       <label class="establishment-form-label">Horário de abertura</label>
-                      <input type="time" class="establishment-form-control" value="09:00">
+                      <input type="time" id="openingTime" class="establishment-form-control" value="09:00">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="establishment-form-group">
                       <label class="establishment-form-label">Horário de fechamento</label>
-                      <input type="time" class="establishment-form-control" value="19:00">
+                      <input type="time" id="closingTime" class="establishment-form-control" value="19:00">
                     </div>
                   </div>
                 </div>
@@ -179,10 +228,10 @@
                   <label class="establishment-form-label">Intervalo para almoço</label>
                   <div class="row">
                     <div class="col-6">
-                      <input type="time" class="establishment-form-control" value="12:00" placeholder="Início">
+                      <input type="time" id="lunchBreakStart" class="establishment-form-control" value="12:00" placeholder="Início">
                     </div>
                     <div class="col-6">
-                      <input type="time" class="establishment-form-control" value="13:00" placeholder="Fim">
+                      <input type="time" id="lunchBreakEnd" class="establishment-form-control" value="13:00" placeholder="Fim">
                     </div>
                   </div>
                 </div>
@@ -233,11 +282,16 @@
                 </div>
                 
                 <div class="establishment-form-group">
-                  <label class="establishment-form-label">Logo do Estabelecimento (URL)</label>
-                  <input type="url" id="establishmentImageUrl" class="establishment-form-control" placeholder="https://exemplo.com/logo.png">
-                  <small class="text-muted">Insira a URL de uma imagem hospedada para o logo do estabelecimento</small>
+                  <label class="establishment-form-label">Logo do Estabelecimento</label>
+                  <div class="mb-3">
+                    <input type="file" id="establishmentImageFile" class="form-control" accept="image/jpeg,image/jpg,image/png">
+                    <small class="text-muted">Selecione uma imagem do seu dispositivo (JPG ou PNG, máx 5MB)</small>
+                  </div>
                   <div id="logoPreview" class="mt-2" style="display: none;">
                     <img id="logoPreviewImage" src="" alt="Logo Preview" class="img-thumbnail" style="max-height: 100px;">
+                    <button type="button" class="btn btn-sm btn-danger mt-2" id="removeLogoImage">
+                      <i class="fas fa-times"></i> Remover imagem
+                    </button>
                   </div>
                 </div>
                 
@@ -249,83 +303,7 @@
           </div>
         </div>
 
-        <!-- Notifications Settings -->
-        <div class="col-lg-6 mb-4">
-          <div class="establishment-card">
-            <div class="card-body">
-              <h5 class="card-title">
-                <span class="card-icon">
-                  <i class="fas fa-bell"></i>
-                </span>
-                Configurações de Notificações
-              </h5>
-              
-              <div class="establishment-list-item">
-                <div class="establishment-list-content">
-                  <div class="establishment-list-title">Novos agendamentos</div>
-                  <div class="establishment-list-subtitle">Receber notificação por email</div>
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" checked>
-                </div>
-              </div>
 
-              <div class="establishment-list-item">
-                <div class="establishment-list-content">
-                  <div class="establishment-list-title">Cancelamentos</div>
-                  <div class="establishment-list-subtitle">Alertas de cancelamento</div>
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" checked>
-                </div>
-              </div>
-
-              <div class="establishment-list-item">
-                <div class="establishment-list-content">
-                  <div class="establishment-list-title">Lembretes</div>
-                  <div class="establishment-list-subtitle">Lembrar 1h antes do agendamento</div>
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox">
-                </div>
-              </div>
-
-              <div class="establishment-list-item">
-                <div class="establishment-list-content">
-                  <div class="establishment-list-title">Relatórios semanais</div>
-                  <div class="establishment-list-subtitle">Resumo semanal por email</div>
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" checked>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Security Settings -->
-        <div class="col-lg-6 mb-4">
-          <div class="establishment-card">
-            <div class="card-body">
-              <h5 class="card-title">
-                <span class="card-icon">
-                  <i class="fas fa-shield-alt"></i>
-                </span>
-                Segurança e Privacidade
-              </h5>
-              
-              <div class="mb-3">
-                <button class="establishment-btn establishment-btn-secondary w-100 mb-2">
-                  <i class="fas fa-history me-2"></i>Log de Atividades
-                </button>
-              </div>
-
-              <div class="text-center">
-                <small class="text-muted">Última atualização: 15/08/2025</small>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -346,16 +324,32 @@
       // Load establishment data
       loadEstablishmentData();
       
-      // Setup form submission
-      const form = document.getElementById('establishmentInfoForm');
-      if (form) {
-        form.addEventListener('submit', handleFormSubmit);
+      // Setup form submissions
+      const infoForm = document.getElementById('establishmentInfoForm');
+      if (infoForm) {
+        infoForm.addEventListener('submit', handleFormSubmit);
       }
       
-      // Setup logo preview
-      const logoUrlInput = document.getElementById('establishmentImageUrl');
-      if (logoUrlInput) {
-        logoUrlInput.addEventListener('input', updateLogoPreview);
+      const hoursForm = document.getElementById('operatingHoursForm');
+      if (hoursForm) {
+        hoursForm.addEventListener('submit', handleOperatingHoursSubmit);
+      }
+      
+      // Setup logo file upload preview
+      const logoFileInput = document.getElementById('establishmentImageFile');
+      if (logoFileInput) {
+        logoFileInput.addEventListener('change', handleLogoFileSelect);
+      }
+      
+      const removeLogoBtn = document.getElementById('removeLogoImage');
+      if (removeLogoBtn) {
+        removeLogoBtn.addEventListener('click', removeLogoPreview);
+      }
+      
+      // Setup custom days selection
+      const workingDaysPattern = document.getElementById('workingDaysPattern');
+      if (workingDaysPattern) {
+        workingDaysPattern.addEventListener('change', handleWorkingDaysPatternChange);
       }
     });
     
@@ -379,33 +373,102 @@
           document.getElementById('establishmentAddress').value = est.address || '';
           document.getElementById('establishmentPhone').value = est.phone || '';
           document.getElementById('establishmentEmail').value = est.email || '';
-          document.getElementById('establishmentImageUrl').value = est.imageUrl || '';
-          updateLogoPreview();
+          
+          // Show logo preview if image exists
+          if (est.imageUrl) {
+            const preview = document.getElementById('logoPreview');
+            const image = document.getElementById('logoPreviewImage');
+            if (preview && image) {
+              image.src = est.imageUrl;
+              preview.style.display = 'block';
+            }
+          }
+          
+          // Load operating hours if available
+          if (est.workingHours) {
+            try {
+              const workingHoursData = JSON.parse(est.workingHours);
+              
+              if (workingHoursData.workingDaysPattern) {
+                document.getElementById('workingDaysPattern').value = workingHoursData.workingDaysPattern;
+                handleWorkingDaysPatternChange();
+              }
+              if (workingHoursData.workingDays) {
+                loadCustomDays(workingHoursData.workingDays);
+              }
+              if (workingHoursData.openingTime) document.getElementById('openingTime').value = workingHoursData.openingTime;
+              if (workingHoursData.closingTime) document.getElementById('closingTime').value = workingHoursData.closingTime;
+              if (workingHoursData.lunchBreakStart) document.getElementById('lunchBreakStart').value = workingHoursData.lunchBreakStart;
+              if (workingHoursData.lunchBreakEnd) document.getElementById('lunchBreakEnd').value = workingHoursData.lunchBreakEnd;
+            } catch (e) {
+              console.error('Error parsing working hours:', e);
+            }
+          }
         }
       } catch (error) {
         console.error('Error loading establishment data:', error);
       }
     }
     
-    function updateLogoPreview() {
-      const urlInput = document.getElementById('establishmentImageUrl');
-      const url = urlInput.value;
+    function loadCustomDays(workingDays) {
+      if (!workingDays) return;
+      const days = workingDays.split(',');
+      days.forEach(day => {
+        const checkbox = document.getElementById(`day-${day.trim()}`);
+        if (checkbox) checkbox.checked = true;
+      });
+    }
+    
+    function handleLogoFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+          showNotification('Apenas arquivos JPG e PNG são permitidos', 'danger');
+          event.target.value = '';
+          return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          showNotification('Arquivo muito grande. Tamanho máximo: 5MB', 'danger');
+          event.target.value = '';
+          return;
+        }
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const preview = document.getElementById('logoPreview');
+          const image = document.getElementById('logoPreviewImage');
+          if (preview && image) {
+            image.src = e.target.result;
+            preview.style.display = 'block';
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    function removeLogoPreview() {
       const preview = document.getElementById('logoPreview');
       const image = document.getElementById('logoPreviewImage');
+      const fileInput = document.getElementById('establishmentImageFile');
       
-      if (url && url.trim()) {
-        try {
-          // Validate URL format
-          new URL(url);
-          // Set src using setAttribute to be explicit
-          image.setAttribute('src', url);
-          preview.style.display = 'block';
-        } catch (e) {
-          // Invalid URL, hide preview
-          preview.style.display = 'none';
-        }
+      if (preview) preview.style.display = 'none';
+      if (image) image.src = '';
+      if (fileInput) fileInput.value = '';
+    }
+    
+    function handleWorkingDaysPatternChange() {
+      const pattern = document.getElementById('workingDaysPattern').value;
+      const customDaysSection = document.getElementById('customDaysSection');
+      
+      if (pattern === 'custom') {
+        customDaysSection.style.display = 'block';
       } else {
-        preview.style.display = 'none';
+        customDaysSection.style.display = 'none';
       }
     }
     
@@ -424,7 +487,7 @@
       const address = document.getElementById('establishmentAddress').value.trim();
       const phone = document.getElementById('establishmentPhone').value.trim();
       const email = document.getElementById('establishmentEmail').value.trim();
-      const imageUrl = document.getElementById('establishmentImageUrl').value.trim();
+      const imageFile = document.getElementById('establishmentImageFile').files[0];
       
       try {
         const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
@@ -441,9 +504,9 @@
         const data = await response.json();
         
         if (data.success) {
-          // If logo URL is provided, update it
-          if (imageUrl) {
-            await updateEstablishmentLogo(establishmentId, imageUrl);
+          // If logo file is provided, upload it
+          if (imageFile) {
+            await uploadEstablishmentLogo(establishmentId, imageFile);
           }
           
           showNotification('Informações atualizadas com sucesso!', 'success');
@@ -456,23 +519,99 @@
       }
     }
     
-    async function updateEstablishmentLogo(establishmentId, imageUrl) {
+    async function uploadEstablishmentLogo(establishmentId, file) {
       try {
         const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
-        const response = await fetch(`${apiBaseUrl}/api/establishment/profile/${establishmentId}/image`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ imageUrl })
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch(`${apiBaseUrl}/api/files/establishment/${establishmentId}/upload`, {
+          method: 'POST',
+          body: formData
         });
         
         const data = await response.json();
         if (!data.success) {
-          console.error('Failed to update logo:', data.message);
+          console.error('Failed to upload logo:', data.message);
+          showNotification('Erro ao enviar logo: ' + (data.message || 'Erro desconhecido'), 'warning');
+        } else {
+          showNotification('Logo atualizado com sucesso!', 'success');
         }
       } catch (error) {
-        console.error('Error updating establishment logo:', error);
+        console.error('Error uploading establishment logo:', error);
+        showNotification('Erro ao enviar logo', 'warning');
+      }
+    }
+    
+    async function handleOperatingHoursSubmit(e) {
+      e.preventDefault();
+      
+      const session = window.establishmentSession.getSession();
+      const establishmentId = session?.establishmentId || session?.id;
+      
+      if (!establishmentId) {
+        showNotification('ID do estabelecimento não encontrado', 'danger');
+        return;
+      }
+      
+      const workingDaysPattern = document.getElementById('workingDaysPattern').value;
+      const openingTime = document.getElementById('openingTime').value;
+      const closingTime = document.getElementById('closingTime').value;
+      const lunchBreakStart = document.getElementById('lunchBreakStart').value;
+      const lunchBreakEnd = document.getElementById('lunchBreakEnd').value;
+      
+      // Get custom days if pattern is custom
+      let workingDays = null;
+      if (workingDaysPattern === 'custom') {
+        const selectedDays = [];
+        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
+          const checkbox = document.getElementById(`day-${day}`);
+          if (checkbox && checkbox.checked) {
+            selectedDays.push(day);
+          }
+        });
+        
+        if (selectedDays.length === 0) {
+          showNotification('Selecione pelo menos um dia de funcionamento', 'danger');
+          return;
+        }
+        
+        workingDays = selectedDays.join(',');
+      }
+      
+      // Create working hours object to store as JSON
+      const workingHoursData = {
+        workingDaysPattern,
+        workingDays,
+        openingTime,
+        closingTime,
+        lunchBreakStart,
+        lunchBreakEnd
+      };
+      
+      try {
+        const apiBaseUrl = window.API_CONFIG?.baseUrl || 'https://localhost:8443';
+        
+        const response = await fetch(`${apiBaseUrl}/api/establishment/profile/${establishmentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            workingHours: JSON.stringify(workingHoursData)
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showNotification('Horários atualizados com sucesso!', 'success');
+        } else {
+          showNotification(data.message || 'Erro ao atualizar horários', 'danger');
+        }
+      } catch (error) {
+        console.error('Error updating operating hours:', error);
+        showNotification('Erro ao conectar com o servidor', 'danger');
       }
     }
     

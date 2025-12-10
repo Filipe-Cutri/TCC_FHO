@@ -52,12 +52,6 @@ class EstablishmentServicesManager {
         if (removeBtn) {
             removeBtn.addEventListener('click', () => this.removeImagePreview());
         }
-
-        // Image URL input preview
-        const urlInput = document.getElementById('serviceImageUrl');
-        if (urlInput) {
-            urlInput.addEventListener('blur', (e) => this.handleImageUrlChange(e));
-        }
     }
 
     async loadServices() {
@@ -202,7 +196,6 @@ class EstablishmentServicesManager {
         const description = document.getElementById('serviceDescription')?.value?.trim();
         const durationMinutes = document.getElementById('serviceDuration')?.value;
         const price = document.getElementById('servicePrice')?.value;
-        const imageUrl = document.getElementById('serviceImageUrl')?.value?.trim();
         const imageFile = document.getElementById('serviceImageFile')?.files[0];
 
         if (!name) {
@@ -277,10 +270,6 @@ class EstablishmentServicesManager {
                 if (imageFile && serviceId) {
                     await this.uploadServiceImageFile(serviceId, imageFile);
                 }
-                // Or update with URL if provided and no file
-                else if (imageUrl && serviceId && !imageFile) {
-                    await this.updateServiceImage(serviceId, imageUrl);
-                }
                 
                 this.showSuccess(id ? 'Serviço atualizado com sucesso!' : 'Serviço cadastrado com sucesso!');
                 this.closeModal();
@@ -315,25 +304,6 @@ class EstablishmentServicesManager {
         }
     }
 
-    async updateServiceImage(id, imageUrl) {
-        try {
-            const response = await fetch(`${this.apiBaseUrl}/api/establishment/services/${id}/image?establishmentId=${this.establishmentId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ imageUrl })
-            });
-
-            const data = await response.json();
-            if (!data.success) {
-                console.error('Failed to update image:', data.message);
-            }
-        } catch (error) {
-            console.error('Error updating service image:', error);
-        }
-    }
-
     async editService(id) {
         const service = this.services.find(s => s.id == id);
         if (!service) {
@@ -347,7 +317,6 @@ class EstablishmentServicesManager {
         document.getElementById('serviceDescription').value = service.description || '';
         document.getElementById('serviceDuration').value = service.durationMinutes || '';
         document.getElementById('servicePrice').value = service.price || '';
-        document.getElementById('serviceImageUrl').value = service.imageUrl || '';
 
         // Show image preview if service has an image URL
         if (service.imageUrl) {
@@ -407,7 +376,7 @@ class EstablishmentServicesManager {
     }
 
     clearForm() {
-        const fields = ['serviceId', 'serviceName', 'serviceDescription', 'serviceDuration', 'servicePrice', 'serviceImageUrl'];
+        const fields = ['serviceId', 'serviceName', 'serviceDescription', 'serviceDuration', 'servicePrice'];
         fields.forEach(id => {
             const field = document.getElementById(id);
             if (field) field.value = '';
@@ -431,7 +400,7 @@ class EstablishmentServicesManager {
         const file = event.target.files[0];
         if (file) {
             // Validate file type
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            const validTypes = ['image/jpeg', 'image/png'];
             if (!validTypes.includes(file.type)) {
                 this.showError('Apenas arquivos JPG e PNG são permitidos');
                 event.target.value = '';
@@ -456,10 +425,6 @@ class EstablishmentServicesManager {
                 }
             };
             reader.readAsDataURL(file);
-
-            // Clear URL input when file is selected
-            const urlInput = document.getElementById('serviceImageUrl');
-            if (urlInput) urlInput.value = '';
         }
     }
 
@@ -471,42 +436,6 @@ class EstablishmentServicesManager {
         if (preview) preview.style.display = 'none';
         if (img) img.src = '';
         if (fileInput) fileInput.value = '';
-    }
-
-    handleImageUrlChange(event) {
-        const url = event.target.value.trim();
-        if (url) {
-            // Validate URL format and protocol
-            try {
-                const urlObj = new URL(url);
-                // Only allow http and https protocols
-                if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-                    this.showError('Apenas URLs HTTP e HTTPS são permitidas');
-                    return;
-                }
-                
-                // Show preview for URL with error handling for image load failures
-                const preview = document.getElementById('serviceImagePreview');
-                const img = document.getElementById('servicePreviewImg');
-                if (preview && img) {
-                    // Add error handler for image loading failures
-                    img.onerror = () => {
-                        preview.style.display = 'none';
-                        this.showError('Não foi possível carregar a imagem. Verifique a URL.');
-                    };
-                    img.onload = () => {
-                        preview.style.display = 'block';
-                    };
-                    img.src = url;
-                }
-
-                // Clear file input when URL is entered
-                const fileInput = document.getElementById('serviceImageFile');
-                if (fileInput) fileInput.value = '';
-            } catch (e) {
-                this.showError('URL inválida. Por favor, insira uma URL válida.');
-            }
-        }
     }
 
     closeModal() {
