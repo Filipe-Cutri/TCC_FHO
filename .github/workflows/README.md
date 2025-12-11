@@ -44,7 +44,7 @@ Automatically deploys the application to Railway when changes are pushed to the 
 | `FRONTEND_URL` | Production frontend URL | `https://slotfy.com.br` |
 | `BACKEND_URL` | Production backend API URL | `https://api.slotfy.com.br` |
 
-**Setup Guide**: See [GitHub Secrets Setup](../../docs/GITHUB_SECRETS_SETUP.md)
+**Setup Guide**: See [Configuração](../../docs/configuracao/README.md)
 
 #### How to Run Manually
 
@@ -117,6 +117,6 @@ For local development, you don't need to run these workflows. The application wo
 
 ## Related Documentation
 
-- [GitHub Secrets Setup Guide](../../docs/GITHUB_SECRETS_SETUP.md)
-- [Railway Setup Guide](../../RAILWAY_SETUP.md)
-- [Deployment Guide](../../DEPLOYMENT_GUIDE.md)
+- [Configuração (Secrets e Variáveis)](../../docs/configuracao/README.md)
+- [Deploy no Railway](../../docs/deployment/railway.md)
+- [CI/CD](../../docs/ci-cd/README.md)
