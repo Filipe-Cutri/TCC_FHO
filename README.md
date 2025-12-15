@@ -6,6 +6,14 @@
 
 Sistema de agendamento online para barbearias, salões de beleza e profissionais da área de estética. Conecta clientes aos melhores profissionais da região de forma prática e inteligente.
 
+## 👥 Autores
+
+**- Aluno:** Filipe Alberto Cutri 
+
+**- Curso:** Sistemas de Informação
+
+**- Universidade:** Fundação Hermínio Ometto 
+
 ## 📋 Sobre o Projeto
 
 O Slotfy é uma plataforma web desenvolvida como Trabalho de Conclusão de Curso (TCC) da FHO. O sistema permite que estabelecimentos gerenciem seus serviços, profissionais e agendamentos, enquanto clientes podem encontrar e agendar serviços de forma simples e rápida.
@@ -121,18 +129,6 @@ fix(auth): corrige erro no login de clientes
 docs(readme): atualiza instruções de instalação
 ```
 
-## 🤝 Contribuindo
-
-Este é um projeto acadêmico (TCC). Contribuições são bem-vindas através de pull requests.
-
 ## 📄 Licença
 
 Este projeto foi desenvolvido como Trabalho de Conclusão de Curso da FHO.
-
-## 👥 Autores
-
-Desenvolvido por estudantes da FHO - Fundação Hermínio Ometto.
-
----
-
-**Produção:** https://slotfy.com.br
