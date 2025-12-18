@@ -4,9 +4,14 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Filipe-Cutri_TCC_FHO&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Filipe-Cutri_TCC_FHO)
 [![codecov](https://codecov.io/gh/Filipe-Cutri/TCC_FHO/branch/main/graph/badge.svg)](https://codecov.io/gh/Filipe-Cutri/TCC_FHO)
 
+ [Português](#português) | [English](#english) 
+
+---
+## Português
+
 Sistema de agendamento online para barbearias, salões de beleza e profissionais da área de estética. Conecta clientes aos melhores profissionais da região de forma prática e inteligente.
 
-## 👥 Autores
+### 👥 Autores
 
 **- Aluno:** Filipe Alberto Cutri 
 
@@ -14,7 +19,7 @@ Sistema de agendamento online para barbearias, salões de beleza e profissionais
 
 **- Universidade:** Fundação Hermínio Ometto 
 
-## 📋 Sobre o Projeto
+### 📋 Sobre o Projeto
 
 O Slotfy é uma plataforma web desenvolvida como Trabalho de Conclusão de Curso (TCC) da FHO. O sistema permite que estabelecimentos gerenciem seus serviços, profissionais e agendamentos, enquanto clientes podem encontrar e agendar serviços de forma simples e rápida.
 
@@ -26,7 +31,7 @@ O Slotfy é uma plataforma web desenvolvida como Trabalho de Conclusão de Curso
 - Área do cliente para gerenciar agendamentos
 - Recuperação de senha via e-mail
 
-## 🛠️ Tecnologias
+### 🛠️ Tecnologias
 
 **Backend:**
 - Java 17
@@ -48,7 +53,7 @@ O Slotfy é uma plataforma web desenvolvida como Trabalho de Conclusão de Curso
 - SonarCloud (análise de código)
 - Codecov (cobertura de testes)
 
-## 📁 Estrutura do Projeto
+### 📁 Estrutura do Projeto
 
 ```
 TCC_FHO/
@@ -85,7 +90,7 @@ TCC_FHO/
 └── scripts/              # Scripts auxiliares
 ```
 
-## 🚀 Documentação
+### 🚀 Documentação
 
 Acesse a documentação completa em [`docs/`](./docs/):
 
@@ -95,15 +100,15 @@ Acesse a documentação completa em [`docs/`](./docs/):
 - **[CI/CD](./docs/ci-cd/)** - Pipelines de integração e deploy contínuo
 - **[Configuração](./docs/configuracao/)** - Variáveis de ambiente e secrets
 
-## 💻 Como Executar
+### 💻 Como Executar
 
-### Desenvolvimento Local
+#### Desenvolvimento Local
 Consulte o guia completo em [docs/deployment/localhost.md](./docs/deployment/localhost.md)
 
-### Deploy em Produção (Railway)
+#### Deploy em Produção (Railway)
 Consulte o guia completo em [docs/deployment/railway.md](./docs/deployment/railway.md)
 
-## 📝 Convenção de Commits
+### 📝 Convenção de Commits
 
 Este projeto segue a convenção de commits semânticos:
 
@@ -129,6 +134,140 @@ fix(auth): corrige erro no login de clientes
 docs(readme): atualiza instruções de instalação
 ```
 
-## 📄 Licença
+### 📄 Licença
 
 Este projeto foi desenvolvido como Trabalho de Conclusão de Curso da FHO.
+
+
+## English
+
+Online scheduling system for barbershops, beauty salons, and aesthetic professionals. Connects clients with the best professionals in their region in a practical and intelligent way.
+
+### 👥 Author
+
+**- Student:** Filipe Alberto Cutri 
+
+**- Course:** Information Systems
+
+**- University:** Fundação Hermínio Ometto 
+
+### 📋 About the Project
+
+Slotfy is a web platform developed as a Final Year Project (TCC) at FHO. The system allows establishments to manage their services, professionals, and appointments, while clients can find and book services simply and quickly.
+
+**Main features:**
+- Establishment registration and management
+- Service and professional management
+- Online booking system
+- Administrative panel for establishments
+- Client area for managing appointments
+- Password recovery via email
+
+### 🛠️ Technologies
+
+**Backend:**
+- Java 17
+- Spring Boot 3.2.0
+- PostgreSQL
+- Spring Security
+- Spring Data JPA
+- Flyway (database migrations)
+- AWS Bedrock (AI)
+
+**Frontend:**
+- HTML5, CSS3, JavaScript (Vanilla)
+- Font Awesome
+- Responsive design
+
+**CI/CD:**
+- GitHub Actions
+- Railway (production deployment)
+- SonarCloud (code analysis)
+- Codecov (test coverage)
+
+### 📁 Project Structure
+
+```
+TCC_FHO/
+├── back-end/              # Backend (Spring Boot)
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/     # Java code
+│   │   │   └── resources/ # Configurations and migrations
+│   │   └── test/         # Unit tests
+│   ├── build.gradle      # Dependencies and build
+│   └── nixpacks.toml     # Railway configuration
+│
+├── front-end/             # Frontend (HTML/CSS/JS)
+│   ├── src/
+│   │   ├── assets/       # Images, icons, CSS, JS
+│   │   └── pages/        # HTML pages
+│   ├── inject-config.sh  # Configuration script
+│   └── nixpacks.toml     # Railway configuration
+│
+├── database/              # Database scripts
+│   ├── database_schema.sql
+│   └── database_migration_*.sql
+│
+├── docs/                  # Technical documentation
+│   ├── arquitetura/
+│   ├── banco-de-dados/
+│   ├── ci-cd/
+│   ├── configuracao/
+│   └── deployment/
+│
+├── .github/
+│   └── workflows/        # CI/CD pipelines
+│
+└── scripts/              # Auxiliary scripts
+```
+
+### 🚀 Documentation
+
+Access the complete documentation in [`docs/`](./docs/):
+
+- **[Deployment](./docs/deployment/)** - How to deploy on Railway and run locally
+- **[Architecture](./docs/arquitetura/)** - System architecture and diagrams
+- **[Database](./docs/banco-de-dados/)** - Schema, migrations, and relationships
+- **[CI/CD](./docs/ci-cd/)** - Continuous integration and deployment pipelines
+- **[Configuration](./docs/configuracao/)** - Environment variables and secrets
+
+### 💻 How to Run
+
+#### Local Development
+See the complete guide at [docs/deployment/localhost.md](./docs/deployment/localhost.md)
+
+#### Production Deployment (Railway)
+See the complete guide at [docs/deployment/railway.md](./docs/deployment/railway.md)
+
+### 📝 Commit Convention
+
+This project follows the semantic commit convention:
+
+```
+type(scope): short description
+
+Detailed description (optional)
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation
+- `style`: Formatting, semicolons, etc
+- `refactor`: Code refactoring
+- `test`: Adding or modifying tests
+- `chore`: Build updates, dependencies, etc
+
+**Examples:**
+```
+feat(booking): add available time slots validation
+fix(auth): fix client login error
+docs(readme): update installation instructions
+```
+
+### 📄 License
+
+This project was developed as a Final Year Project at FHO.
+
+---
